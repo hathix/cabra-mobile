@@ -1,0 +1,19 @@
+    {  
+      "version": "0.3.0",  
+      "name": "Cabra Flashcards",  
+      "description": "Learn anything with the award-winning flashcard and studying tool!", 
+      "launch_path": "/cabra/chevre", 
+      "icons": {  
+        "16": "/cabra/chevre/img/icons/goat16.png",  
+        "48": "/cabra/chevre/img/icons/goat48.png",  
+        "128": "/cabra/chevre/img/icons/goat128.png"  
+      },  
+      "developer": {  
+        "name": "Neel Mehta",  
+        "url": "http://www.hathix.com"  
+      },  
+      "installs_allowed_from": [  
+        "https://marketplace.firefox.com"  
+      ],  
+      "default_locale": "en"
+    }  
