@@ -3,7 +3,7 @@
 * aka Chevre
 *
 
-1.0.0 - "Postseason" - 
+1.0.0 - "Postseason" - under development
 	Brand-new interface, dramatically redesigned code.
 	New features
 		**Completely rewritten interface. Now uses Twitter Bootstrap and better responsive design.
