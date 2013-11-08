@@ -21,6 +21,22 @@ __init__: function(self){
         theme: Theme.BLUE
     };
     self.options = {};
+    
+    /*self.pages = [
+    	new Page("Home", "Home sweet home", "home", "home"),
+    	new Page("Deck Home", "Deck home", "home", "deck-home")
+    ];*/
+   
+   /*pageDB.getJQuery('deck-home').bind('load', function(){
+   		self.loadProject();
+   });*/
+},
+
+/**
+ * Returns the page with the given slug. 
+ */
+page: function(self, slug){
+	return PageDB.get(slug);
 },
 
 /**
@@ -29,6 +45,8 @@ __init__: function(self){
 start: function(self){
     //load options & projects
     self.load();
+    
+    nav.home(); //open home page
     
     //now that we're done... at this point not much is happening
     
@@ -42,7 +60,7 @@ start: function(self){
     else if(oldVersion == undefined){
         //it's the first time they're using Cabra
         //this will only show once - EVER - because version is always set later on
-        $.mobile.changePage('#welcome');
+        //$.mobile.changePage('#welcome');
     }
     $.store.set(SL_KEYS.LAST_VERSION, ABOUT.version);
     
@@ -81,7 +99,7 @@ addProject: function(self, project, dontSave){
     
     /*
     var li = getClonedTemplate('template-divider');
-    li.html(project.group);
+    li.`html(project.group);
     $('#project-list').append(li).listview('refresh');
     */
    
@@ -92,85 +110,31 @@ addProject: function(self, project, dontSave){
 refreshProjectList: function(self){
      $('#project-list').empty();
      
-     var append = function(project){
-          var li = self.createProjectLI(project);
-          $('#project-list').append(li);
-     };
-     
      var groupedProjects = self.projects.groupBy('group'); //object { groupName: [proj1, proj2, proj3], ... }
+    Object.keys(groupedProjects, function(groupName, projects){
+         var data = {
+              groupName: groupName,
+              decks: projects
+         };
+         
+          //make panel containing each
+          var panel = template("template-project-panel", $('#project-list'), data, true);     
+    });
     
-     //stick on unorganized's first (since that divider is at the top)...
-     if(Object.has(groupedProjects, GROUP_DEFAULT)){
-          /* //TODO consider showing 'unorganized' label on unorganized projects on main screen
-          //stick on that divider
-              var li = getClonedTemplate('template-divider');
-              li.html(GROUP_DEFAULT);
-              $('#project-list').append(li);   
-           */
-          groupedProjects[GROUP_DEFAULT].each(function(project){
-               append(project);     
-          });
-     }
-     //and tack on everything else
-     Object.keys(groupedProjects, function(groupName, projects){
-          //make divider for each; we already added Unorganizd
-          if(groupName != GROUP_DEFAULT){
-               //make divider
-              var li = getClonedTemplate('template-divider');
-              li.find('.divider-name').html(groupName);
-              
-              //TODO this works but not sure why it's needed. consider rolling out
-              /*//THIS IS TO SHOW/HIDE PROJECTS BELOW GROUP DIVIDER
-               //hide/show button              
-              var button = li.find('button');
-              button.button();
-              //open by default
-              button.data('expanded',true);
-              function update(){
-                    var projects = chevre.projects.filter(function(project) {
-                         return project.group == groupName;
-                    });
-                    if (button.data('expanded') == true) {
-                         //currently showing, image is -, li's all visible
-                         //now hide any project with that group name
-                         projects.forEach(function(project){
-                              chevre.findProjectLI(project).hide();
-                         });
-                         button.data('expanded', false);
-                         button.parent().find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');
-                    }
-                    else{
-                         //currently hiding, image is +, li's all hidden
-                         //open it up & show li's
-                         projects.forEach(function(project){
-                              chevre.findProjectLI(project).show();
-                         });
-                         button.data('expanded', true);
-                         button.parent().find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');
-                    }
-
-              }
-              button.oneClick(function(){
-               //toggle show/hide    
-               update();
-              });*/
-              
-             
-              $('#project-list').append(li);
-                       
-               projects.each(function(project){
-                    append(project);
-               });
-          }
-     });     
+    //reload all clicks
+    $('.project-list-item').click(function(){
+     var id = $(this).data('id');
+     //load that project
+     self.loadProject(self.getProjectByID(id));     
+    });
      
-     $('#project-list').listview('refresh');
+     //$('#project-list').listview('refresh');
 },
 
 /**
  * Creates a list item for a given project. 
  */
-createProjectLI: function(self, project){
+/*createProjectLI: function(self, project){
     //add to view - grab template and modify it
     var li = getClonedTemplate("template-project");
     li.find(".project-name").html(project.name);
@@ -198,13 +162,13 @@ createProjectLI: function(self, project){
     li.attr('id', 'project-div-' + project.id);
     
     return li;
-},
+},*/
 
 /**
  * Finds and returns the $li of the given project. 
  */
 findProjectLI: function(self, project){
-     return $('#project-div-' + project.id);
+     return $('#project-list-item-' + project.id);
 },
 
 /**
@@ -227,7 +191,7 @@ removeProject: function(self, project){
     }
  
     //remove from view
-    $('#project-div-' + project.id).remove();
+    $('#project-list-item-' + project.id).remove();
     self.refreshProjectList();
     
     self.save();
@@ -350,7 +314,7 @@ unpackProjects: function(self){
     //UGLY CODE AHEAD
     var goodProjects = rawProjects.map(function(rawProj){
         return decompress(rawProj, "Project",
-        [ 'name', 'id', 'description', 'group' ], //in init
+        [ 'name', 'description', 'id', 'group' ], //in init
         [ 
             { cards: function(goodProj, rawCards){
                     //obj is the good object, value is the raw cards

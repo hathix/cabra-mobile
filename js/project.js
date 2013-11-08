@@ -2,13 +2,14 @@ var Project = new Class({
     
     /**
      * @param {String} name   Project name. Make sure it's unique among projects here.
-     * @param {String} id     [optional; if omitted it's auto-generated] a unique id that is unique for EVERY PROJECT EVER. It should never change once the project is created.
      * @param {String} description [optional, default null] additional text about the project.
+     * @param {String} id     [optional; if omitted it's auto-generated] a unique id that is unique for EVERY PROJECT EVER. It should never change once the project is created.
      * @param {String} group  [optional, default GROUP_DEFAULT] the name of the group that this project is in. Pass nothing if it's unorganized.
      */
-__init__: function(self, name, id, description, group){
+__init__: function(self, name, description, id, group){
     self.name = name;
     self.description = orDefault(description, null); //TODO make this undefined by default so that it won't take up space when stored and there's nothing there
+    self.isEditing = false;
     //self.lastStudied = null;
     if(!id){
          //get unix time as unique code. let's hope there's no duplicates of that!
@@ -20,6 +21,7 @@ __init__: function(self, name, id, description, group){
     self.group = orDefault(group, GROUP_DEFAULT);
     self.session = null;
     self.wrongCards = null; //cards they got wrong last session; temporary variable, filled in by session
+    
 },
 
 equals: function(self, other){
@@ -99,13 +101,67 @@ clearDescription: function(self){
     self.save();  
 },
 
+reloadDescription: function(self){
+     //description AND name toggling
+     //show the description/name area with what we already have
+     var descriptionArea = template("template-deck-description", $('#deck-title-holder'), self);
+     //listen to any updates
+     descriptionArea.closest('.btn-description-edit').oneClick(function(){
+          self.isEditing = true;
+          self.reloadDescription();     
+     });
+     descriptionArea.closest('.btn-description-done').oneClick(function(){
+          self.isEditing = false;
+          var name = descriptionArea.closest('.input-name').val().trim(); //we can't have no name!
+          if(name && name != ""){
+          	self.name = name;
+          	$('.univ-deck-name').html(self.name);//TODO have setName();
+          }      
+          self.description = descriptionArea.closest('.input-description').val().trim(); //we CAN have no desc
+          self.save();
+          self.reloadDescription();     
+     });
+     descriptionArea.closest('.btn-description-add').oneClick(function(){
+          self.isEditing = true;
+          self.reloadDescription();     
+     });     
+},
+
 load: function(self){
+     //load home page
+     //put in all of our pages
+     var pages = PageDB.get(['study','create','batch','manage','print','export']);
+     //hide some if we have no cards (hide what requires cards)
+     var hideIfNoCards = PageDB.get(['study','manage','print','export']);
+     if(self.cards.isEmpty())
+     	pages = pages.subtract(hideIfNoCards);
+     //show them!
+     template("template-project-pages",$('#project-page-list'),{pages: pages});
+     
+     //description & name
+     $('.univ-deck-name').html(self.name);
+     self.reloadDescription();
+     
+     //card chart
+     self.loadCardChart.delay(100);
+     $(window).resize(function(){
+     	self.loadCardChart();	
+     });
+     
+     //batch
+     $('#batch-button-create').oneClick(function(){
+     	self.batchCreate();
+     });
+     
+     //var hasCards = self.cards.length > 0;
+     //var hideIfNoCards = ['study'];
+     
     //load home page
     //$('#project-name').html(self.name);
     //$(document).attr('title', self.name);
     
     //$('#study-session-init-button').toggle(self.cards.length > 0);
-    
+/*    
     //show description text if there is any; otherwise show the description entry stuff
     self.showOrHideDescription();
     
@@ -116,91 +172,7 @@ load: function(self){
     
     //create card button in batch creator
     $('#batch-create-button').oneClick(function(e){
-        //grab delimiter - from select
-        var delimiter = $('#batch-style').val();
-        
-        //multiple choice. TODO add selects for this
-        var mcChoiceDelim = "|";
-        var mcCorrectMarker = "*";
-        
-        //grab raw text containing all the cards
-        var rawText = $('#batch-text').val(); //contains "Q-A \n Q-A \n Q-A ..."
-        
-        //break into individual cards
-        var rawCards = rawText.split('\n'); //now ["Q-A", "Q-A", ...]
-        var malformedCards = []; //raw strings that don't work will be stored in this
-        rawCards.each(function(rawCard){
-             //TODO put this in the Card class
-            //Q and A are separated by some delimiter; what they told us should be delimiter
-            var split = rawCard.splitOnce(delimiter); //[Q, A]
-            if(split.length < 2){
-                //malformed; skip this
-                //store it in the malformed cards and leave it in the text box when we're done
-                malformedCards.push(rawCard);
-                //<TODO>: if all or most of the cards are malformed, assume the delimiter's wrong and intelligently guess which one is the right one
-                return;    
-            }
-            else{
-                //properly formed
-                //trim the question and answer and assign to a card
-                var question = cleanInput(split[0].trim());
-                var answer = cleanInput(split[1].trim());
 
-                //see if it's multiple choice
-                if(answer.has(mcChoiceDelim)){
-                     //it's MC
-                     var choices = answer.split(mcChoiceDelim).compact(true); //[choice1,choice2,*choice3,choice4]
-                     //ensure it has ONLY ONE correct marker leading off the string
-                     var choicesBeginningWithMarker = choices.count(function(choice){ 
-                          return choice.startsWith(mcCorrectMarker);
-                     });
-                     if(choicesBeginningWithMarker == 1){
-                          //good!
-                          //find where the right answer was
-                          var rightIndex = choices.findIndex(function(choice){ return choice.startsWith(mcCorrectMarker)});
-                          //remove marker from start of that choice
-                          choices[rightIndex] = choices[rightIndex].substring(mcCorrectMarker.length); //chop off first few chars
-                          answer = { choices: choices, right: rightIndex };
-                     }
-                     else{
-                          //bad!
-                          //TODO have it tell you WHY a card was malformed/rejected ("too many/too few cards starting with *" etc)
-                          malformedCards.push(rawCard);
-                          return;
-                     }
-                }
-                var card = new Card(question, answer);
-                //console.log(card);
-                self.addCard(card);
-            }            
-        });
-        
-        //cleanup 
-        self.save();
-        //empty the text area and put in any malformed ones - so they can fix it and re-try
-        var textarea = $('#batch-text');
-        
-        //was there malformed stuff?
-        if(malformedCards.length > 0){
-             var malformedString = malformedCards.join("\n");
-             textarea.val(malformedString).css('height',0).change();
-             textarea.focus();   
-             
-             e.preventDefault();
-             
-             toast("Sorry &ndash; some of your cards weren't formatted right; they're still in the text box! Check the Mass Creator Help.", { error: true });
-        }
-        else{
-             //all ok
-             textarea.val('').css('height',0).change();
-        }
-        
-
-     (function show(){
-          textarea.change(); //in case it got stuck @ 0 height... that tends to happen
-     }).delay(200); //wait for a few pending things to finish
-        
-        //TODO: prevent the button from going back to main immediately; only go there programmatically if all cards are well-formed
     });
     
     //start studying button in the study init page
@@ -231,14 +203,14 @@ load: function(self){
     $('#card-manager').oneBind('pageshow', function(){
         //update card manager list
         self.updateManager();
-    });
+    });*/
     /*$('#card-viewer').oneBind('pageshow', function(){
           // set up click/tap panels
           $('.flip-click').click(function() {
                $(this).toggleClass('flip');
           });
     });*/
-   
+   /*
    $('#project-print').oneClick(function(){
         self.setupPrint();
    });
@@ -292,96 +264,73 @@ load: function(self){
           img.src = card.imageURL;
      }     
     });
+    */
 },
 
 /**
- * Prepares/loads the card creation dialog/page.  
- * @param {String} usageType  CARD_CREATE if you're making a card from scratch, CARD_EDIT if you're editing a current card. If you are editing a card, pass the card as the next arg.
- * @param {Card} card    [optional] if you're editing a card, pass its value here.
+ * Prepares/loads the card creation dialog/page. ONLY for making new cards.
  */
-prepareCreateCardPage: function(self, usageType, card){
-     var editing = usageType == CARD_EDIT && card !== undefined;
-     if(!card) card = null;
+prepareCreateCardPage: function(self){
      
     //handle clicks
-   var questionField = $('#create-card-question');
-   var answerField = $('#create-card-answer');
-   var imageField = $('#create-card-image');
-   var preview = $('#create-card-image-preview');
-   var previewHolder = $('#create-card-image-holder');    
- 
-     //update various interface things based on whether you're editing or now
-     var page = $('#create-card');
-     page.find("div[data-role='header']").find('a').toggle(!editing); 
-     $('#question-choice-navbar').toggle(!editing);
+   var questionField = $('#create-input-question');
+   var answerField = $('#create-input-answer');
+   var imageField = $('#create-image-input-file');
+   var preview = $('#create-image-preview');
+   var previewHolder = $('#create-image-preview-holder');
+   var imageIfPresent = $('#create-image-if-present'); //show in image panel if there IS an image
+   var imageIfAbsent = $('#create-image-if-none'); //show in image panel if there is NOT an image
+   //var previewHolder = $('#create-card-image-holder');    
      
-     //preload
-     if(editing && card.hasImage()){
-          //open collapsible, load preview
-          previewHolder.slideDown();
-          preview.attr('src', card.imageURL);
-          $("#create-card-image-collapsible").trigger('expand');  
-          $('.create-image-hint').hide();
-          $('.edit-image-hint').show();    
-     }
-     else{
-        previewHolder.slideUp();   
-        preview.removeAttr('src');       
-        $('#create-card-image-collapsible').trigger('collapse');   
-          $('.create-image-hint').show();
-          $('.edit-image-hint').hide();           
+     questionField.val('');
+     answerField.val('');
+     
+     function adjustImageArea(imagePresent){
+	     imageIfPresent.toggle(imagePresent);
+	     imageIfAbsent.toggle(!imagePresent);
+	     if(imagePresent){
+	     	previewHolder.slideDown();
+	     }
+	     else{
+	     	previewHolder.slideUp();
+	     	preview.removeAttr('src');
+	     }    	
      }
      
-     if(editing){
-          $('#create-card-question').val(card.question);
-          if(!card.isMultipleChoice()) $("#create-card-answer").val(card.answer);
+     //by default hide preview stuff; assume no image
+     adjustImageArea(false);
+     imageField.val(null);
+/*
+    previewHolder.slideUp();   
+    preview.removeAttr('src');       
+    $('#create-card-image-collapsible').trigger('collapse');   
+      $('.create-image-hint').show();
+      $('.edit-image-hint').hide();           
+     
 
-     }
-     else{
           $('#create-card-question').val('');
           $('#create-card-answer').val('');
-     }  
-        
-     $('.create-buttons').toggle(!editing);
-     $('.edit-buttons').toggle(editing);
-
+*/
      //$('label[for="create-card-image"]').html(editing ? "")  
-    
-     
-            
+      
     //when image is added/changed, immediately uploaded it
     imageField.oneBind('change.uploadImage', function(){
          
-         //clear the old preview
-         previewHolder.slideUp();
-         preview.removeAttr('src');
+         //clear the old stuff
+         adjustImageArea(false);
          
          //if val == "" then it was cleared, else it was set
          if(imageField.val()){
                //get uploading
-               $.mobile.loading("show", {
-                    text : "Uploading your image...",
-                    textVisible : true,
-                    textOnly : false,
-                    theme : "b"
-               });
-
                imageField.uploadImage(function success(imageURL) {
-                    $.mobile.loading("hide");
-
                     preview.attr('src', imageURL);
-                    previewHolder.slideDown();
-                    
-                    //update hint
-                    $('.create-image-hint').hide();
-                    $('.edit-image-hint').show();  
+					adjustImageArea(true);
                     
                     imageField.val(null);
 
                     toast("Your image was successfully uploaded!")
                }, function failure() {
                     imageField.val(null);
-                    $.mobile.loading("hide");
                     toast("Uploading image failed. Either your internet is disconnected, or something else is wrong. Try again later.", {
                          duration : TOAST_DURATION_LONG,
                          error : true
@@ -390,64 +339,59 @@ prepareCreateCardPage: function(self, usageType, card){
                
                 
           }
-          else{
-               //cleared
-               $('.create-image-hint').show();
-               $('.edit-image-hint').hide();               
-          }
     });  
     
     //remove image?
-    $('#create-card-image-clear').oneClick(function(){
-     previewHolder.slideUp();
-     preview.removeAttr('src');   
-     $('.create-image-hint').show();
-     $('.edit-image-hint').hide();      
+    $('#create-image-button-remove').oneClick(function(){
+    	adjustImageArea(false);  
     });
     
     //card creator page!
+    var mcContainer = $('#create-mc-template-output');
     
-    function addMCAnswer(answerText){
-         var container = getClonedTemplate('template-mc-answer-container');
-         if(answerText)
-          container.find('input.mc-answer').val(answerText);
-         //associate label and input dynamically
-         //var id = "mc-answer-" + Math.floor(Math.random()*1000);
-         //container.find('label.mc-answer-label').attr('for',id);
-         //container.find('input.mc-answer').attr('id',id);
-         container.hide();
-         container.insertBefore($('#create-mc-add-choice').parent()); //get around button's wrapper div
-         
-         
-         $('#create-mc-answers').trigger('create');
-         
-         container.slideDown();
-         container.find('.ui-input-clear').oneClick(function(){
-              //there MUST be at least 2 answer choices!
-              var numChoices = $("#create-mc-answers").find('input.mc-answer').length;
-              if(numChoices <= 2) return;
-              
-              //remove input 
-              $(this).parent().parent().slideUp(function(){
-                   $(this).remove();
-                   updateMCAnswers();
-              });    
-                           
-         });
-         container.find('.ui-input-clear').attr('tabindex','-1');
-         container.find('input.mc-answer').focus();
-         
-         (function(){updateMCAnswers();}).delay(100);
-         
+    function addMCAnswer(){
+    	 //we're creating from scratch so pass no data
+    	 
+    	 var addedItem = template('template-create-mc-item', mcContainer, {}, true); //append
+    	 
+    	 addedItem.find('.btn-remove').oneClick(function(){
+    	 	//there MUST be at least 2 answer choices!
+    	 	var numChoices = mcContainer.find('.mc-item').length;
+    	 	if(numChoices <= 2) return;
+    	 	
+    	 	$(this).closest('.mc-item').remove();
+    	 	
+    	 	updateMCAnswers();
+    	 });
+         updateMCAnswers();
+         addedItem.find('.mc-item-input-text').focus();
     }
     
     //call me when you add/remove a mc item
     function updateMCAnswers(){
-         var numChoices = $("#create-mc-answers").find('input.mc-answer').length;
+         var numChoices = mcContainer.find('.mc-item').length;
          //if there are 2 choices, hide the delete buttons, otherwise show them
-         $('#create-mc-answers').find('.ui-input-clear').toggle(numChoices > 2); //shown if >2, hidden otherwise
+         $('.mc-item').find('.btn-remove').parent().toggle(numChoices > 2); //shown if >2, hidden otherwise
     }
     
+    //By default, let's put in a few ans. choices
+    function resetMCAnswers(){
+         //clear existing inputs
+         mcContainer.html('');
+         //add a few inputs
+          var DEFAULT_NUM_CHOICES = 4;
+          for(var i=0; i<DEFAULT_NUM_CHOICES; i++){
+               addMCAnswer();
+          }    
+    }
+    resetMCAnswers();
+    
+    //handle "add choice" click
+    $('#create-mc-button-add').oneClick(function(){
+    	addMCAnswer();
+    });
+    
+    /*
     $('#question-choice-free').oneClick(function(){
          $('#create-section-free').show();
          $('#create-section-mc').hide();      
@@ -457,74 +401,44 @@ prepareCreateCardPage: function(self, usageType, card){
          $('#create-section-free').hide();
          $('#create-section-mc').show(); 
     });  
+    */
         
-    function resetMCAnswers(){
-         //clear existing inputs
-         $('#create-card').find('.mc-answer-container').remove();
-         //add a few inputs
-         if(editing){
-              //load current choices
-              card.getMCAnswers().forEach(function(choice){
-                   addMCAnswer(choice);
-              });
-              //click right answer
-              $('#create-mc-answers').find('input.mc-answer-radio').eq(card.answer.right).click().click(); //not sure why 2 clicks are needed; if you only do 1 it won't change
-         }
-         else{
-              var DEFAULT_NUM_CHOICES = 4;
-              for(var i=0; i<DEFAULT_NUM_CHOICES; i++){
-                   addMCAnswer();
-              }    
-         }     
-    }    
-     //resetMCAnswers();
-     
 
+    //resetMCAnswers();
+     
     
-    //add new choice button
-    $('#create-mc-add-choice').oneClick(function(){
-         addMCAnswer();
-     });
-    
-    //'click' whatever's currently open so that the listeners fire
-    $('#question-choice-navbar').find('.ui-btn-active').click();
-    
-    if(editing){
-         if(card.isMultipleChoice()) $('.multiple-choice-tab').click();
-         else $('.free-response-tab').click();
-    }
-    
-    //create card button in the card creator page (where the cards are ACTUALLY created)
-    $('.create-card-button').oneClick(function(e){
+    //the ACTUAL creation button
+    $('#create-button-add').oneClick(function(e){
          //what type of question is it? based on that, choose question and answer vars accordingly
          var question = questionField.val();
          var answer;
          var rightAnswer; //string of text of right answer
          
-         if(!$('#create-section-free').is(':hidden')){
+         if($('#create-nav-tab-fr').is('.active')){
               //free-response is open
               answer = answerField.val();
          }
-         else if(!$('#create-section-mc').is(':hidden')){
+         else{
               //multiple-choice is open
               
               //check answer choices
-              var rawEntries = $('#create-mc-answers').find('.mc-answer').map(function(){ return $(this).val(); }); //jQuery; has value of every input, even empty ones
+              var rawEntries = mcContainer.find('.mc-item-input-text').map(function(){ return $(this).val(); }); //jQuery; has value of every input, even empty ones
               rawEntries = rawEntries.toArray().compact(true).unique(); //convert to normal js array and get rid of empty inputs which show up as ""
               //there MUST be >=2 OK entries here
               if(rawEntries.length >= 2){
                    answer = { choices: rawEntries };
               
-                   //check what the right answer is
-                   var rightAnswer = $('#create-mc-answers').find('.mc-answer-radio:checked')
-                                        .closest(".mc-answer-container").find('.mc-answer').val(); //text of input next to the check button; i.e. text of right answer
-                   if(rightAnswer){
-                        //which index is this?
-                        var index = answer.choices.indexOf(rightAnswer);
-                        if(index != -1) answer.right = index;
-                        else answer = false;
+                   //check what the right answer index is
+                   var index = null;
+                   $('.mc-item-input-correct').each(function(i){
+                   	if($(this).is(':checked')) index = i;
+                   });
+                   if(index !== null){
+                        //we got an index!
+                        answer.right = index;
                    }                   
                    else{
+                   		//didn't check anything!
                         answer = false;
                    }
               }
@@ -542,14 +456,9 @@ prepareCreateCardPage: function(self, usageType, card){
              if(answer.hasOwnProperty('choices')) answer.choices = cleanInput(answer.choices); //MC
              else answer = cleanInput(answer); //free resp
              
-             if(editing){
-                  card.setQuestion(question);
-                  card.setAnswer(answer);
-             }
-             else{
-                  card = new Card(question, answer);
-                  self.addCard(card);
-             }
+
+              card = new Card(question, answer);
+              self.addCard(card);
              self.save();
             
          
@@ -568,8 +477,7 @@ prepareCreateCardPage: function(self, usageType, card){
             questionField.val('');
             answerField.val('');
             imageField.val('');
-            previewHolder.slideUp();  
-            preview.removeAttr('src');
+            adjustImageArea(false);
             
             if(card.isMultipleChoice())
                resetMCAnswers();
@@ -605,105 +513,119 @@ updateManager: function(self){
     //$.mobile.showPageLoadingMsg();
     
     //empty card manager and refill
-    var list = $('#card-manager-list');
+    var list = $('#manage-card-list');
     list.empty();
     
-    //now before we add anything, disable searching until we're done
-    var searchBar = $('#card-manager').find('.ui-input-text'); //the text field
-    searchBar.attr('disabled','disabled');
-    var originalSearchBarText = searchBar.attr('placeholder'); //restore later
-    searchBar.attr('placeholder','Please wait...'); //TODO maybe remove this
-    
-    /*
-     * We're being super cheap here:
-     * First put in a dummy li and enhance it, and copy the enhanced HTML. That's what each LI will look like.
-     * Then break the card list into chunks.
-     * Add each card in a chunk. Use the enhanced LI template we got earlier.
-     * Take a short break so it doesn't freeze up.
-     * Continue with another chunk.
+    /**
+     * Loads the given Card[] into the card list. 
+     * @param {Card[]}	cards	all cards to load.
+     * @param {String}	highlightText	[optional] if given, all instances of that text in the card are highlighted. Good for filtering.
      */
+    function loadCards(cards, highlightText){
+    	template('template-manage-cards', list, {cards: cards});
+    	
+    	//highlight any instances of given text
+    	if(highlightText){
+	    	//q and a are in <p>'s; replace any instances of text with bolded version
+	    	list.find('p').each(function(){
+	    		var html = $(this).html();
+	    		var matches = html.match(new RegExp(highlightText, "ig")); //ignore case; global search
+	    		if(matches){
+	    			//We need to bold every matching text but not re-bold something we already looked at... therefore, we need to break stuff up and do a recursive method to bold each successive piece
+	    			function emphasize(text){
+	    				/*
+	    				 * GAME PLAN:
+	    				 * 1. Find things in text that match one thing we found
+	    				 * 2. Break the string around that bit
+	    				 * 3. Format that bit, then call emphasize() on last bit
+	    				 */
+	    				var indices = matches.map(function(match){
+	    					return text.indexOf(match);
+	    				}); //e.g. [-1,1,2] if we can't find the first match but CAN the other 2
+	    				if(indices.max() == -1){
+	    					//we can't find anything! no more matches, return this
+	    					return text;
+	    				}
+	    				else{
+	    					//find closest non -1 thing
+	    					var closestIndex = indices.remove(-1).min();
+	    					var matchLength = matches[0].length; //they're all same length so we'll abuse that
+	    					var leftBit = text.substring(0, closestIndex); //before the match
+	    					var centerBit = text.substring(closestIndex, closestIndex + matchLength); //the match
+	    					var rightBit = text.substring(closestIndex + matchLength); //after the match
+	    					
+	    					return leftBit + "<strong>" + centerBit + "</strong>" + emphasize(rightBit);
+	    				}
+	    			}
+	    			
+	    			html = emphasize(html);
+	    			
+		    		$(this).html(html);
+	    		}
+	    	});
+    	}
+    }
     
-    //add dummy li to see what it's like when enhanced
-    var template = getClonedTemplate('template-card');
-    list.append(template);
-    list.listview('refresh');
-    var liFixedHTML = list.html(); //this is how jqm enhances it
-    list.empty();
     
-    var chunkList = self.cards.inGroupsOf(CHUNK_SIZE); //breaks into a list of card chunks
-    var chunkNum = 0;
-    chunkList.forEach((function(chunk){
-        //chunk contains a bunch of cards; add them all on
-        chunk = chunk.compact(); //remove nulls at end
-        chunk.forEach(function(card){
-            //add in one card
-            var li = $(liFixedHTML); 
-            card.fillLI(li);
-            
-            //handle clicks
-            li.find('.card-manager-edit-button').oneBind('click.edit', function(){
-                 self.prepareCreateCardPage(CARD_EDIT, card);
-            });
-            //<TODO>: make this more efficient - attach handler to list with scope, not to each individual button 
-                    
-            list.append(li);                
-        });
-        
-        if(chunkNum == 0){
-             //if this is the FIRST chunk, prettify the listview now so that user won't see rounded corners (they'll see the first bit prettified; the rest will be unprettified but they won't see that immediately)
-            list.listview('refresh'); 
-        }
-        
-
-        chunkNum++;
-        //list.listview('refresh');  //this slows it down a bit by re-prettifying each and every li
-    }).lazy(BREAK_TIME)); //after each chunk, pause for a bit
-    
-    //lazy will make it take a bit of time; run full refresh once all are done
-    var delay = chunkList.length * (BREAK_TIME + 100); //100: provide a bit of buffer for function to run
-    (function(){ 
-         //anything to run once we're all done
-         //re-enable search bar
-         searchBar.removeAttr('disabled');
-         searchBar.attr('placeholder',originalSearchBarText);         
-         
-         list.listview('refresh');  //remove rounded edges and combine into list a bit later (else it'll lag or just not happen)
-    }).delay(delay);
+    //template it up
+    //by default, use all cards
+    loadCards(self.cards);
+       
+    //handle clicks
+    //$('#manage-button-filter').oneClick(function(){
+    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better?
+    $('#manage-input-filter').oneBind('change keyup', function(){
+    	var filterText = $('#manage-input-filter').val();
+    	if(filterText){
+    		var filterLower = filterText.toLowerCase();
+    		
+    		var cards = self.cards.filter(function(card){
+    			//q or a must contain filter text
+    			return card.getQuestionText().toLowerCase().indexOf(filterLower) > -1 
+    			    || card.getAnswerText().toLowerCase().indexOf(filterLower) > -1;
+    			//TODO search other answer choices too
+    		});
+    		loadCards(cards, filterText);
+    	}
+    	else{
+    		loadCards(self.cards);
+    	}
+    });
+    $('#manage-button-filter-clear').oneClick(function(){
+    	$('#manage-input-filter').val('').trigger('change').trigger('keyup').focus();
+    });
 },
 
 loadCardChart: function(self){
     if(self.cards.isEmpty()){
-        //no cards, draw nothing$
-        $('#project-card-chart').empty()
+        //no cards, draw nothing
+        $('#deck-home-card-chart').empty();
         //$('#project-card-chart').css({ 'height': '25px' }); //otherwise there would be a lot of empty space since the charts force it to be 300px //PROBLEM: after this, the charts stay 25px so it looks weird
-        $('#project-card-chart').html('This project has no cards. Make some!');
+        $('#deck-home-card-chart').html('<p class="lead text-info">This deck has no cards. Make some!</p>');
         return;
     }
     
-    $('#project-card-chart').empty();
+    $('#deck-home-card-chart').empty();
     
-    //map out how many cards have which rank
+    //we want an array of data in the format [ [numStars,numCards], ... ]
+    var starAmounts = self.cards.map(function(c){ return c.getStars(); }); //[1,1,2,2,3,4,5]
     var data = [];
-    Object.each(Rank, function(key, value){
-        //key is the rank name - like Rank.A, Rank.B, etc.
-        //value is the actual object
-        //count how much of our cards are that   
-        var numCards = self.cards.count(function(card){
-            return card.rank == value;    
-        });     
-        
-        //add on to data - the rank's name and the # of cards
-        data.push([ 'Rank ' + value.name, numCards ]);
-    });
+    for(var s=MIN_STARS; s<=MAX_STARS; s++){
+    	//for each amount of stars, count how many we have of that
+    	data.push([
+    		s + ' Stars',
+    		starAmounts.count(s)
+    	]);
+    }
     
     //pluralize the title word Flashcard if necessary
     var titleWord = 'Flashcard';
     titleWord += self.cards.length != 1 ? 's' : '';
     
     try{
-        $.jqplot('project-card-chart', [data], {
+        $.jqplot('deck-home-card-chart', [data], {
             title: self.cards.length + ' ' + titleWord, //can change
-            seriesColors: Object.values(Rank).map(function(rank){ return rank.color; }), //the ranks' colors, in order
+            seriesColors: STAR_COLORS,
             seriesDefaults: {
                 renderer: $.jqplot.PieRenderer,
                 rendererOptions: {
@@ -720,7 +642,8 @@ loadCardChart: function(self){
             },
             legend: {
                 show: true, 
-                location: 'e'
+                location: 'e',
+                placement: 'outsideGrid'
             }    
         });
     }
@@ -731,10 +654,114 @@ loadCardChart: function(self){
 },
 
 /**
- * Called when the Print Setup button is pushed.
+ * Batch creates many cards. Call this on click of the proper button. 
  */
-setupPrint: function(self){
-     self.print();     
+batchCreate: function(self){
+    //grab delimiter - from select
+    var delimiter = $('#batch-input-style').val();
+    
+    //multiple choice. TODO add selects for this
+    var mcChoiceDelim = "|";
+    var mcCorrectMarker = "*";
+    
+    //grab raw text containing all the cards
+    var rawText = $('#batch-textarea').val(); //contains "Q-A \n Q-A \n Q-A ..."
+    //Tara's Word problems; replace any long MS Word dashes (–) with normal ones (-) (side by side – -)
+    rawText = rawText.replaceAll("–","-");
+    
+    //break into individual cards
+    var rawCards = rawText.split('\n'); //now ["Q-A", "Q-A", ...]
+    var malformedCards = []; //raw strings that don't work will be stored in this
+    rawCards.each(function(rawCard){
+         //TODO put this in the Card class
+        //Q and A are separated by some delimiter; what they told us should be delimiter
+        var split = rawCard.splitOnce(delimiter); //[Q, A]
+        if(split.length < 2){
+            //malformed; skip this
+            //store it in the malformed cards and leave it in the text box when we're done
+            malformedCards.push(rawCard);
+            //<TODO>: if all or most of the cards are malformed, assume the delimiter's wrong and intelligently guess which one is the right one
+            return;    
+        }
+        else{
+            //properly formed
+            //trim the question and answer and assign to a card
+            var question = cleanInput(split[0].trim());
+            var answer = cleanInput(split[1].trim());
+
+            //see if it's multiple choice
+            if(answer.has(mcChoiceDelim)){
+                 //it's MC
+                 var choices = answer.split(mcChoiceDelim).compact(true); //[choice1,choice2,*choice3,choice4]
+                 //ensure it has ONLY ONE correct marker leading off the string
+                 var choicesBeginningWithMarker = choices.count(function(choice){ 
+                      return choice.startsWith(mcCorrectMarker);
+                 });
+                 if(choicesBeginningWithMarker == 1){
+                      //good!
+                      //find where the right answer was
+                      var rightIndex = choices.findIndex(function(choice){ return choice.startsWith(mcCorrectMarker)});
+                      //remove marker from start of that choice
+                      choices[rightIndex] = choices[rightIndex].substring(mcCorrectMarker.length); //chop off first few chars
+                      answer = { choices: choices, right: rightIndex };
+                 }
+                 else{
+                      //bad!
+                      //TODO have it tell you WHY a card was malformed/rejected ("too many/too few cards starting with *" etc)
+                      malformedCards.push(rawCard);
+                      return;
+                 }
+            }
+            var card = new Card(question, answer);
+            //console.log(card);
+            self.addCard(card);
+        }            
+    });
+    
+    //cleanup 
+    self.save();
+    //empty the text area and put in any malformed ones - so they can fix it and re-try
+    var textarea = $('#batch-textarea');
+    
+    //was there malformed stuff?
+    if(malformedCards.length > 0){
+         var malformedString = malformedCards.join("\n");
+         textarea.val(malformedString);//.css('height',0).change();
+         textarea.focus();   
+         
+         e.preventDefault();
+         
+         toast("Sorry &ndash; some of your cards weren't formatted right; they're still in the text box! Check the Mass Creator Help.", { error: true });
+    }
+    else{
+         //all ok
+         //textarea.val('').css('height',0).change();
+         textarea.val('');
+    }
+    
+
+ /*(function show(){
+      textarea.change(); //in case it got stuck @ 0 height... that tends to happen
+ }).delay(200); //wait for a few pending things to finish
+    */
+    //TODO: prevent the button from going back to main immediately; only go there programmatically if all cards are well-formed	
+},
+
+/*
+ * Renders cards in the print output page. The user hits print after that.
+ */
+preparePrintOutput: function(self){
+	
+	var cards = self.cards; //TODO narrow it down based on which ones they chose
+	var options = {
+		printImages: $('#print-input-images').is(':checked')
+	};
+	template('template-print-table',$('#print-output-table-area'),{cards: cards, options: options});
+	
+	//handle clicks
+	$('#print-output-button-print').oneClick(function(){
+		window.print();
+	});
 },
 
 print: function(self){
@@ -791,8 +818,8 @@ save: function(self){
 getCompressed: function(self){
         return compress(self, [
             'name',
-            'id',
             'description',
+            'id',
             'group',
             { cards: function(compressedProject, rawCards){
                 //rawCards = raw cards within project - array

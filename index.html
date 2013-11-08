@@ -1,1213 +1,1155 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- Go Phillies! -->
+    <head>
+        <meta charset="utf-8">
 
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
+        <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+        More info: h5bp.com/i/378 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-       More info: h5bp.com/i/378 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cabra Flashcards for Mobile - the powerful studying tool</title>
+        <meta name="description" content="Cabra is an award-winning flashcard app for students. Study for free on your phone, tablet, or computer!">
 
-  <title>Cabra Flashcards for Mobile - the powerful studying tool</title>
-  <meta name="description" content="Cabra is an award-winning flashcard app for students. Study for free on your phone, tablet, or computer!">
+        <!-- Mobile viewport optimized: h5bp.com/viewport -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Mobile viewport optimized: h5bp.com/viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1"> 
-  
-  <!-- stupid google forcing me to put this in -->
-  <meta name="google-site-verification" content="s_XTz4hGrhkZXXn0al1uR7HDDcx2_B2jrbTxdfF-nqw" />
-  
-  <!-- Primary language - so that Chrome etc will auto-translate for foreigners -->
-  <meta http-equiv="content-language" content="en" />
-  
-  <!-- Google Translate's Website customization -->
-<meta name="google-translate-customization" content="c9507c64da0e9619-0eb0b8b57e066734-gd4f6ec47e9b3ab46-17" />
+        <!-- stupid google forcing me to put this in -->
+        <meta name="google-site-verification" content="s_XTz4hGrhkZXXn0al1uR7HDDcx2_B2jrbTxdfF-nqw" />
 
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+        <!-- Primary language - so that Chrome etc will auto-translate for foreigners -->
+        <meta http-equiv="content-language" content="en" />
 
-  <link rel="stylesheet" href="css/jquery.mobile-1.3.2.min.css">
-  <link rel="stylesheet" href="css/chevre.css">
-  <link rel="stylesheet" href="css/original/jqm-icon-pack-2.0-original.css">
-  <!--<link rel="stylesheet" href="css/font-awesome/jqm-icon-pack-fa.css">-->
-  <!--<link rel="stylesheet" href="css/font-awesome/jqm-icon-pack-2.1.1-fa.css">-->
-  <link rel="stylesheet" href="js/libs/jqplot/jquery.jqplot.min.css">
-  <link rel="stylesheet" href="css/open-sans/stylesheet.css">
-  <!--<link rel="stylesheet" type="text/css" href="css/mathquill/mathquill.css">-->
-  <link rel="stylesheet" id="theme-stylesheet" href="css/themes/blue.css">
-  <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>--> <!-- this gives bad open sans -->
-  
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  
-  <!-- apple touch icons -->
-  <link rel="apple-touch-icon"  href="apple-touch-icon-114x114-precomposed.png">
-  <meta name="apple-mobile-web-app-capable" content="yes"> <!-- remove url bar on ios -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  
-  
-  <link rel="apple-touch-startup-image" href="img/splash.png">
-  
+        <!-- Google Translate's Website customization -->
+        <meta name="google-translate-customization" content="c9507c64da0e9619-0eb0b8b57e066734-gd4f6ec47e9b3ab46-17" />
 
-  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
-</head>
-<body>
-  
-  <div role="main">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
-<div id="home" data-role="page" class="ui-responsive-panel">
-    
-    <div data-role="header" data-position="fixed" data-theme="b">
-        <h1>Cabra</h1>
-        <a href="#options-panel" data-icon="gear">Options</a>
-        <a href="#menu-panel" data-icon="grid">Menu</a>
-    </div>
-    
-    <div data-role="content">
-        <ul data-role="listview" id="project-list" data-split-icon="gear" data-divider-theme="b">
-        </ul>
-    </div>
-    
-    <div data-role="footer" data-position="fixed" data-theme="c">   
-        
-        <div data-role="navbar" data-iconpos="top">
-            <ul>
-            <li><a href="#create-project-menu" data-icon="plus" data-rel="popup" data-transition="slideup">Add Project</a></li>
-            <!--<li><a href="#importer" id="quizlet-import-button" data-icon="arrow-d">Import</a></li>-->
-            <li><a href="#project-organizer" data-icon="grid">Organize</a></li>
-            <li><a href="#sync-home" data-icon="refresh">Sync</a></li>
-            <!--<li><a href="#feedback" data-icon="chat" data-rel="dialog">Feedback</a></li>  -->
-            </ul>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <!--<link rel="stylesheet" href="css/bootstrap-cerulean.min.css">-->
+        <link rel="stylesheet" href="css/bootstrap-2-theme.min.css">
+        <link rel="stylesheet" href="css/chevre-base.css">
+        <link rel="stylesheet" href="js/libs/jqplot/jquery.jqplot.min.css">
+        <link rel="stylesheet" href="css/fonts/quicksand/stylesheet.css">
+        <link rel="stylesheet" href="css/fonts/lobster/stylesheet.css">
+        <link rel="stylesheet" href="css/fonts/lobster-two/stylesheet.css">
+
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+        <!-- apple touch icons -->
+        <link rel="apple-touch-icon"  href="apple-touch-icon-114x114-precomposed.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <!-- remove url bar on ios -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <link rel="apple-touch-startup-image" href="img/splash.png">
+
+        <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+    </head>	
+
+    <body>
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+			</div>
+            <a class="navbar-brand" href="#">Cabra</a>
+            <div class="navbar-collapse collapse navbar-left">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#" data-href="_back"> <span class="glyphicon glyphicon-chevron-left"></span></a>
+                    </li>
+                    <li>
+                        <a href="#" data-href="_home"> <span class="glyphicon glyphicon-home"></span></a>
+                    </li>
+                    <li>
+                        <a href="#" data-href="_forward"> <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </li>
+                    <li class="hidden-md hidden-sm hidden-xs" id="breadcrumbs">BREADS HERE</li>
+                </ul>
+                <div style="display: none;" id="triggers">
+                    <a href="#home" data-toggle="tab" id="trigger-home"></a>
+                </div>
+            </div>
+            <div class="navbar-collapse collapse">
+            	<ul class="nav navbar-nav navbar-right">
+			      <li class="dropdown">
+			        <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+			        	<span class="hidden-xs">
+			        		Projects <b class="caret"></b>
+			        	</span>
+			        	<span class="visible-xs">
+			        		<b class="caret"></b>
+			        	</span>
+			        </a>-->
+			        <ul class="dropdown-menu" role="menu">
+			          <li><a href="#" data-href="deck-home">P1</a></li>
+			          <li><a href="#" data-href="deck-home">P1</a></li>
+			        </ul>
+			      </li>
+            	</ul>
+            </div>
         </div>
-    </div>
-    
-    <div data-role="popup" id="create-project-menu" data-theme="c">
-        <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
-        <ul data-role="listview" data-inset="true" data-theme="c">
-            <li data-role="divider" data-theme="a">Choose a project source:</li>
-            <li><a href="#project-add" data-rel="dialog">Create a project from scratch</a></li>
-            <li><a href="#importer" id="quizlet-import-button">Import a project</a></li>
-        </ul>
-        <!--<div data-role="controlgroup">
-            <button>32</button>
-            <button>12</button>
-        </div>-->
-    </div>
-    
-    
-    <div id="menu-panel" data-role="panel" data-position="right" data-display="push" data-theme="b"> 
-        <ul data-role="listview"><!-- TODO make this into a controlgroup of buttons not a listview... but fix the icons first -->
-            <!-- TODO put close button up top here... make it theme b and have a delete icon
-                <li><a href="#home" data-icon="delete" data-rel="close" data-theme="b">Close</a></li> -->
-            <li><a href="#about" data-icon="info" data-rel="dialog" >
-                About Cabra</a></li>
-            <li><a href="#feedback" data-icon="chat" data-rel="dialog" >
-                Feedback</a></li>                
-            <li><a href="#contact" data-icon="email" data-rel="dialog" >
-                Contact</a></li>
-            <li><a href="#thanks" data-icon="heart" data-rel="dialog" >
-                Thanks</a></li>
-            <li><a href="#download" data-icon="download" data-rel="dialog" >
-                Get the App</a></li>
-        </ul>
-        
-        <br />
-        
-        <a href="#home" data-role="button" data-rel="close" data-theme="c" data-icon="delete">Close</a>
-    </div>  
-    
-    <div id="options-panel" data-role="panel" data-position="left" data-display="push" data-theme="b">
-        <div id="options-collapsible-set" data-role="collapsible-set" data-inset="false" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
-            <div data-role="collapsible" data-content-theme="c">
-                <h3>Studying</h3>
-                <div>
-                    <label for="options-max-cards">Max. cards per studying session</label>
-                    <input type="range" id="options-max-cards" data-highlight="true" value="25" min="10" max="100" />
+
+        <div class="tab-content">
+
+            <section id="home" class="tab-pane active" data-name="Home" data-description="" data-icon="home">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <div id="project-list"></div>
+
+                        <div class="btn-group">
+                            <a href="#dialog-deck-create" data-toggle="modal" class="btn btn-primary btn-lg" type="button">
+                                <span class="glyphicon glyphicon-plus"></span> Create deck
+                            </a>
+                            <a href="#" data-href="deck-import" class="btn btn-primary btn-lg" type="button">
+                                <span class="glyphicon glyphicon-import"></span> Import deck
+                            </a>                            
+                            <!--<button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-plus"></span> Add deck <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#deck-add" data-toggle="tab">Create from scratch</a>
+                                </li>
+                                <li>
+                                    <a href="#deck-import" data-toggle="tab">Import</a>
+                                </li>
+                            </ul>-->
+                        </div>
+                        
+                        <br><br>
+
+                    </div>
+                    <div class="col-lg-3 well">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li>
+                                <a href="#" data-href="organize" data-toggle="tab"> <span class="glyphicon glyphicon-th"></span> Organize</a>
+                            </li>
+                            <li>
+                                <a href="#" data-href="sync" data-toggle="tab"><span class="glyphicon glyphicon-refresh"></span> Sync</a>
+                            </li>
+                            <!--<li>
+                                <a href="#" data-href="search" data-toggle="tab"><span class="glyphicon glyphicon-search"></span> Search</a>
+                            </li>-->                          
+                            <li>
+                                <a href="#" data-href="options" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> Options</a>
+                            </li>
+                            <li>
+                                <a href="#" data-href="help" data-toggle="tab"><span class="glyphicon glyphicon-question-sign"></span> Help</a>
+                            </li>
+                            <!--<li>
+                                <a href="#" data-href="addons" data-toggle="tab"> <span class="glyphicon glyphicon-gift"></span> Addons</a>
+                            </li>-->
+                        </ul>
+                    </div>
                 </div>
-  
-                <div>
-                    <label for="options-font-size">Flashcard font size</label>
-                    <select name="options-font-size" id="options-font-size" data-native-menu="false">
-                        <option value="SMALL">Small</option>
-                        <option value="MEDIUM">Medium</option>
-                        <option value="LARGE">Large</option>
-                        <option value="XLARGE">Extra large</option>
-                        <option value="XXLARGE">Huge (Projector)</option>
-                    </select>
-                </div> 
+            </section>
+            <section id="deck-home" class="tab-pane" data-name="Deck home" data-description="SAFE AT HOME" data-icon="home">
+                <div class="page-header">
+                    <h2>
+                        <span id="deck-title-holder"></span>
+                     </h2>                                        
+				</div>
+
+				<div class="row">
+					<div class="col-lg-3 col-md-4 col-sm-4  col-xs-12" id="deck-home-card-chart">
+						
+					</div>
+					<div class="col-lg-9 col-md-8 col-sm-8  col-xs-12">
+		                <div class="row" id="project-page-list">
+						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="study"> <span class="glyphicon glyphicon-check"></span> 
+				                            Study </a></h4>
+				                    </div>
+				                    <p class="panel-body hidden-xs hidden-sm">
+				                        Review your flashcards.
+				                    </p>
+				                </div>
+				            </div>
+						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="create"> <span class="glyphicon glyphicon-plus"></span> 
+				                            Create </a></h4>
+				                    </div>
+				                    <p class="panel-body">
+				                        Make a new flashcard.
+				                    </p>
+				                </div>
+				            </div>
+						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="batch"> <span class="glyphicon glyphicon-list"></span> 
+				                            Batch create </a></h4>
+				                    </div>
+				                    <p class="panel-body">
+				                        Make many flashcards at once.
+				                    </p>
+				                </div>
+				            </div>
+						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="manage"> <span class="glyphicon glyphicon-edit"></span> 
+				                            Manager </a></h4>
+				                    </div>
+				                    <p class="panel-body">
+				                        View, edit, and delete flashcards.
+				                    </p>
+				                </div>
+				            </div>
+						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="print"> <span class="glyphicon glyphicon-print"></span> 
+				                            Print </a></h4>
+				                    </div>
+				                    <p class="panel-body">
+				                        Put your flashcards on paper.
+				                    </p>
+				                </div>
+				            </div>				            				            				            		            						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+				                <div class="panel panel-default">
+				                    <div class="panel-heading">
+				                        <h4><a data-href="export"> <span class="glyphicon glyphicon-export"></span> 
+				                            Export </a></h4>
+				                    </div>
+				                    <p class="panel-body">
+				                        Get your flashcards offline.
+				                    </p>
+				                </div>
+				            </div>	
+		                </div>						
+					</div>
+				</div>
+
+            </section>
+            <section id="study" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check">
+	        	<h2>Studying Setup</h2>
+
+                <div class="form-group">
+                    <span class="col-lg-2 label-control">Which cards to study</span>
+                    <span class="col-lg-10">
+                    	<select class="form-control" id="study-input-mode">
+                    		<option value="normal">Cabra chooses (default)</option>
+                    		<option value="cram">All cards in deck</option>
+                    		<option value="perfection" id="study-option-wrong-cards">Cards I didn't know last time</option>
+                    	</select>
+                    </span>
+                </div>	        	        	
+                <div class="form-group">
+                    <span class="col-lg-2 label-control">Response style</span>
+                    <span class="col-lg-10">
+                    	<select class="form-control" id="study-input-style">
+                    		<option value="normal"><strong>Classic</strong> &ndash; show front of card</option>
+                    		<option value="jeopardy"><strong>Jeopardy</strong> &ndash; show back of card</option>
+                    	</select>
+                    </span>
+                </div>	        	
+	        	
+	        	<a data-href="study-main" class="btn btn-primary" type="button">Start</a>       	
+            </section>
+            <section id="study-main" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check" data-childof="study">
+                <div class="row">
+                	<div id="study-card-area"></div>
+		            <div class="col-lg-3 well" id="study-sidebar">
+		            	<div class="row">
+		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+		            			<button class="btn btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>
+		            		</div>
+		            		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
+		            			<span class="btn-card-current"></span>
+								<div id="study-sidebar-stars">
+									<span class="glyphicon glyphicon-star"></span>
+									<span class="glyphicon glyphicon-star"></span>
+									<span class="glyphicon glyphicon-star"></span>
+									<span class="glyphicon glyphicon-star"></span>
+									<span class="glyphicon glyphicon-star"></span>
+								</div>		            			
+		            		</div>
+		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+		            			<button class="btn btn-card-next"><span class="glyphicon glyphicon-chevron-right"></span></button>
+		            		</div>		            				            		
+		            	</div>
+		            	<!--
+						<ul class="pagination">
+						  <li class="btn-card-prev"><a href="#">&laquo;</a></li>
+						  <li class="btn-card-current"><a href="#"></a></li>
+						  <li class="btn-card-next"><a href="#">&raquo;</a></li>
+						</ul>
+						
+						<div id="study-sidebar-stars">
+							<span class="glyphicon glyphicon-star"></span>
+							<span class="glyphicon glyphicon-star"></span>
+							<span class="glyphicon glyphicon-star"></span>
+							<span class="glyphicon glyphicon-star"></span>
+							<span class="glyphicon glyphicon-star"></span>
+						</div>
+						-->
+		            </div>
+		    	</div> 
+            </section>
+            <section id="study-end" class="tab-pane" data-name="Studying Results" data-description="" data-icon="" data-childof="study">
+            	<h2>Finished Studying</h2>
+            	
+            	<div id="study-result-chart"></div>
+ 
+            	<a href="#" data-href="deck-home" class="btn btn-primary">
+            		<span class="glyphicon glyphicon-ok"></span> Done</a>               	
+            	<a href="#" data-href="study" class="btn btn-default">
+            		<span class="glyphicon glyphicon-refresh"></span> Study again</a>
+         		
+            </section>
+            <section class="tab-pane fade" id="create" data-name="Create" data-description="Make a new flashcard" data-icon="plus">
+                <ul id="create-tabs-type" class="nav nav-pills nav-justified" style="margin-bottom: 20px;">
+                    <li class="active" id="create-nav-tab-fr">
+                        <a href="#create-tab-fr" data-toggle="tab">Free Response</a>
+                    </li>
+                    <li id="create-nav-tab-mc">
+                        <a href="#create-tab-mc" data-toggle="tab">Multiple Choice</a>
+                    </li>
+                </ul>
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <span class="col-lg-2 label-control">Question</span>
+                        <span class="col-lg-10"><textarea class="form-control" id="create-input-question"></textarea> </span>
+                    </div>
+                    <div class="form-group">
+                        <div class="tab-content">
+                            <div class="tab-pane nopadding active" id="create-tab-fr">
+                                <span class="col-lg-2 label-control">Answer</span>
+                                <span class="col-lg-10"><textarea class="form-control" id="create-input-answer"></textarea> </span>
+                            </div>
+                            <div class="tab-pane nopadding" id="create-tab-mc">
+                                <span class="col-lg-2 label-control">Answer choices</span>
+                                <span class="col-lg-10">
+                                    <div id="create-input-answer" class="well">
+                                    	<div id="create-mc-template-output"></div>
+
+                                        <button class="btn btn-default btn-block" id="create-mc-button-add" type="button">
+                                            <span class="glyphicon glyphicon-plus"></span> Add choice
+                                        </button>
+
+                                        <br>
+                                    </div> </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+				  <div class="panel panel-default">
+				    <div class="panel-heading">
+				      <h4 class="panel-title">
+				        <a data-toggle="collapse" href="#create-collapsible-image">
+				          <span class="glyphicon glyphicon-picture"></span> Add an image
+				        </a>
+				      </h4>
+				    </div>
+				    <div id="create-collapsible-image" class="panel-collapse collapse">
+				      <div class="panel-body">
+				      	<div id="create-image-if-none">
+				      		<p>Choose an image to upload (PNG, JPG, and GIF supported).</p>
+				      		
+						    <!--<label for="exampleInputFile">File input</label>-->
+						    <!-- TODO class="form-control" looks a bit weird but has that nice border... what to do?-->
+						    <input type="file" id="create-image-input-file" accept="image/jpeg,image/png,image/gif,image/bmp">
+				      	</div>
+				      	<div id="create-image-if-present">
+				      		<p>Your image is below. To insert a different image, remove this one first.</p>
+				      		<div id="create-image-preview-holder">
+					      		<img id="create-image-preview" src="" class="img-responsive img-preview img-thumbnail">
+					      		<button id="create-image-button-remove" class="btn btn-danger" type="button">
+					      			<span class="glyphicon glyphicon-remove"></span> Remove image
+					      		</button>				      			
+				      		</div>
+
+				      	</div>
+				      </div>
+				    </div>
+				  </div>
+
+                    <button id="create-button-add" class="btn btn-primary btn-block" type="button">
+                        <span class="glyphicon glyphicon-plus"></span> Add flashcard
+                    </button>
+                </form>
+            </section>
+            <section class="tab-pane" id="batch" data-name="Batch create" data-description="Create many flashcards at once" data-icon="list">
+            	
+           		<div class="row">
+           			<div class="col-lg-9 col-md-9">
+		                <p>Use this tool to <strong>create many flashcards at once</strong>. On each line, enter a question and answer separated by some character (this is the <em>entry style</em>). Each line will be converted into a flashcard.</p>
+		                <p>	To make a <strong>multiple-choice flashcard</strong>, separate each answer choice with "|" and put a "*" in front of the right choice. You can have as many choices as you want, but only one can be right.</p>		                
+		                <div class="form-group">
+		                    <span class="col-lg-2 control-label">Entry style</span>
+		                    <span class="col-lg-10">
+		                        <select class="form-control" id="batch-input-style">
+		                            <option value=":">Question: Answer</option>
+		                            <option value="/">Question / Answer</option>
+		                            <option value="-">Question - Answer</option>
+		                            <option value=",">Question, Answer</option>
+		                        </select>
+		                   </span>
+		                </div>
+						
+						<br>
+		
+		                <textarea class="form-control" id="batch-textarea" placeholder="Enter text here"></textarea>                
+		
+						<br>
+		
+		                <button class="btn btn-primary btn-block" id="batch-button-create" type="button">
+		                    <span class="glyphicon glyphicon-plus"></span>
+		                    Add flashcards
+		                </button>   
+		                
+		                <br>        				
+           			</div>
+           			<div class="col-lg-3 col-md-3 well">
+           				<h4>Free-response examples</h4>
+           				<ul>
+           					<li>2+2: 4</li>
+           					<li>Color of the sky - Blue</li>
+           				</ul>
+           				
+           				<h4>Multiple-choice examples</h4>
+
+           				<ul>
+           					<li>3+3 / 4|5|*6|7</li>
+           					<li>Color of the sun - *Yellow|Pink|Green</li>
+           				</ul>
+           			</div>	
+           		</div> 	
+            	
+
+            </section>
+            <section class="tab-pane" id="manage" data-name="Manager" data-description="View, edit, and delete flashcards" data-icon="edit">
+
+                <div class="input-group">
+                	<span class="input-group-addon">
+                        <span class="glyphicon glyphicon-filter"></span>
+                        Filter
+                	</span>
+                    <input type="text" id="manage-input-filter" class="form-control">
+                    <!--<span class="input-group-btn">
+                        <button class="btn btn-default" id="manage-button-filter" type="button">
+                            <span class="glyphicon glyphicon-filter"></span>
+                            Filter
+                        </button> </span>-->
+					<span class="input-group-btn">
+                        <button class="btn btn-default" id="manage-button-filter-clear" type="button">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button> </span>                        
+                </div>
+
+                <br>
+
+                <div class="list-group" id="manage-card-list">
+                </div>
+            </section>
+            <section class="tab-pane" id="print" data-name="Print" data-description="Put your flashcards on paper" data-icon="print">
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <span class="col-lg-2 control-label">Card grades</span>
+                        <span class="col-lg-10">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-default active" id="print-input-stars-1">
+                                    <input type="checkbox" checked>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                </label>
+                                <label class="btn btn-default active" id="print-input-stars-2">
+                                    <input type="checkbox" checked>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                </label>
+                                <label class="btn btn-default active" id="print-input-stars-3">
+                                    <input type="checkbox" checked>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span> 
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                </label>         
+                                <label class="btn btn-default active" id="print-input-stars-4">
+                                    <input type="checkbox" checked>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span> 
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                </label>        
+                                <label class="btn btn-default active" id="print-input-stars-5">
+                                    <input type="checkbox" checked>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span> 
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </label>                                                                                               
+                            </div> </span>
+                    </div>
+                    <div class="form-group">
+                        <span class="col-lg-2 control-label">Options</span>
+                        <span class="col-lg-10">
+						    <label>
+						      <input type="checkbox" checked id="print-input-images"> Print images
+						    </label>
+                        </span>                    	
+                    </div>
+                </form>
+
+                <a data-href="print-output" class="btn btn-lg btn-block btn-primary" type="button"> <span class="glyphicon glyphicon-print"></span> Print Preview </a>
+            </section>
+            <section id="print-output" class="tab-pane" data-name="Print Output" data-description="" data-icon="" data-childof="print">
+            	<div class="page-header">            		
+            		<h2>
+            			<span class="stylized">
+            				<span class="univ-deck-name stylized"></span>
+            				<small class="stylized">&nbsp;&nbsp; Made with Cabra Flashcards</small>
+            			</span>
+            			&nbsp;&nbsp;
+            			<button class="btn btn-lg btn-primary hidden-print" id="print-output-button-print" type="button">
+            				<span class="glyphicon glyphicon-print"></span> Print
+            			</button>
+            		</h2>
+            	</div>
+            	
+            	<div id="print-output-table-area"></div>
+            </section>
+            <section class="tab-pane" id="export" data-name="Export" data-description="Get your flashcards offline" data-icon="export">
+                <p>You can export these flashcards to your device as a backup or so you can use them with other apps.</p>
+                <p>First you'll need to choose a format. Comma/slash/enter-separated are good for storing your flashcards, while other apps may use XML or JSON.</p>
+                <br>
+                <div class="form-group">
+                    <span class="col-lg-2 control-label">Format</span>
+                    <span class="col-lg-10">
+                        <select class="form-control" id="export-input-format">
+				            <option value="commaSep">Comma-separated (CSV)</option>
+				            <option value="slashSep">Slash-separated</option>
+				            <option value="enterSep">Enter-separated</option>                        	
+				            <option value="xml">XML</option>
+				            <option value="json">JSON</option>
+                        </select> </span>
+                </div>
+                <div class="form-group">
+                    <span class="col-lg-2 control-label">Live preview</span>
+                    <span class="col-lg-10">
+                        <div class="well">
+                        	<span id="export-live-preview"></span>
+                        </div> </span>
+                </div>
+
+                <button class="btn btn-primary btn-block" id="export-button-run">
+                    <span class="glyphicon glyphicon-download-alt"></span> Export
+                </button>
                 
-                <div>
-                    <label for="options-shuffle">Shuffle cards before studying</label>
-                    <select name="options-shuffle" id="options-shuffle" data-role="slider">
-                        <option value="off">Off</option>
-                        <option value="on" selected>On</option>
-                    </select> 
+                <br>
+
+				<div id="export-output" class="well">
+	                <p>
+	                    Your code is below. Copy and save it into [filename].<span id="export-output-extension"></span>.
+	                </p>
+	                <textarea class="form-control" id="export-output-text"></textarea>                                
+               </div>
+
+
+            </section>
+
+            <section id="organize" class="tab-pane" data-name="Organize" data-description="" data-icon="">
+                <div class="row">
+                	<div class="col-lg-8 col-med-8 col-sm-6 col-xs-12">
+                		<ul id="organize-group-list"></ul>
+                	</div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                		<div class="input-group">
+                            <input type="text" id="organize-input-group-name" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" id="organize-button-add">
+                                    <span class="glyphicon glyphicon-plus"></span> Add group
+                                </button> 
+                            </span>
+                    	</div>
+                    	
+                    	<br>
+                    	
+                        <button class="btn btn-block btn-lg btn-success" id="organize-button-save" type="button">
+                        	<span class="glyphicon glyphicon-check"></span> Save
+                        </button>                    	
+                    </div>
                 </div>
-                
-                <div>
-                    <label for="options-swipe">Swipe to skip card</label>
-                    <select name="options-swipe" id="options-swipe" data-role="slider">
-                        <option value="off">Off</option>
-                        <option value="on" selected>On</option>
-                    </select>                     
+            </section>
+            <section class="tab-pane" id="sync">
+                <div class="row">
+                    <div class="col-lg-9 col-md-9 col-sm-8">
+                    	<div id="sync-show-setup">
+	                        <p class="lead">
+	                            Sync's already set up on this device. Your passcode is <strong id="sync-passcode-reminder"></strong>.
+	                        </p>
+	                        <p class="lead">
+	                        	Try syncing with other devices or Cabra's web app at <a href="http://chevre.hathix.com">chevre.hathix.com</a>!
+	                        </p>
+	
+	                        <div class="btn-group">
+	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-upload"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
+	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-download"><span class="glyphicon glyphicon-cloud-download"></span> Download</a>
+	                        </div>
+	                        <br /><br />
+	                        <button class="btn btn-danger" id="sync-button-stop">
+	                            <span class="glyphicon glyphicon-ban-circle"></span> Stop syncing
+	                        </button>
+                       </div>
+                       <div id="sync-show-new">
+	                        <p class="lead">
+	                            You haven't set up sync yet on this device. If you haven't synced before, create a unique, 3- or 4-word passcode and enter it below. If you set up sync on another device, enter your passcode below, and your flashcards will be downloaded onto this device.
+	                        </p>
+	
+	                        <div class="input-group">
+	                            <span class="input-group-addon">Passcode</span>
+	                            <input type="text" id="sync-input-passcode" class="form-control">
+	                            <span class="input-group-btn">
+	                                <button class="btn btn-primary" type="button" id="sync-button-start">
+	                                    <span class="glyphicon glyphicon-ok"></span> Start
+	                                </button> </span>
+	                        </div>     
+	                        
+	                        <br><br>
+	                        
+	                        <div class="panel panel-info">
+							  <div class="panel-heading">
+							    <h3 class="panel-title">Passcode hints</h3>
+							  </div>	                        
+							  <div class="panel-body">
+							  	Think of a memorable, unique passcode that's about 3-4 words long. Favorite book/movie names, pet names, and crazy phrases work. Some examples (don't use these!):
+							  	<ul>
+							  		<li><em>a bug's life</em></li>
+							  		<li><em>baltimore orioles</em></li>
+							  		<li><em>pink birthday sailboats</em></li>
+							  	</ul>
+							  </div>
+	                       	</div>                  	
+                       </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4 well">
+                        <h3>Privacy</h3>
+                        <p>
+                            All your data is stored securely in the cloud. It's totally anonymous - the only identifying information we store is your passcode.
+                        </p>
+                        <p>
+                        	We'll never give your information to someone else unless you approve it.	
+                        </p>
+                    </div>
                 </div>
-            </div>
-            
-            <div data-role="collapsible" data-content-theme="c">
-                <h3>Appearance</h3>
-                <div>
-                    <label for="options-theme">Theme</label>
-                    <select name="options-theme" id="options-theme" data-native-menu="false">
-                        <option value="blue">Blueberry</option>
-                        <option value="green">Apple</option>
-                        <option value="red">Cherry</option>
-                        <!--<option value="purple">Grape</option>-->
-                    </select>
+            </section>
+            <section class="tab-pane fade" id="options">
+                <div class="form-group">
+                    <div class="tab-content">
+                        <span class="col-lg-2 label-control">Max. cards per studying session</span>
+                        <span class="col-lg-10">
+                            <input type="number" class="form-control" value="25" min="5" max="100" step="5">
+                        </span>
+                    </div>
                 </div>
-            </div>
-            
-            <div data-role="collapsible" data-content-theme="c">
-                <h3>Notification</h3>
-                <div>
-                    <label for="options-feedback">Ask for my feedback occasionally</label>
-                    <select name="options-feedback" id="options-feedback" data-role="slider">
-                        <option value="off">Off</option>
-                        <option value="on" selected>On</option>
-                    </select>                     
+            </section>
+            <section class="tab-pane" id="addons">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <h4 class="ist-group-item-heading">Themes</h4>
+                        <p class="list-group-item-text">
+                            Support development and make Cabra look awesome.
+                            <button class="btn btn-success">
+                                <span class="glyphicon glyphicon-shopping-cart"> </span> $1.00
+                            </button>
+                        </p>
+                    </li>
+                    <li class="list-group-item">
+                        <h4 class="ist-group-item-heading">Stats</h4>
+                        <p class="list-group-item-text">
+                            Take an in-depth look at your studying.
+                            <button class="btn btn-success">
+                                <span class="glyphicon glyphicon-gift"> </span> Free
+                            </button>
+                        </p>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="tab-pane" id="deck-add" data-name="Create deck" data-description="" data-icon="plus">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">deck name</span>
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button">
+                            <span class="glyphicon glyphicon-ok"></span> Add
+                        </button> </span>
+                </div>
+            </section>
+            <section class="tab-pane" id="deck-import" data-name="Importer" data-description="" data-icon="import">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="input-import-text">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" id="button-import-send" type="button">
+                            <span class="glyphicon glyphicon-search"></span> Search
+                        </button> </span>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-3 well">
+                        <!--<h4>Import from:</h4>
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="active">
+                                <a href="#import-list-quizlet">Quizlet</a>
+                            </li>
+                        </ul>-->
+                        <h4>Importer help</h4>
+                        <p>Find over 20 million flashcard sets on Quizlet and import them seamlessly. Just enter some keywords in the box and hit Search.</p>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="import-list-quizlet">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        </div>
+        <!-- /container -->
+        
+        <!-- dialogs -->
+		 <div class="modal fade" id="dialog-deck-create" tabindex="-1" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		          <h4 class="modal-title">Create deck</h4>
+		        </div>
+		        <div class="modal-body">
+		        	<label for="input-deck-create-name">Deck name</label>
+		        	<input type="text" class="form-control" id="input-deck-create-name">
+		        </div>
+		        <div class="modal-footer">
+		          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		          <button type="button" class="btn btn-primary btn-submit" data-dismiss="modal">Create</button>
+		        </div>
+		      </div><!-- /.modal-content -->
+		    </div><!-- /.modal-dialog -->
+		  </div><!-- /.modal -->        
+        
+        <!-- templates -->
+        <!-- panel containing info about each project -->
+        <script id="template-project-panel" type="text/x-handlebars-template">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title stylized large-text">{{groupName}}</h3>
+                </div>
+                <div class="list-group">
+                    {{#each decks}}
+                        <a href="#" data-href="deck-home" class="list-group-item project-list-item" id="project-list-item-{{id}}" data-id="{{id}}">
+                            {{name}}
+                            {{#if description}}
+                                <span class="text-muted">{{description}}</span>
+                            {{/if}}
+                            <!--<p class="list-group-item-text pull-right">
+                            	<button class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
+                            </p>-->
+                        </a>
+                    {{/each}}
+                    <!--<a href="#" data-href="deck-home" class="list-group-item">
+                        My cool deck <span class="text-muted">It's beast</span>
+                    </a>-->
                 </div>
             </div>            
-
-            <div data-role="collapsible" data-content-theme="c">
-                <h3>Data</h3>
-                <div>
-                    <a href="#clear-data-warning" data-role="button" data-rel="dialog" data-icon="delete" data-theme="e">Clear my data</a>                   
-                </div>
-            </div>    
-            
-            <!--<div data-role="collapsible" data-content-theme="c">
-                <h3>Translation</h3>
-                <div data-role="fieldcontain">
-                    
-                    <label for="options-translate">Translation</label>
-                    <select name="options-translate" id="options-translate" data-role="slider">
-                        <option value="off" id="translate-off">Off</option>
-                        <option value="on" selected id="translate-on">On</option>
-                    </select> 
-                    <div id="translator">                       
-                        <div id="google_translate_element"></div><script type="text/javascript">
-                        function googleTranslateElementInit() {
-                          new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-                        }
-                        </script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>    
-                    </div> 
-                </div>
-            </div>-->
-        </div>
-            
-        <br />
-        
-        <a href="#home" id="options-finish" data-role="button" data-theme="b" data-icon="check" data-rel="close">Save</a>
-        <a href="#home" data-role="button" data-icon="delete" data-rel="close">Cancel</a>
-    </div>
-</div>
-
-
-<div id="welcome" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h2>Welcome to Cabra!</h2>
-    </div>   
-    
-    <div data-role="content">
-        <div class="center">
-            <img src="img/goat200.png" />
-            <h2 style="margin:0;">Cabra</h2>     
-            <h3 style="margin:0;"><em>Learn anything.</em></h3>
-        </div>   
-        
-        <p>
-            Hi! Welcome to Cabra, the world's most powerful and intuitive studying tool. <strong>Turbocharge your studying and kickstart your education - for <em>free</em>!</strong>
-        </p>
-        
-        <p>Create and study flashcards with Cabra and:</p>
-        <ul>
-            <li>Make the most out of your studying time</li>
-            <li>Boost your grades &amp; improve your memory</li>
-            <li>Study languages, math, science, history - anything</li>
-            <li>Sync your flashcards in the cloud between devices</li>
-            <li>Study everywhere: phones, tablets, and computers.</li>
-        </ul>
-        
-        <p>
-            I hope you enjoy Cabra. Happy studying!
-        </p>
-        
-        <a href="#home" data-role="button" data-icon="lightning" data-theme="b">Let's go!</a>
-        <a href="http://cabra.hathix.com/chevre.php" data-rel="dialog" data-role="button" data-icon="info">Cabra's features</a>
-    </div>
-</div> 
-
-<div id="updated" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h2>Updated!</h2>
-    </div>  
-    
-    <div data-role="content">
-        <div class="center">
-            <img src="img/goat200.png" alt="Cabra's mascot, the goat" class="about-image" />
-            <img src="img/version-mascot.png" alt="This version's mascot" class="about-image" />
-            <h2>Cabra version <span class="about-version"></span> "<span class="about-codename-name"></span>"</h3>
-            <!--<h3><span class="about-date"></span></h3>-->
-        </div>   
-        
-        <p>
-            Congrats! Cabra's automatically been updated to the latest version! What's new and improved:
-        </p>
-        
-        <ul class="about-changes"></ul>
-        
-        <a href="#home" data-role="button" data-icon="lightning" data-theme="b">Let's go!</a>
-        <a href="#about" data-role="button" data-icon="info" data-rel="dialog" >About Cabra</a>
-        
-    </div>
-</div> 
-
-<div id="about" data-role="page">
-    <div data-role="header" data-theme="b">
-        <h3>About Cabra</h3>
-    </div>
-    
-    <div data-role="content">
-        <div class="center">
-            <img src="img/goat200.png" alt="Cabra's mascot, the goat" class="about-image" />
-            <img src="img/version-mascot.png" alt="This version's mascot" class="about-image" />
-            <h3>Chevre <span class="about-version"></span> "<span class="about-codename-name"></span>"
-                <br /><span class="about-date"></span></h3>
-        </div>
-        
-        <p>You're using <a href="http://getcabra.com">Cabra</a> Mobile (a.k.a. <em>Chevre</em>), the powerful and versatile flashcard and studying tool.</p>
-        
-        <p>Cabra is, and always will be, absolutely free and open-source.</p>
-        
-        <p>If you're wondering, <em>Goat</em> in Spanish is <em>Cabra</em>, and in French it's <em>Chevre</em>.</p>
-        <p>The codename, <em class="about-codename-name"></em>, is <span class="about-codename-language"></span> for <em class="about-codename-translation"></em>.</p>
-        
-        <p>Handcrafted with ♥ by Neel Mehta from hathix.com.</p>
-        
-        <a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html" data-role="button" data-icon="page">License (GPL v3)</a>
-        <a href="#updated" data-role="button" data-icon="question">Changes</a>
-    </div>
-    
-    <div data-role="footer" class="ui-bar ui-bar-a">
-        <h2>&copy; Neel Mehta, 2012-13.</h2>
-    </div>
-</div>
-
-<div id="contact" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h3>Contact</h3>
-    </div>
-    <div data-role="content">
-        <p>I'm always eager to hear from you, the user, to improve Cabra.</p>
-        <p>Feel free to email me with questions, comments, suggestions, whatever at <strong>neel (at) hathix.com</strong>.</p>
-        
-        <a href="https://twitter.com/hathix" data-role="button" data-icon="twitter">Twitter</a>
-        <a href="https://facebook.com/hathix" data-role="button" data-icon="facebook">Facebook</a>
-    </div>
-</div>
-
-<div id="thanks" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h3>Thanks</h3>
-    </div>
-    <div data-role="content">
-        <p>Many thanks to the great software and communities that made Cabra Mobile possible. You guys rock!</p>
-        <ul data-role="listview" data-inset="true">
-            <li><a href="http://jquery.com">jQuery</a></li>
-            <li><a href="http://jquerymobile.com">jQuery Mobile</a></li>
-            <li><a href="http://phonegap.com">PhoneGap</a></li>
-            <li><a href="http://sugarjs.com">SugarJS</a></li>
-            <li><a href="http://justintulloss.github.com/cobra/">Cobra</a></li>
-            <li><a href="http://jqplot.com">jqPlot</a></li>
-            <li><a href="http://html5boilerplate.com">HTML5 Boilerplate</a></li>
-            <li><a href="http://aptana.com">Aptana Studio</a></li>
-            <li><a href="http://mozilla.org">Mozilla Firefox</a></li>
-            <li><a href="http://quizlet.com">Quizlet</a></li>
-        </ul>
-    </div>
-</div>
-
-<div id="download" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h3>Download</h3>
-    </div>
-    <div data-role="content">
-        <ul data-role="listview" data-inset="true">
-            <li><a href="https://play.google.com/store/apps/details?id=com.hathix.android.chevre">
-                <img src="img/apps/android.png" class="ui-li-icon" />Android</a></li>
-            <li><a href="#install-ios" data-rel="dialog" >
-                <img src="img/apps/apple.png" class="ui-li-icon" />iPhone/iPad</a></li>                
-            <li><a href="https://marketplace.mozilla.org/app/cabra">
-                <img src="img/apps/firefox.png" class="ui-li-icon" />Firefox</a></li>
-            <li><a href="https://chrome.google.com/webstore/detail/hipdbdkehfdnnhhifipnpkejnijbijam">
-                <img src="img/apps/chrome.png" class="ui-li-icon" />Chrome</a></li>
-            <!--<li><a href=""><img src="img/apps/.png" class="ui-li-icon"> X</a></li>-->
-        </ul>        
-    </div>    
-</div>
-
-<div id="install-ios" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h3>Cabra on iPhones/iPads</h3>
-    </div>
-    <div data-role="content">
-        <p><strong>Cabra is available as a web app on iPhones, iPods, or iPads.</strong> Here's how to get it:</p>
-        <ol>
-            <li>Open up <strong>chevre.hathix.com</strong> in Safari.</li>
-            <li>Tap the middle button (the box with the arrow.)</li>
-            <li>Tap "Add to home screen."</li>
-            <li>Enjoy studying!</li>
-        </ol>
-    </div>
-</div>
-
-<div id="feedback" data-role="page">
-    <div data-role="header">
-        <h2>Got feedback?</h2>
-    </div>
-
-    <div data-role="content">
-        <p id="feedback-why" style="display: none;"><em>I'm asking for your feedback because you've been using Cabra for a while. I'll only ask once or twice a month.</em></p>
-        
-        <p>I'd love your feedback! With this information I can improve Cabra to better suit what you need. 
-            Please report bugs by <a href="#contact" data-rel="dialog">contacting me</a>, not through this form.</p>
-        <p><strong>This is anonymous and completely optional.</strong></p>
-        
-        <form>
-            <fieldset data-role="controlgroup" id="feedback-choices">
-                <legend>
-                    Which of the following do you most want to see?
-                </legend>
-            </fieldset>
-            
-            <label for="feedback-comments">Got any other suggestions, comments, or bug reports?</label>
-            <textarea id="feedback-comments" placeholder="Type here..."></textarea>
-            
-            <label for="feedback=email">(Optional) Your email (only used if I have questions about your comments.)</label>
-            <input type="text" id="feedback-email" placeholder="Type here...">
-                      
-            <label>
-                <input id="feedback-dont-show" type="checkbox">Don't ask me again
-            </label>
-
-        </form>
-        
-        <a href="#home" id="feedback-send" data-role="button" data-icon="check" data-theme="b">Send feedback</a>
-        <a href="#home" id="feedback-cancel" data-role="button" data-icon="delete" data-theme="c">No thanks</a>
-    </div>
-        
-</div>
-
-<div id="project-edit-dialog" data-role="page">
-    <div data-role="header">
-        <h2 id="project-edit-header" data-theme="a">Edit Project</h2>
-    </div>
-
-    <div data-role="content" data-theme="c">
-        <!--
-           
-        <a href="#home" id="project-edit-copy" data-role="button" data-theme="b" data-icon="plus">Copy</a>   
-        -->
-        <a href="#project-rename-dialog" id="project-edit-rename" data-role="button" data-rel="dialog"  data-theme="b" data-icon="edit">Rename</a>
-        <a href="#project-merge-dialog" id="project-edit-merge" data-role="button" data-rel="dialog" data-icon="wrench">Merge</a>
-        <a href="#home" id="project-edit-delete" data-role="button" data-theme="e" data-icon="delete">Delete</a>
-    </div>
-</div>
-
-<div id="project-rename-dialog" data-role="page">
-    <div data-role="header" data-theme="b">
-        <h2 id="project-edit-header">Rename Project</h2>
-    </div>
-    
-    <div data-role="content">
-        <label>
-            Name: <input type="text" name="name" id="project-rename-field" value=""  />
-        </label>
-        
-        <a href="#home" id="rename-project-button" data-role="button" data-theme="b" data-icon="check">Rename</a> 
-    </div>
-</div>
-
-<div id="project-merge-dialog" data-role="page">
-    <div data-role="header" data-theme="b">
-        <h2>Merge Project</h2>
-    </div>
-    
-    <div data-role="content">
-        <p>This tool will merge this project, <em id="merge-project-name"></em>, into another project. This project's cards will be moved to the other project, and this project will be deleted.</p>
-        
-        <label for="merge-project-select">Project to merge into:</label>
-        <select name="merge-project-select" id="merge-project-select" data-native-menu="false"></select>
-        
-        <a href="#home" id="merge-project-button" data-role="button" data-theme="b" data-icon="check">Merge</a> 
-    </div>
-</div>
-
-<div id="project-add" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h2>Create Project</h2>
-    </div>
-
-    <div data-role="content">
-        <label>
-            Name: <input type="text" name="name" id="project-name-field" value=""  />
-        </label>
-        
-        <a href="#home" id="create-project-button" data-role="button" data-theme="b" data-icon="check">Create</a>
-    </div>
-</div>
-
-<div id="project-organizer" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2 id="project-name">Project Organizer</h2>
-        <a href="#home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>    
-    
-    <div data-role="content">
-        <div>Using this tool, you can organize your projects into groups/folders. Start by adding groups below. To move a project to a group, <strong>drag &amp; drop the project under the name of the group</strong>. Delete a group by tapping the "x" on the group name. Remember to hit Save before you finish.</div>
-        
-        <ul data-role="listview" id="organizer-list" data-inset="true" data-divider-theme="b">
-            <li data-role="list-divider" id="head-divider">
-                <span class="divider-name">Unorganized</span></li>             
-        </ul>
-        
-        <br />
-       <div data-role="collapsible" id="organizer-collapsible" data-theme="b" data-content-theme="b">
-            <h3>Add a group</h3>
-            <input type="text" id="divider-name-field" placeholder="Group name" />
-            <button id="organizer-add-divider" data-icon="check">Add</button>
-        </div>
-        <a href="#home" id="organizer-save" data-role="button" data-theme="c" data-icon="check">Save</a>
-    </div>    
-</div>
-
-<!-- data-rel="back" disabled; replace '_back' with 'back' for it to work like a normal back button (last page) -->
-<div id="project-home" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2 id="project-name">Project Home</h2>
-        <a href="#home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>    
-    
-    <div data-role="content">
-        <div id="project-card-chart"></div>
-        
-        <div id="project-description"></div>
-        <div data-role="collapsible" id="project-description-entry" data-theme="b" data-content-theme="b">
-            <h3>Add a description</h3>
-            <textarea id="project-description-entry-text"></textarea>
-            <button id="project-description-entry-button" data-icon="check">Done</button>
-        </div>
-
-        <div data-role="controlgroup" class="project-main-controlgroup">
-            <a href="#study-session-init" id="study-session-init-button" data-role="button" data-icon="lightning">Study</a>            
-            <a href="#create-card" data-role="button" data-icon="plus" id="create-card-link">Create Flashcard</a>
-            <a href="#batch-creator" data-role="button" data-icon="grid">Mass Flashcard Creator</a>
-            <a href="#card-manager" id="card-manager-button" data-role="button" data-icon="edit">Card Manager</a>
-            <!--<a href="#card-viewer" id="card-viewer-button" data-role="button" data-icon="minus">Card Viewer</a>-->
-        </div>
-        
-        <br />
-        
-        <div data-role="controlgroup" class="project-main-controlgroup">
-            <a href="#backup" id="backup-launch-button" data-role="button" data-icon="arrow-u">Export</a>
-            <a href="#printer-setup" id="project-print" data-role="button" data-icon="page" data-rel="dialog">Print</a>
-            <a href="#project-tools" data-role="button" data-icon="gear" data-rel="popup">Project Tools</a>
-        </div>
-    </div>
-    
-
-    <div id="project-tools" data-role="popup" data-theme="c" data-overlay-theme="a">
-        <div data-role="controlgroup" style="margin:0">
-            <a href="#project-edit-dialog" id="project-edit" data-rel="dialog" data-role="button" data-icon="edit">Rename/delete project</a>            
-            <a href="#project-home" id="project-shuffle" data-role="button" data-icon="refresh">Shuffle flashcards</a>
-            <a href="#project-home" id="project-reset" data-role="button" data-icon="back">Reset flashcard ranks</a>
-            <a href="#project-home" id="project-flip" data-role="button" data-icon="direction">Swap question and answer</a>
-            <a href="#project-home" id="project-clear-description" data-role="button" data-icon="minus">Clear description</a>
-        </div>
-    </div>    
-</div>
-
-<div id="backup" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Export Flashcards</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>     
-    
-    <div data-role="content">
-        <p>You can export the flashcards in this project to your device as a backup or to use these flashcards with other apps.</p>
-        <p>You can export to various formats (XML, CSV, etc.) based on what you need. <strong>XML and JSON are frequently used by other flashcard apps, and comma/slash/enter-separated are good for plain text storage.</strong></p>
-        
-        <select id="backup-format" data-native-menu="false">
-            <option>Choose a format</option>
-            <option value="xml">XML</option>
-            <option value="json">JSON</option>
-            <option value="commaSep">Comma-separated (CSV)</option>
-            <option value="slashSep">Slash-separated</option>
-            <option value="enterSep">Enter-separated</option>
-        </select>
-        
-        <div class="ui-body-c ui-body ui-corner-all" id="live-preview-holder">
-            <em>Live preview (example):</em>
-            <div id="backup-live-preview"></div>
-        </div>
-        
-        <br />
-        
-        <button id="backup-run" data-theme="b" data-icon="lightning">Export</button>
-        
-        <div id="backup-lower">
-            <div id="backup-directions">
-                Copy and paste the contents of the below text box into a text editing/notepad app. Save the file as <em>[something]</em>.<span id="backup-extension">txt</span>.
-                </div>
-            <textarea id="backup-text"></textarea>
-        </div>
-    </div>
-</div>
-
-<div id="create-card" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Create Flashcard</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>       
-    
-    <div data-role="content">
-        <!--
-        <div data-role="controlgroup" data-type="horizontal" style="text-align: center;">
-            <button id="edit-bold"><strong style="text-shadow: 0 0 1px #BBB">a</strong></button>
-            <button><em>a</em></button>
-            <button><u>a</u></button>
-            <button>&bull; a</button>
-        </div>
-        -->
-        <!--
-        <div data-role="collapsible" data-theme="c" data-content-theme="b">
-            <h3>Equation editing tips</h3>
-            This equation editor uses a graphical version of LaTeX. Just type in an equation using the standard operators, parentheses, etc. Here are a few more important tips:
-            <ul>
-                <li><strong>Type $ to start your equation</strong> (that will create a box for you to input your equation.)</li>
-                <li>Use ^ for superscript and _ for subscript: <em>a^n</em> and <em>a_n</em>.</li>
-                <li>Use Tab to get "out" of a command.</li>
-                <li>Most LaTeX symbols are supported; just type in <em>\integral, \sqrt, \pi</em>, etc. <a href="http://www.artofproblemsolving.com/Wiki/index.php/LaTeX:Symbols" target="_blank">Here's a good list of common symbols.</a></li>
-            </ul>
-            
-            <span class="mathquill-textbox">My equation is $x^2$</span>
-        </div>
-        -->
-        
-        <div data-role="navbar" class="ui-corner-all" id="question-choice-navbar">
-            <ul>
-                <li id="question-choice-free"><a href="#" class="ui-btn-active free-response-tab">Free response</a></li>
-                <li id="question-choice-mc"><a href="#" class="multiple-choice-tab">Multiple choice</a></li>
-            </ul>
-        </div>
-        <div>
-            <textarea id="create-card-question" placeholder="Question" ></textarea>
-            
-            <div id="create-section-free">
-                <textarea id="create-card-answer" placeholder="Answer"></textarea>
-            </div>
-            <div id="create-section-mc">
-                <div id="create-mc-answers" class="ui-body-b ui-corner-all">
-                    
-                    <button id="create-mc-add-choice" data-theme="b" data-icon="plus">Add choice</button>
+        </script>
+        <!-- list of pages available to project -->
+        <script id="template-project-pages" type="text/x-handlebars-template">
+            {{#each pages}}
+            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><a data-href="{{slug}}"> <span class="glyphicon glyphicon-{{icon}}"></span> 
+                            {{name}} </a></h4>
+                    </div>
+                    <p class="panel-body hidden-xs">
+                        {{description}}
+                    </p>
                 </div>
             </div>
-            
-            <div data-role="collapsible" id="create-card-image-collapsible" data-theme="c" data-content-theme="b">
-               <h3>Add an image</h3>
-               <label for="create-card-image">
-                   <span class="create-image-hint">Upload an image (PNG, JPG, and GIF supported.)</span>
-                   <span class="edit-image-hint">Change the current image (seen in the preview) by uploading a new one, or press the remove button to remove the image altogether.</span>
-               </label>
-               <input type="file" id="create-card-image" accept="image/jpeg,image/png,image/gif,image/bmp" data-clear-btn="true" data-clear-btn-text="Clear" data-theme="c" />
-               
-               <div id="create-card-image-holder">
-                   Preview: <img id="create-card-image-preview" class="flashcard-image" />
-                   <button type="button" data-inline="true" data-theme="c" data-icon="delete" id="create-card-image-clear">Remove image</button>
-               </div>
-            </div>
-        </div>
+            {{/each}}
+        </script>
+        <!-- For keeping the deck description and name updated. -->
+        <!-- pass: Project -->
+        <script id="template-deck-description" type="text/x-handlebars-template">
+            {{#if isEditing}}
+            	<input type="text" class="input-name form-control input-lg stylized small-text-input" value="{{name}}">	
+                <input type="text" class="input-description form-control small-text-input" value="{{description}}">
+                <button class="btn btn-default btn-description-done">
+                    <span class="glyphicon glyphicon-check"></span>
+                </button>                 
+            {{else}}
+            	<span class="univ-deck-name stylized">{{name}}</span>
+                {{#if description}}
+                    <small>{{description}}</small>
+                    <button class="btn btn-default btn-description-edit">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </button>
+                {{else}}
+                    <button class="btn btn-default btn-description-add">
+                        <span class="glyphicon glyphicon-plus"></span> Add description
+                    </button>                    
+                {{/if}}
+            {{/if}}
+        </script>
         
-        <div class="create-buttons">
-            <a href="#create-card" class="create-card-button" data-role="button" data-icon="check" data-theme="b">Create</a>
-            <a href="#project-home" class="cancel-create-card-button" data-role="button" data-icon="back" data-theme="c">Cancel</a>            
-        </div>
-        <div class="edit-buttons">
-            <a href="#card-manager" class="create-card-button" data-role="button" data-icon="check" data-theme="b">Save</a>
-            <a href="#card-manager" class="delete-card-button" data-role="button" data-icon="delete" data-theme="e">Delete</a>
-            <a href="#card-manager" class="cancel-create-card-button" data-role="button" data-icon="back" data-theme="c">Cancel</a>     
-        </div>
-    </div>
-</div>
+        <!-- for card creation/editing -->
+        <!-- A multiple choice item -->
+        <!-- Pass: {text: String, chosen: boolean} (both optional; only use for editing) -->
+        <script id="template-create-mc-item" type="text/x-handlebars-template">
+            <div class="input-group mc-item">
+                <span class="input-group-addon">
+                    <input type="radio" {{#if chosen}}checked{{/if}} class="mc-item-input-correct" name="mc-choices">
+                </span>
+                <input type="text" class="form-control mc-item-input-text" {{#if text}}val="{{text}}"{{/if}}>
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-remove" type="button">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button> </span>
+            </div>        	
+        </script>
+        
+        <!-- for the studying page; shows setup page before you begin -->
+        <!-- Pass the session object -->
+        <script id="template-study-main" type="text/x-handlebars-template">
+            <div class="col-lg-9 text-center">
+            	{{#with activeCard}}
+	            	<div class="study-main-card">
+	            		{{#ifFunction "hasImage"}}
+		            		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">	            		
+		            			<img src="{{imageURL}}" class="img-thumbnail img-responsive study-image">
+		            		</div>	   
+		            		
+		            		<!-- BEGIN WRAPPER; allot enough space for img -->
+		            		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+		            	{{else}}
+		            		<div class="">         			
+	            		{{/ifFunction}}
+	            		<div class="wrapper">
+            			<div id="study-main-card-question"
+            				{{#ifFunction "isMultipleChoice"}}
+            					class="question-mc"
+            				{{else}}
+            					class="question-fr"
+            				{{/ifFunction}}
+            				>
+   
+			                <p class="text-center lead study-text">
+			                	{{#ifFunction "isMultipleChoice"}}
+			                		{{question}}
+			                	{{else}}
+			                		{{! FREE RESPONSE }}
+				                	{{#compare ../../options.style "normal"}}
+				                		{{question}}
+				                	{{else}}
+				                		{{answer}}
+				                	{{/compare}}	                	
+			                	{{/ifFunction}}
+			                </p>			            				
+            			</div>
+            			</div>
+            			{{#unlessFunction "isMultipleChoice"}}
+            				<!--<hr class="divider hidden">-->
+            				<div class="wrapper">
+	        		        <div id="study-main-card-answer" class="hidden">
+				                	<p class="text-center lead study-text text-info">
+					                	{{#compare ../../options.style "normal"}}
+					                		{{answer}}
+					                	{{else}}
+					                		{{question}}
+					                	{{/compare}}	  
+				                	</p> 
+	        		        </div>
+	        		       	</div>
+        		        {{/unlessFunction}}
+        		      </div><!-- col-12 or col-9 based on image -->
+        		    </div>	
+        		    <br><br>
+		                {{#ifFunction "isMultipleChoice"}}
+			                <div class="btn-group btn-group-vertical btn-block">
+			                	{{#each answer.choices}}
+			                    	<button type="button" class="btn btn-default btn-choose-answer-mc">
+			                    		<span class="glyphicon"></span> {{this}}
+			                    	</button>
+			                    {{/each}}
+			                </div>
+			                <p>
+	                		<a class="btn btn-primary btn-lg btn-study-next spaced hidden">
+	                			Next <span class="glyphicon glyphicon-arrow-right"></span></span>
+	                		</a>      
+		                {{else}}
+		                	<button class="btn btn-primary btn-lg btn-show-answer" type="button">
+		                		<span class="glyphicon glyphicon-eye-open"></span> 
+		                		Show 
+			                	{{#compare ../../options.style "normal"}}
+			                		answer
+			                	{{else}}
+			                		question
+			                	{{/compare}}	  
+		                	</button>
+		                	<div class="hidden">
+			                	<div class="row">
+			                		<div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12">
+					                	<div class="btn-group btn-group-justified hidden">
+					                		<a class="btn btn-success btn-lg btn-study-result-yes">
+					                			<span class="glyphicon glyphicon-ok"></span> <span class="hidden-xs">I knew it</span>
+					                		</a>
+					                		<a class="btn btn-warning btn-lg btn-study-result-sortof">
+					                			<span class="glyphicon glyphicon-minus"></span> <span class="hidden-xs">Sort of</span>
+					                		</a>
+					                		<a class="btn btn-danger btn-lg btn-study-result-no">
+					                			<span class="glyphicon glyphicon-remove"></span> <span class="hidden-xs">Didn't know</span>
+					                		</a>	                			                		
+					                	</div>	                			
+			                		</div>
+			                	</div>			                		
+		                	</div>
+		                	<br><br>
 
-<div id="batch-creator" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Mass Flashcard Creator</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>       
-    
-    <div data-role="content">
-        
-        <div data-role="collapsible" data-content-theme="c">
-            <h3>Mass Creator Help</h3>
-            <p>With the Mass Creator, you can create many flashcards easily and simultaneously.</p>
-            <p>On each line, enter a question and answer, separated by some token (this is the <em>entry style</em>). Each line will be converted into a flashcard.</p>
-            <p>Example (free-reponse flashcards):</p>
-            <p style="font-style:italic;">
-                2+2: 4<br />
-                Color of the sky: Blue
-            </p>
-            
-            <h4>Multiple-choice flashcards</h4>
-            <p>To make multiple-choice flashcards, you need special formatting in your answer. Separate each answer choice with "|" and put a "*" in front of the right answer choice. You can have as many answer choices as you want, but only one can be right. The entry style can still be anything.</p>
-            <p>Example (open-ended flashcards):</p>
-            <p style="font-style:italic;">
-                3+3 / 5|*6|7<br />
-                Color of the sun / *Yellow|Pink|Blue|Silver
-            </p>
-        </div>
-        
-        <form>
-            <div data-role="fieldcontain">
-                <label for="batch-style">Entry style:
-                    <!-- TODO consider rolling out
-                        <a href="#entry-style-popup" data-rel="popup" data-role="button" data-icon="info" data-theme="b" data-iconpos="notext" data-inline="true" class="ui-icon-nodisc">Help</a> --></label>
-                <select id="batch-style" name="batch-style" data-native-menu="false">
-                    <option value=":">Question: Answer</option>
-                    <option value="-">Question - Answer</option>
-                    <option value="/">Question / Answer</option>
-                    <option value=",">Question, Answer</option>
-                </select>
+		                {{/ifFunction}}
+                {{/with}}
             </div>
-            
-            <textarea id="batch-text" placeholder="Enter each card on its own line"></textarea>
-        </form>
+        </script>
         
-        <a href="#project-home" id="batch-create-button" data-role="button" data-icon="check" data-theme="b">Create Flashcards</a> 
-    </div>
-    
-    <!--
-    <div id="entry-style-popup" data-role="popup" class="ui-content" data-theme="c" style="max-width: 300px;">
-        <p>The entry style represents the format of the question and answer. For instance, if your entry style is 'Question / Answer', you might enter your cards as:</p>
-        <p style="font-style:italic;">
-            2+2 / 4<br />
-            Sky's color / Blue
-        </p>
-    </div>
-    -->
-</div>
+        <!-- for card manager; renders all cards-->
+        <!-- Pass {cards:[Card,Card,Card]} - that's right, ALL CARDS in project! (or at least as many as you want to show) -->
+        <script id="template-manage-cards" type="text/x-handlebars-template">
+        	{{#each cards}}
+	            <a class="list-group-item">
+	            	{{#ifFunction "hasImage"}}
+	            		<img class="img-rounded pull-left media-object" src="{{imageURL}}">
+	            	{{/ifFunction}}
+	            	<div class="pull-right">
+	            		{{#call "getStarHTML"}}{{/call}}
+	            	</div>
+	                <p>{{#call "getQuestionText"}}{{/call}}</p>
+	                <p>{{#call "getAnswerText"}}{{/call}}</p> 
+	            </a>  
+ 
+            {{else}}
+            	<a class="list-group-item">
+            		<span class="text-danger">No cards match your criteria. :(</div>	
+            	</a>
+            {{/each}}    	
+        </script>
 
-<div id="card-manager" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Card Manager</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>           
-    
-    <div data-role="content">
-        <!--
-        Sort cards by:
-        <div data-role="controlgroup">
-            <button id="sort-q-alpha">Alphabetically by Question</button>
-            <button id="sort-a-alpha">Alphabetically by Answer</button>
-        </div>
-        -->
+        <!--for rendering the cards to be printed-->
+        <!-- Pass {cards: Card[], options: { printImages: boolean } } -->
+        <script id="template-print-table" type="text/x-handlebars-template">
+        	<table class="table table-bordered table-striped">
+         	{{#each cards}}
+                <tr>
+                	<!--{{#if ../options.printImages}}
+                		<td>
+                			{{#ifFunction "hasImage"}}
+                				<img class="media-object" src="{{imageURL}}">
+                			{{/ifFunction}}
+                		</td>
+                	{{/if}}-->
+                	
+                	<td>
+	                	{{#if ../options.printImages}}
+                			{{#ifFunction "hasImage"}}
+                				<img class="media-object pull-left" src="{{imageURL}}">
+                			{{/ifFunction}}
+	                	{{/if}}
+	                	
+                		{{#call "getQuestionText"}}{{/call}}
+                	</td>
+                	<td>{{#call "getAnswerText"}}{{/call}}</td>
+                </tr>
+        	{{/each}}         		
+        	</table>	
+        </script>
         
-      <ul id="card-manager-list" data-role="listview" data-inset="true" data-mini="true" data-filter="true" data-filter-placeholder="Search cards..." data-split-icon="edit">
-      </ul>
-      
-    </div>
-</div>
-
-<!--
-<div id="edit-card-dialog" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Edit Flashcard</h2>
-    </div>
-
-    <div data-role="content" data-theme="c">    
-        <form>            
-            <div id="edit-card-image-field">
-                <div id="edit-card-if-image">
-                    <img id="edit-card-image-preview" class="flashcard-image" />
-                    <a href="#card-manager" id="edit-card-image-clear" data-role="button" data-theme="c" data-icon="delete">Remove image</a>
-                </div>
-                
-                <div id="edit-card-image-container">
-                    <label for="edit-card-new-image">Add/change image</label>
-                    <input type="file" id="edit-card-new-image" accept="image/jpeg,image/png,image/gif,image/bmp" data-clear-btn="true" data-clear-btn-text="Clear" data-theme="c" />
-                </div>
-            </div>
-            
-            <textarea id="edit-card-question"></textarea>
-            <textarea id="edit-card-answer"></textarea>
-            
-            <a href="#card-manager" id="edit-card-finish-button" data-role="button" data-theme="b" data-icon="check">Finish</a>
-            <a href="#card-manager" id="edit-card-delete-button" data-role="button" data-theme="e" data-icon="delete">Delete</a>
-        </form>
-    </div>
-</div>
--->
-
-<div id="study-session-init" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Starting Session</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>       
-    
-    <div data-role="content">
-        
-        <div data-role="fieldcontain">
-            <label for="study-mode">Which cards to study:</label>
-            <select id="study-mode" name="study-mode" data-native-menu="false">
-                <option value="normal">Cabra chooses (default)</option>
-                <option value="cram">All cards in project</option>
-                <option value="perfection" id="study-mode-perfection">Cards I didn't know last time</option>
-            </select>
-        </div>
-        
-        <div data-role="fieldcontain">
-            <label for="study-response">Response style:</label>
-            <select id="study-response" name="study-response" data-native-menu="false">
-                <option value="normal">Classic - given question, respond with answer</option>
-                <option value="jeopardy">Jeopardy - given answer, respond with question</option>
-                <option value="random">Random - given either question or answer</option>
-            </select>    
-        </div>   
-        
-        <form>
-            <a href="#study-main" id="study-session-start" data-role="button" data-icon="lightning" data-theme="b">Start</a>
-            <a href="#project-home" data-role="button" data-rel="_back" data-icon="back">Cancel</a>
-        </form>
-    </div>
-</div>
-
-<div id="study-main" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2 id="study-progress-counter">Studying</h2>
-        <a href="#" id="study-quit" data-icon="delete">Quit</a>
-        <a href="#" id="study-skip" data-icon="forward">Skip</a>
-    </div>       
-    
-    <div data-role="content">
-        <img id="study-image" class="flashcard-image" />
-        <div id="study-textarea"></div>
-        
-        <br />
-        <div id="study-buttons">
-            <div class="study-main-question" data-role="navbar">
-                <ul>
-                    <li>
-                <a id="show-answer-button" data-icon="refresh" data-theme="b" class="ui-corner-all" data-iconpos="top" data-mini="true">Flip</a></li>
-                </ul>
-            </div>
-            
-            <div class="study-main-answer">
-                
-                <div data-role="navbar" data-iconpos="top" id="study-answer-free">
-                    <ul>
-                    <li><a href="#" id="study-result-yes"   data-icon="check"   data-theme="b" class="ui-corner-all corner-noright">
-                        Know it </a></li>
-                    <li><a href="#" id="study-result-sort"    data-icon="minus"   data-theme="c">
-                        Sort of </a></li>
-                    <li><a href="#" id="study-result-no"  data-icon="delete"  data-theme="a" class="ui-corner-all corner-noleft">
-                        Don't know  </a></li>                
-                    </ul>                    
-                </div>
-            </div>
-            
-            <div class="study-main-mc">
-                <div data-role="controlgroup" id="study-main-mc-choices"></div>
-                <div id="study-main-mc-result">
-                    <button id="study-main-mc-next" data-theme="b" data-icon="arrow-r" data-iconpos="right">Next</button>
-                </div>
-            </div>
+		<!-- for the deck organizer; this is a container for a group of decks -->
+		<!-- Pass a group: { name: String, decks: Project[]} -->
+		<script id="template-organize-group" type="text/x-handlebars-template">
+        	<li class="list-group-item list-divider alert-info"
+        		{{#compare name "==" "Unorganized"}}
+        			id="organizer-top-divider"
+        		{{/compare}}
+        		>
+        		<span class="list-group-name">{{name}}</span>
+            	{{#compare name "!==" "Unorganized"}}
+            		<span class="action-delete glyphicon glyphicon-trash pull-right"></span>
+            		<!--<span class="glyphicon glyphicon-edit pull-right">&nbsp;</span>-->
+            	{{/compare}}	                    		
+        	</li>
+        	{{#each decks}}
+                <li class="list-group-item" data-id="{{id}}">
+                    {{name}}
+                </li>                    	
+        	{{/each}}	
+		</script>        
+	
+                        
+        <!--for showing project previews when importing from quizlet -->
+        <script id="template-quizlet-import-project" type="text/x-handlebars-template">
+        	{{#each projects}}
+	        <div class="panel panel-default">
+	            <div class="panel-heading">
+	                <a href="#deck-import-panel-{{id}}" class="accordion-toggle" data-toggle="collapse">
+	                	<span class="badge pull-right">{{term_count}} cards</span>
+	                	<h4 class="panel-title">
+	                		{{title}}
+	                	</h4>
+	                	
+	            	</a>
+	            </div>
+	            <div class="panel-collapse collapse" id="deck-import-panel-{{id}}" data-id="{{id}}">
+	                <div class="panel-body">
+	                    {{#if description}}
+		                    <p>
+		                        <strong>Description</strong>: {{description}}
+		                    </p>
+	                    {{/if}}
+	                    <p>
+	                        <strong>Some sample flashcards</strong>:
+	                    </p>
+	                </div>
+	                <ul class="list-group import-preview-list">
+	                	<li class="list-group-item"><em>Loading...</em></li>
+	                </ul>
+	                <div class="panel-body">
+	                	<button class="btn btn-default btn-more-samples" type="button">
+	                		<span class="glyphicon glyphicon-refresh"></span> More samples
+	                	</button>
+	                    <button class="btn btn-primary btn-import" type="button">
+	                        <span class="glyphicon glyphicon-import"></span> Import
+	                    </button>
+	                </div>
+	            </div>
+	        </div>       
+	        {{/each}} 
+        </script>
+        <!--for previewing sample cards-->
+        <script id="template-quizlet-import-preview" type="text/x-handlebars-template">
+        	{{#each cards}}
+                <li class="list-group-item import-card-preview text-info">
+                    {{#if image}}
+                    	<img class="img-rounded pull-left media-object" src="{{image.url}}">
+                    {{/if}}
+                    <p>{{term}}</p>
+                    <p>{{definition}}</p>
+                </li>
+        	{{/each}}                	
+        </script>
   
-        </div>       
-    </div>
-</div>
-
-
-<div id="study-session-end" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Finished Studying</h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>       
-    
-    <div data-role="content">
-        <div id="session-result-chart"></div>
         
-        <a href="#project-home" data-role="button" data-icon="check" data-theme="b">Done</a>
-        <a href="#study-session-init" data-role="button" data-icon="refresh">Study again</a>
-    </div>
-</div>
-
-
-
-<div id="printer-output" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2><span class="project-name"></span></h2>
-        <a href="#project-home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>           
-    <table id="printer-table" class="table table-bordered table-striped">
-    </table>
-</div>
-
-
-
-<div id="importer" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Flashcard Importer</h2>
-        <a href="#home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>           
-    
-    <div data-role="content">
-        
-        <div data-role="collapsible" data-theme="c" data-content-theme="c">
-            <h3>Flashcard Importer Info</h3>
-            <p>Save time by finding flashcards from Quizlet.com's database of <strong>over 20 million flashcard sets</strong>! Enter what you want to study, and Cabra will find the best matching sets on Quizlet.</p>
-            <p>Click on a set to import it and start studying.</p>
+        <!-- pure, Handlebars-free templates -->
+        <div style="display:none;">
+	        <div id="template-pure-stars">
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>        	
+	        </div>        	
         </div>
+
         
-        <div data-role="fieldcontain">
-            <label for="quizlet-search">Keywords:</label>
-            <input type="search" name="quizlet-search" id="quizlet-search" value="" />
-            
-            <button id="quizlet-search-submit" data-icon="search" data-theme="b">Find flashcards</button>
-        </div>
-        
-      <ul id="quizlet-list" data-role="listview" data-inset="true" data-mini="true" data-split-icon="check">
-      </ul>
-      
-    </div>
-</div>
+        <!-- scripts -->
+        <!-- JavaScript at the bottom for fast page loading -->
 
-<div id="importer-sample" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h2><span id="importer-sample-name"></span></h2>
-    </div>     
-    <div data-role="content">
-        <div id="importer-sample-description"></div>
-        <em><span id="importer-sample-numcards"></span> flashcards</em>
-        
-        <p>Some sample flashcards:</p>
-        <ul id="importer-sample-list" data-role="listview" data-inset="true" data-mini="true"></ul>
-        
-        <a href="#" data-role="button" id="importer-sample-accept" data-icon="check" data-theme="b">Import</button>
-        <a href="#importer" data-role="button" id="importer-sample-cancel" data-icon="delete">Cancel</a>
-    </div>
-</div>
-
-<div id="sync-home" data-role="page">
-    <div data-role="header" data-position="fixed" data-theme="a">
-        <h2>Sync</h2>
-        <a href="#home" data-rel="_back" data-icon="back">Back</a>
-        <a href="#home" data-icon="home">Home</a>
-    </div>  
-    
-    <div data-role="content">
-        <div id="sync-already-set-up">
-            <!-- shown if the user's set up sync already -->
-            <p>Sync's already set up on this device. Your sync passcode is <strong id="sync-passcode-reminder"></strong>.</p>
-            
-            <p>You can now sync with Cabra <a href="#download" data-rel="dialog">on another device</a> or on the web at <a href="http://chevre.hathix.com">chevre.hathix.com.</a></p>
-            
-            <div data-role="controlgroup">
-            <button id="sync-upload" data-icon="arrow-u" data-theme="c">Upload</button>
-            <a href="#sync-downloaded" data-role="button" id="sync-download" data-icon="arrow-d" data-theme="c" data-rel="dialog" >Download</a>            
-            </div>
-            <a href="#home" data-role="button" id="sync-stop" data-theme="e" data-icon="delete">Stop syncing</a>
-        </div>
-        <div id="sync-not-set-up">
-            <!-- shown if the user's not set up sync -->
-            
-            <p>Study from multiple devices? Set up sync so your flashcards are automatically synchronized between your computer, phone, tablet, or anything else!</p>
-            
-            <p>Think up a <strong>unique, memorable passphrase consisting of 3-4 words</strong> (see the examples below) and you can start syncing. Then enter your passphrase again on another device to connect it to sync.</p>
-            
-            <p>If you've set up sync from another device, just enter your passphrase here and you'll be hooked up.</p>
-            
-            <label for="sync-passcode-entry" class="ui-hidden-accessible">Passphrase</label>
-            <input type="text" id="sync-passcode-entry" placeholder="Passphrase" />
-            <a href="#sync-started" data-rel="dialog"  data-role="button" id="sync-start" data-icon="lightning" data-theme="b">Start syncing</a>
-            
-            <div data-role="collapsible" data-theme="c" data-content-theme="c">
-                <h3>Passcode Examples</h3>
-                <p>A good passcode will be unique, memorable, and preferably 3-4 words long. Quotes, movie titles, and names work well. Here are some examples:</p>
-                <ul style="font-style: italic;">
-                    <li>boston red sox</li>
-                    <li>shaken not stirred</li>
-                    <li>finding nemo</li>
-                    <li>franklin delano roosevelt</li>
-                </ul>
-            </div>
-            
-            <div data-role="collapsible" data-theme="c" data-content-theme="c">
-                <h3>Privacy</h3>
-                <p>Cabra cares about your privacy! It's not developed by some creepy company out to get you (and your money) - but instead by a student just like you.</p>
-                <p>Your data, therefore, is stored securely and anonymously in the cloud. Besides your passcode, Cabra doesn't keep any data on you - why should we care?</p>
-                <p>Got a privacy question? Please don't hesitate to write to me!</p>
-                <a href="#contact" data-role="button" data-rel="dialog"  data-icon="chat">Contact</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="sync-started" data-role="page">
-    <div data-role="header" data-theme="a">
-        <h3>Sync started</h3>
-    </div>
-
-    <div data-role="content" data-theme="c">
-        Congrats! Sync has been set up on this device. Please press the button below to restart Cabra.
-        <a href="#sync-home" data-role="button" class="sync-reload-page" data-theme="b" data-icon="refresh">Restart Cabra</a>
-    </div>        
-</div>
-
-<div id="sync-downloaded" data-role="page">
-    <div data-role="header">
-        <h3>Sync finished</h3>
-    </div>
-
-    <div data-role="content" data-theme="c">
-        Congrats! Your cards have been loaded onto this device. Please press the button below to restart Cabra.
-        <a href="#sync-home" data-role="button" class="sync-reload-page" data-theme="b" data-icon="refresh">Restart Cabra</a>
-    </div>        
-</div>     
-
-<div id="clear-data-warning" data-role="page">
-    <div data-role="header">
-        <h3>Clear data?</h3>
-    </div>
-
-    <div data-role="content" data-theme="c">
-        <p>Are you sure you want to delete all of your data forever, including your <strong>flashcards and settings</strong>?</p>
-        <p><em>If you've set up sync, your data is safe in the cloud but will be removed from this device.</em></p>
-        
-        <a href="#home" data-role="button" data-icon="back">Cancel</a>
-        <button id="clear-data" data-theme="e" data-icon="delete">Clear data forever</button>
-    </div>      
-</div>  
-
-  </div>
-  
-  <div id="toast" data-role="popup" data-theme="a" class="ui-body ui-content">
-      <!--<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>-->
-      
-  </div>
-  
-  <div id="image-popup" data-role="popup" data-overlay-theme="a">
-      <!-- TODO this doesn't work (isn't enhanced) if we do it the normal way... so we have to do the hack. Figure out why this is. -->
-      <a title="Close" data-wrapperels="span" data-iconshadow="true" data-shadow="true" data-corners="true" data-rel="back" data-role="button" data-theme="b" data-icon="delete" data-iconpos="notext" class="ui-btn-left ui-btn ui-shadow ui-btn-corner-all ui-btn-icon-notext ui-btn-up-b">
-          <span class="ui-btn-inner"><span class="ui-btn-text">Close</span><span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span></span></a>
-      <img id="image-popup-image" />
-  </div>
-  
-  <div id="templates" data-role="page">
-      <li id="template-project" data-role="listitem">
-        <a href="#project-home" class="project">
-            <div class="project-name"></div>
-            <div class="project-description"></div>
-            <!--<span class="ui-li-count"><span class="project-card-count"></span> Cards</span>-->
-        </a>
-        
-        <a href="#project-edit-dialog" class="project-options" data-rel="dialog" ></a>          
-      </li>
-      
-      <li id="template-divider" data-role="list-divider" data-theme="b">
-              <!-- i'm for the main screen -->
-              <span class="divider-name"></span>
-            <!--<span class="ui-li-aside" style="margin-top:-10px;padding:0;">
-                    <button data-icon="minus" data-iconpos="notext" data-theme="b" data-inline="true">Hide</button>
-            </span>-->
-      </li>      
-      
-      <li id="template-card" data-role="listitem">
-            <a href="#create-card" class="card-manager-edit-button">
-                <h3><div class="ui-icon ui-icon-question" style="float:left" title="Question"></div>&nbsp;
-                    <span class="card-manager-question"></span></h3>
-                <h3><div class="ui-icon ui-icon-chat" style="float:left" title="Answer"></div>&nbsp; 
-                    <span class="card-manager-answer"></span></h3>
-                <span class="ui-li-count" title="Rank C">C</span>
-            </a>
-            <!--<a href="#edit-card-dialog" class="card-manager-edit-button" data-rel="dialog" ></a>  --> 
-      </li> 
-      
-      <li id="template-organize-project" data-role="listitem">
-          <span class="project-name"></span>
-      </li>   
-             
-      <li id="template-organize-divider" data-role="list-divider">
-          <span class="divider-name"></span>
-          <span class="ui-li-aside" style="margin-top:-10px;padding:0;">
-                    <button data-icon="delete" data-iconpos="notext" data-theme="b" data-inline="true">Delete</button>
-            </span>
-          
-      </li>  
-      
-      <table>
-          <tr id="template-print-row">
-              <td class="print-question">
-                  <img class="print-image" alt="">
-                  <span class="print-question-text"></span>
-              </td>
-              <td class="print-answer"><span class="print-answer-text"></span></td>
-          </tr>
-      </table> 
-             
-      <div id="template-mc-answer-container" data-role="fieldcontain" class="mc-answer-container">
-          <label class="mc-answer-label">
-              <fieldset data-role="controlgroup" data-type="horizontal" data-inline="true" style="display: inline;">
-                  <label data-icon="check" title="Right answer">
-                      <input type="radio" class="mc-answer-radio" name="mc-answer-radio" data-theme="c" data-mini="true" tabindex="-1" />✓</label>
-              </fieldset>
-          </label>
-          <input type="text" class="mc-answer" data-clear-btn="true" data-clear-btn-text="Remove" placeholder="Answer choice">   
-      </div>
-           
-      <button id="template-study-mc-choice" data-theme="c" data-icon="arrow-r"></button>       
-      
-      <li id="template-quizlet" data-role="listitem">
-            <a href="#importer-sample" data-rel="dialog" class="quizlet-import-button">
-                <div class="quizlet-name"></div>
-                <div class="quizlet-description project-description"></div>                
-                <span class="ui-li-count"><span class="quizlet-card-count"></span> Cards</span>
-            </a>            
-      </li>     
-      
-      <img id="template-flashcard-image" class="flashcard-image" />
-      
-      <span id="template-feedback">
-          <input name="" id="" value="" type="radio">
-          <label for=""></label>
-      </span>
-
-  </div>
-  
-  
-  <footer>
-
-  </footer>
-
-
-  <!-- JavaScript at the bottom for fast page loading -->
-
-    
-
-    <!--[if lt IE 9]>
+        <!--[if lt IE 9]>
         <script src="js/libs/jquery-1.10.2.min.js"></script>
-    <![endif]-->
-    <!--[if gte IE 9]><!-->
+        <![endif]-->
+        <!--[if gte IE 9]><!-->
         <script src="js/libs/jquery-1.10.2.min.js"></script>
-    <!--<![endif]--> 
+        <!--<![endif]-->
 
-  <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/libs/jqplot/excanvas.min.js"></script><![endif]-->
-  <script>
-  
-      $(document).bind("mobileinit", function() {
-          $.support.cors = true;
-          $.mobile.allowCrossDomainPages = true;
-          $.mobile.pushStateEnabled = false;
-          $.mobile.buttonMarkup.hoverDelay = 200; //default 200; faster makes it more snappy but increases chance of accidental class application
-          $.mobile.phonegapNavigationEnabled = true; //good for Android they say
-          //$.mobile.defaultPageTransition = "slide"; //if you do this, remove all data-position="fixed"'s except in footer
-          
-          //normal platforms
-          $.mobile.defaultPageTransition = "fade"; //also consider slidefade
-          $.mobile.defaultDialogTransition = "pop";
-          
-          /*
-          //ANDROID ONLY; UNCOMMENT THIS FOR ANDROID
-          $.mobile.defaultPageTransition = "none";
-          $.mobile.defaultDialogTransition = "none";
-          */
-         
-        //$.mobile.page.prototype.options.addBackBtn = true;
+        <!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/libs/jqplot/excanvas.min.js"></script><![endif]-->
+
+        <script src="js/libs/bootstrap.min.js"></script>
+        <script src="js/libs/handlebars-1.0.0.js"></script>
+        <script src="js/libs/jquery-ui-1.10.3.custom.min.js"></script>
+        <script async src="js/libs/jquery.rm.js"></script><!--TODO put that in plugins.js-->
+        <!--<script async src="js/libs/mathquill.min.js"></script>-->
+
+        <!-- scripts concatenated and minified via build script -->
+        <script src="js/plugins.js"></script>
+        <script src="js/constants.js"></script>
+        <script src="js/utils.js"></script>
+
+
+
+        <script src="js/main.js"></script>
         
-        //$.mobile.changePage.defaults.changeHash = false; //whenever we change pages, the URL will NOT change, preventing 'listview prior to initialization' error
-            //PROBLEM: any <a> with href '#' sends you back to main page... very inconsistent & buggy
-            //i guess people will just have to not refresh manually
+		<script src="js/page.js"></script>
+		<script src="js/pagedb.js"></script>
+		       
         
-      });
-  </script>
-  <script src="js/libs/jquery.mobile-1.3.2.min.js"></script>
-  <script src="js/libs/jquery-ui-1.10.3.custom.min.js"></script>
-  <script async src="js/libs/jquery.rm.js"></script><!--TODO put that in plugins.js-->
-  <!--<script async src="js/libs/mathquill.min.js"></script>-->
-
-  <!-- scripts concatenated and minified via build script -->
-  <script src="js/plugins.js"></script>
-  <script src="js/constants.js"></script>
-  <script src="js/utils.js"></script>
-  
-  <script src="js/main.js"></script>
-  <script src="js/chevre.js"></script>
-  <script src="js/view.js"></script>
-  
-  <script src="js/card.js"></script>
-  <script src="js/session.js"></script>
-  <script src="js/project.js"></script>
-  
-  
-  <script src="js/feedback.js"></script>
-  
-  <script src="js/organizer.js"></script>
-  <script src="js/backup.js"></script>
-  <script src="js/import.js"></script>
-  <!--<script src="js/drive.js"></script>-->
-  <!-- end scripts -->
-  
-  <!--<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>-->
+        <script src="js/navigation.js"></script>
+        <script src="js/chevre.js"></script>
+        <script src="js/view2.js"></script>
 
 
-  <script src="js/libs/jqplot/jquery.jqplot.min.js"></script>
-  <script src="js/libs/jqplot/plugins/jqplot.pieRenderer.min.js"></script>  
-  
-  
-  
-<!-- Start Piwik Tracking; place this at end of body -->
-    <script type="text/javascript">
-        var pkBaseURL = (("https:" == document.location.protocol) ? "https://hathix.com/piwik/" : "http://hathix.com/piwik/");
-        document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-    
-    </script>
-    <script type="text/javascript">
-        try {
-            var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-            piwikTracker.trackGoal(4); //Triggers goal Chevre (ID 4)
-            piwikTracker.trackPageView();
-            piwikTracker.enableLinkTracking();
-        } catch( err ) {
-        }
-    </script>
-    <noscript>
-        <p><img src="http://hathix.com/piwik/piwik.php?idsite=1" style="border:0" alt="" />
-        </p>
-    </noscript>
-<!-- End Piwik Tracking -->     
 
-</body>
+        <script src="js/card.js"></script>
+        <script src="js/session.js"></script>
+        
+        <script src="js/project.js"></script>
+
+        <script src="js/feedback.js"></script>
+
+        <script src="js/organizer.js"></script>
+        <script src="js/backup.js"></script>
+        <script src="js/import.js"></script>
+        <!--<script src="js/drive.js"></script>-->
+        <!-- end scripts -->
+
+        <!--<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>-->
+
+        <script src="js/libs/jqplot/jquery.jqplot.min.js"></script>
+        <script src="js/libs/jqplot/plugins/jqplot.pieRenderer.min.js"></script>
+
+        <!-- Start Piwik Tracking; place this at end of body -->
+        <script type="text/javascript">
+          var pkBaseURL = (("https:" == document.location.protocol) ? "https://hathix.com/piwik/" : "http://hathix.com/piwik/");
+          document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+
+        </script>
+        <script type="text/javascript">
+          try {
+               var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+               piwikTracker.trackGoal(4);
+               //Triggers goal Chevre (ID 4)
+               piwikTracker.trackPageView();
+               piwikTracker.enableLinkTracking();
+          } catch( err ) {
+          }
+        </script>
+        <noscript>
+            <p><img src="http://hathix.com/piwik/piwik.php?idsite=1" style="border:0" alt="" />
+            </p>
+        </noscript>
+        <!-- End Piwik Tracking -->
+
+    </body>
+
 </html>

@@ -16,6 +16,20 @@ var ABOUT = {
     //TODO: show some warning if it's a beta build (not tested and ready)
 }
 
+//nav
+//these are shortcuts to a certain location; NOT ACTUAL PAGES
+var NAV_BACK = '_back';
+var NAV_HOME = '_home';
+var NAV_FORWARD = '_forward';
+var NAV_BASE = 'home'; //page to start on
+
+//pages
+//PageEvents: listen for these things to happen to pages
+var PageEvents = {
+	LOAD: "load",
+	HIDE: "hide"	
+};
+
 //cards
 
 //uses for card dialog
@@ -53,6 +67,11 @@ var GROUP_DEFAULT = "Unorganized";
 var CHUNK_SIZE = 50; //#cards in a chunk; this many are added at once. if it lags reduce this
 var BREAK_TIME = 500; //how long, in ms, to wait between chunks. if it lags increase this.
 
+//card
+var MIN_STARS = 1;
+var MAX_STARS = 5;
+var STAR_COLORS = [ "#FF0000", "#FF7F00", "#FFC800", "#0094FF", "#00E500"];
+
 //interface
 var FADE_SPEED = 300; //ms it takes to fade html in/out
 //toast
@@ -87,10 +106,10 @@ QUIZLET.api = {
 
 /* Enums */
 var StudyResult = {
-    YES: {id: 1},
-    SORT_OF: {id: 2},
-    NO: {id: 3},
-    SKIPPED: {id: 4}
+    YES: "yes",
+    SORT_OF: "sortof",
+    NO: "no",
+    SKIPPED: "skipped"
 };
 
 var StudyMode = {
@@ -102,6 +121,11 @@ var StudyStyle = {
      NORMAL: "normal",
      JEOPARDY: "jeopardy",
      RANDOM: "random"
+};
+var SessionStatus = {
+	SETUP: "setup", //setting up session; choosing cards/options
+	STUDYING: "studying", //actually studying
+	FINISHED: "finished" //reviewing results
 };
 var CardParts = {
      QUESTION: "question",

@@ -226,7 +226,7 @@ $('#project-organizer').oneBind('pageshow', function(){
 
 //misc
 //image - when clicked, show popup
-$('#image-popup').popup(); //init it
+//$('#image-popup').popup(); //init it
 $('.flashcard-image').click(function(e){
      //show popup with this image full size
      var src = $(this).attr('src');

@@ -35,6 +35,10 @@ isMultipleChoice: function(self){
      return self.answer.hasOwnProperty('choices');   
 },
 
+isFreeResponse: function(self){
+	return !self.isMultipleChoice();
+},
+
 /**
  * Returns a String[] where each String is an MC choice. 
  * Ensure that this isMultipleChoice() before calling this.
@@ -84,6 +88,21 @@ setRank: function(self, rank){
 },
 
 /**
+ * Returns the card's rank in a more friendly manner... stars instead of ranks.
+ * Rank A -> 1 star, Rank E -> 5 stars
+ * @return {int}	the number of stars 
+ */
+getStars: function(self){
+	switch(self.rank){
+		case Rank.A: return 1;
+		case Rank.B: return 2;
+		case Rank.C: return 3;
+		case Rank.D: return 4;
+		case Rank.E: return 5;
+	}
+},
+
+/**
  * This card was studied by the user.
  * @param {StudyResult} result  from the StudyResults enum.
  */
@@ -127,6 +146,47 @@ fillLI: function(self, li){
      var hex = '#' + rgbToHex(rgb);
      
      li.find('.ui-li-count').html(self.rank.name).attr('title', "Rank " + self.rank.name).css('color',hex); //TODO maybe remove the color part... looks bad for C (yellow is illegible)x
+},
+
+/**
+ * Returns a <div> containing colored stars corresponding to the stars this card has.
+ * @return {jQuery}	a div formatted like this:
+ * 	<div class="text-danger">
+ * 	  <span class="glyphicon glyphicon-star"></span>...
+ *  </div>
+ */
+getStarElement: function(self){
+	var starArea = getClonedTemplate('#template-pure-stars');
+ 	var stars = self.getStars(); //1-5
+ 	//color text
+ 	var cssClass = "text-default";
+ 	switch(stars){
+ 		case 1: cssClass = "text-danger"; break;
+ 		case 2: cssClass = "text-warning"; break;
+ 		case 4: cssClass = "text-info"; break;
+ 		case 5: cssClass = "text-success"; break;
+ 	}
+ 	starArea.removeClass().addClass(cssClass);
+ 	//fill stars
+ 	starArea.children().each(function(i){
+ 		//i = star index; 0-4
+ 		$(this).removeClass("glyphicon-star glyphicon-star-empty");
+ 		if(i < stars){
+ 			$(this).addClass("glyphicon-star");
+ 		}
+ 		else{
+ 			$(this).addClass("glyphicon-star-empty");
+ 		}
+ 	});	
+ 	
+ 	return starArea;
+},
+
+/**
+ * Like getStarElement(), but returns the stars in HTML, not jQuery.
+ */
+getStarHTML: function(self){
+	return self.getStarElement().outerHTML();
 }
     
 });

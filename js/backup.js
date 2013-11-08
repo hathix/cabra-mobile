@@ -1,6 +1,6 @@
 var backup = new Singleton({
 __init__: function(self){
-     //the backup formats. The string vals should match the select menu's option's vals
+     //the export formats. The string vals should match the select menu's option's vals
      self.formats = {
           XML: "xml",
           JSON: "json",
@@ -11,15 +11,28 @@ __init__: function(self){
 },
 
 loadPage: function(self){
-     $('#backup-lower').hide(); //that contains stuff only to be seen AFTER running backup  
-     $('#backup-text').css('height',0); //do it now... we'll prob need to do it later so do it while the user isn't watching
-     $('#live-preview-holder').hide();  
-     $('#backup-live-preview').html('')
-      
+     $('#export-output').hide(); //that contains stuff only to be seen AFTER running export  
+     //$('#export-text').css('height',0); //do it now... we'll prob need to do it later so do it while the user isn't watching
+    // $('#export-preview-holder').hide();  
+     //$('#export-live-preview').html('');
+
+	$('#export-input-format').bind('change',function(){
+	     //update live preview
+	     var format = $('#export-input-format').val();
+	     self.livePreview(format);
+	});
+	$('#export-button-run').oneClick(function(){
+	     var format = $('#export-input-format').val();
+	     self.runBackup(format);
+	});      
+	
+	//by default let's preview the first thing
+	     var format = $('#export-input-format').val();
+	     self.livePreview(format);	
 },
 
 livePreview: function(self, format){
-     var area = $('#backup-live-preview');
+     var area = $('#export-live-preview');
      if(!format){
           //nothing, clear the live preview area
           area.html('');
@@ -45,7 +58,8 @@ runBackup: function(self, format){
      if(Object.values(self.formats).indexOf(format) == -1) return false;
      
      var text = self.formatCards(format, chevre.p.cards, false); //in textarea not html
-     $('#backup-text').val(text).css('height',0).change(); //triggers autogrow to make it just fit; see http://is.gd/Nwssxa
+     $('#export-output-text').val(text);
+     //.css('height',0).change(); //triggers autogrow to make it just fit; see http://is.gd/Nwssxa
      
      //update filename extension to save to
      var extension = 'txt';
@@ -56,18 +70,13 @@ runBackup: function(self, format){
           case self.formats.slashSep:   extension = 'csv'; break; //TODO consider .tsv (tab-sep vals) or .txt
           case self.formats.enterSep:   extension = 'txt';
      }
-     $('#backup-extension').html(extension);
+     $('#export-output-extension').html(extension);
      
-     (function show(){
-          $('#backup-text').change(); //in case it got stuck @ 0 height... that tends to happen
-          $('#backup-lower').show();
-     }).delay(200); //wait for a few pending things to finish
-     
+     $('#export-output').show();
 },
 
 /**
- * Formats the t} format     Something from self.formats.
- * @param {Card[]}given cards into a string that's ready to be shown to the user. 
+ * given cards into a string that's ready to be shown to the user.to the user.
  * @param {Object} format     Something from self.formats.
  * @param {Card[]} cards      An array of cards.
  * @param {boolean} html      True if the text should be rendered as HTML (<br> etc), false if rendered for textarea (\n etc.)

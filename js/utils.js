@@ -3,6 +3,26 @@
  */
 
 /**
+ * Loads the container with HTML from the source, with the data supplied. This uses Handlebars.
+ * @param {String}  source    the name of the index. Omit the hashtag. e.g. "template-project".
+ * @param {jQuery}  container the element to put the rendered HTML into.
+ * @param {Object}  data      the data used to render the template.
+ * @param {boolean} append    [optional; default false] if true, container will have HTML appended, not replaced.
+ * @return {jQuery} the jQuery items that were loaded into the container. This is just a collection of items, so to find something inside use [return value].closest([selector]).
+ */
+function template(source, container, data, append){
+     var sourceHTML = $('#' + source).html();
+     var templateFn = Handlebars.compile(sourceHTML);
+     var html = templateFn(data);
+     var jQ = $(html);
+     if(append)
+          container.append(jQ);
+     else
+          container.empty().append(jQ);
+     return jQ;
+}
+
+/**
  * Clones an HTML template with the given ID and returns it.
  * The template should have the class "hidden".
  * @param {String}  id  the id of the template you want to clone in the HTML (don't include the hashtag #).
