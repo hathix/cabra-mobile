@@ -597,8 +597,8 @@ updateManager: function(self){
 },
 
 loadCardChart: function(self){
-    if(self.cards.isEmpty()){
-        //no cards, draw nothing
+    if(self.cards.isEmpty() || $('#deck-home-card-chart').is(':hidden')){
+        //no cards, draw nothing OR it was hidden since the device can't handle drawing it
         $('#deck-home-card-chart').empty();
         //$('#project-card-chart').css({ 'height': '25px' }); //otherwise there would be a lot of empty space since the charts force it to be 300px //PROBLEM: after this, the charts stay 25px so it looks weird
         $('#deck-home-card-chart').html('<p class="lead text-info">This deck has no cards. Make some!</p>');
@@ -613,7 +613,7 @@ loadCardChart: function(self){
     for(var s=MIN_STARS; s<=MAX_STARS; s++){
     	//for each amount of stars, count how many we have of that
     	data.push([
-    		s + ' Stars',
+    		s > 1 ? s + ' Stars' : s + ' Star',
     		starAmounts.count(s)
     	]);
     }

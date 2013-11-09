@@ -102,10 +102,22 @@ loadCard: function(self, card){
     //bind clicks
     var area = $('#study-card-area');
     
+    //responsive measure to set text size
+    /*area.find('.study-text').each(function(){
+	    $(this).responsiveMeasure({
+	          //idealLineLength: 66 //amazingly the default is right
+	          minimumFontSize: 18,
+	          maximumFontSize: 18*2    		
+	    });
+    });*/
+   //just Q for now
+   self.responsiveMeasure(area.find('#study-main-card-question').find('p'));
+    
     //showing answer/checking for FR
     area.find('.btn-show-answer').oneClick(function(){
     	$(this).hide();
     	area.find('.hidden').removeClass('hidden');
+    	self.responsiveMeasure(area.find('#study-main-card-answer').find('p'));
     });
     area.find('.btn-study-result-yes').oneClick(function(){
     	self.studiedCard(card, StudyResult.YES);
@@ -164,6 +176,8 @@ loadCard: function(self, card){
  	});
  	//stars
  	var starArea = $('#study-sidebar-stars');
+ 	starArea.empty().append(card.getStarElement());
+ 	/*
  	var stars = card.getStars(); //1-5
  	//color text
  	var cssClass = "text-default";
@@ -185,6 +199,7 @@ loadCard: function(self, card){
  			$(this).addClass("glyphicon-star-empty");
  		}
  	});
+ 	*/
  	 
    /* 
     //determine what to show on front
@@ -235,7 +250,7 @@ studiedCard: function(self, card, result){
  * Changes the text in #study-textarea. 
  * @param {String} html  what to put in there - usually question or answer.
  */
-setStudyText: function(self, html){
+/*setStudyText: function(self, html){
      $('#study-textarea').htmlFade(html);
           
      //text area responsive
@@ -244,7 +259,7 @@ setStudyText: function(self, html){
           minimumFontSize: chevre.options.fontSize,
           maximumFontSize: chevre.options.fontSize*2
      })}).delay(100);     
-},
+},*/
 
 end: function(self){
     //update the study session end page (switch when we're all done)
@@ -336,6 +351,19 @@ loadResultsChart: function(self){
             location: 'e'
         }    
     });  
+},
+
+
+/**
+ * Adjusts the font size of the given element to be pleasing to the eye. 
+ * @param {jQuery} elem		must contain text.
+ */
+responsiveMeasure: function(self, elem){
+	elem.responsiveMeasure({
+      //idealLineLength: 66 //amazingly the default is right
+      minimumFontSize: 18,
+      maximumFontSize: 18*2    		
+	});	
 }
     
 });

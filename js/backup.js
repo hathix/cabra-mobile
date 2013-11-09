@@ -73,6 +73,7 @@ runBackup: function(self, format){
      $('#export-output-extension').html(extension);
      
      $('#export-output').show();
+     $('#export-output-text').focus().select();
 },
 
 /**

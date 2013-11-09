@@ -6,8 +6,9 @@
  * 4. jQuery store
  * 5. jQuery browser (from 1.8.3; needed for jqPlot)
  * 6. jQuery Touch Punch
- * 7. Handlebars #if conditional 
- * 8. Sugar JS
+ * 7. jQuery Alter Class
+ * 8. Handlebars #if conditional 
+ * 9. Sugar JS
  */
 
 // usage: log('inside coolFunc', this, arguments);
@@ -621,6 +622,44 @@ jQuery.sub = function() {
  *  jquery.ui.mouse.js
  */
 (function(b){b.support.touch="ontouchend" in document;if(!b.support.touch){return;}var c=b.ui.mouse.prototype,e=c._mouseInit,a;function d(g,h){if(g.originalEvent.touches.length>1){return;}g.preventDefault();var i=g.originalEvent.changedTouches[0],f=document.createEvent("MouseEvents");f.initMouseEvent(h,true,true,window,1,i.screenX,i.screenY,i.clientX,i.clientY,false,false,false,false,0,null);g.target.dispatchEvent(f);}c._touchStart=function(g){var f=this;if(a||!f._mouseCapture(g.originalEvent.changedTouches[0])){return;}a=true;f._touchMoved=false;d(g,"mouseover");d(g,"mousemove");d(g,"mousedown");};c._touchMove=function(f){if(!a){return;}this._touchMoved=true;d(f,"mousemove");};c._touchEnd=function(f){if(!a){return;}d(f,"mouseup");d(f,"mouseout");if(!this._touchMoved){d(f,"click");}a=false;};c._mouseInit=function(){var f=this;f.element.bind("touchstart",b.proxy(f,"_touchStart")).bind("touchmove",b.proxy(f,"_touchMove")).bind("touchend",b.proxy(f,"_touchEnd"));e.call(f);};})(jQuery);
+
+
+
+	/**
+	 * jQuery alterClass plugin
+	 * https://gist.github.com/peteboere/1517285
+	 *
+	 * Remove element classes with wildcard matching. Optionally add classes:
+	 * $( '#foo' ).alterClass( 'foo-* bar-*', 'foobar' )
+	 *
+	 * Copyright (c) 2011 Pete Boere (the-echoplex.net)
+	 * Free under terms of the MIT license: http://www.opensource.org/licenses/mit-license.php
+	 *
+	 */
+	(function($) {
+		$.fn.alterClass = function(removals, additions) {
+			var self = this;
+			if (removals.indexOf('*') === -1) {
+				// Use native jQuery methods if there is no wildcard matching
+				self.removeClass(removals);
+				return !additions ? self : self.addClass(additions);
+			}
+
+			var patt = new RegExp('\\s' + removals.replace(/\*/g, '[A-Za-z0-9-_]+').split(' ').join('\\s|\\s') + '\\s', 'g');
+
+			self.each(function(i, it) {
+				var cn = ' ' + it.className + ' ';
+				while (patt.test(cn)) {
+					cn = cn.replace(patt, ' ');
+				}
+				it.className = $.trim(cn);
+			});
+
+			return !additions ? self : self.addClass(additions);
+		};
+
+	})(jQuery); 
+
 
 /***
  * Handlebars #if conditional

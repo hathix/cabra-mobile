@@ -157,9 +157,7 @@
 				</div>
 
 				<div class="row">
-					<div class="col-lg-3 col-md-4 col-sm-4  col-xs-12" id="deck-home-card-chart">
-						
-					</div>
+					<div class="col-lg-3 col-md-4 col-sm-4  col-xs-12 hidden-xs" id="deck-home-card-chart"></div>
 					<div class="col-lg-9 col-md-8 col-sm-8  col-xs-12">
 		                <div class="row" id="project-page-list">
 						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
@@ -255,12 +253,13 @@
                     </span>
                 </div>	        	
 	        	
-	        	<a data-href="study-main" class="btn btn-primary" type="button">Start</a>       	
+	        	<a data-href="study-main" class="btn btn-primary btn-lg" type="button">
+	        		<span class="glyphicon glyphicon-play"></span> Start</a>       	
             </section>
             <section id="study-main" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check" data-childof="study">
                 <div class="row">
                 	<div id="study-card-area"></div>
-		            <div class="col-lg-3 well" id="study-sidebar">
+		            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 well" id="study-sidebar">
 		            	<div class="row">
 		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 		            			<button class="btn btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>
@@ -302,9 +301,9 @@
             	
             	<div id="study-result-chart"></div>
  
-            	<a href="#" data-href="deck-home" class="btn btn-primary">
+            	<a href="#" data-href="deck-home" class="btn btn-primary btn-lg">
             		<span class="glyphicon glyphicon-ok"></span> Done</a>               	
-            	<a href="#" data-href="study" class="btn btn-default">
+            	<a href="#" data-href="study" class="btn btn-default btn-lg">
             		<span class="glyphicon glyphicon-refresh"></span> Study again</a>
          		
             </section>
@@ -588,7 +587,7 @@
                     	<br>
                     	
                         <button class="btn btn-block btn-lg btn-success" id="organize-button-save" type="button">
-                        	<span class="glyphicon glyphicon-check"></span> Save
+                        	<span class="glyphicon glyphicon-saved"></span> Save
                         </button>                    	
                     </div>
                 </div>
@@ -781,15 +780,23 @@
         <script id="template-project-pages" type="text/x-handlebars-template">
             {{#each pages}}
             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><a data-href="{{slug}}"> <span class="glyphicon glyphicon-{{icon}}"></span> 
-                            {{name}} </a></h4>
-                    </div>
-                    <p class="panel-body hidden-xs">
-                        {{description}}
-                    </p>
-                </div>
+            	<div class="visible-lg visible-md visible-sm">
+	                <div class="panel panel-default">
+	                    <div class="panel-heading">
+	                        <h4><a data-href="{{slug}}"> <span class="glyphicon glyphicon-{{icon}}"></span> 
+	                            {{name}} </a></h4>
+	                    </div>
+	                    <p class="panel-body hidden-xs">
+	                        {{description}}
+	                    </p>
+	                </div>            		
+            	</div>
+            	<!-- OR -->
+				<div class="visible-xs">
+					<a data-href="{{slug}}" class="btn btn-default btn-block" type="button">
+						<span class="glyphicon glyphicon-{{icon}}"></span> {{name}} 
+					</a>
+				</div>
             </div>
             {{/each}}
         </script>
@@ -836,7 +843,7 @@
         <!-- for the studying page; shows setup page before you begin -->
         <!-- Pass the session object -->
         <script id="template-study-main" type="text/x-handlebars-template">
-            <div class="col-lg-9 text-center">
+            <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 text-center">
             	{{#with activeCard}}
 	            	<div class="study-main-card">
 	            		{{#ifFunction "hasImage"}}
@@ -876,19 +883,20 @@
             				<!--<hr class="divider hidden">-->
             				<div class="wrapper">
 	        		        <div id="study-main-card-answer" class="hidden">
-				                	<p class="text-center lead study-text text-info">
-					                	{{#compare ../../options.style "normal"}}
-					                		{{answer}}
-					                	{{else}}
-					                		{{question}}
-					                	{{/compare}}	  
-				                	</p> 
+			                	<p class="text-center lead study-text text-info">
+				                	{{#compare ../../options.style "normal"}}
+				                		{{answer}}
+				                	{{else}}
+				                		{{question}}
+				                	{{/compare}}	  
+			                	</p> 
 	        		        </div>
 	        		       	</div>
         		        {{/unlessFunction}}
         		      </div><!-- col-12 or col-9 based on image -->
         		    </div>	
-        		    <br><br>
+        		    <br>
+        		    <div class="space-ensurer">
 		                {{#ifFunction "isMultipleChoice"}}
 			                <div class="btn-group btn-group-vertical btn-block">
 			                	{{#each answer.choices}}
@@ -928,7 +936,8 @@
 			                		</div>
 			                	</div>			                		
 		                	</div>
-		                	<br><br>
+		                </div>
+		                <br>
 
 		                {{/ifFunction}}
                 {{/with}}
@@ -938,23 +947,38 @@
         <!-- for card manager; renders all cards-->
         <!-- Pass {cards:[Card,Card,Card]} - that's right, ALL CARDS in project! (or at least as many as you want to show) -->
         <script id="template-manage-cards" type="text/x-handlebars-template">
-        	{{#each cards}}
-	            <a class="list-group-item">
-	            	{{#ifFunction "hasImage"}}
-	            		<img class="img-rounded pull-left media-object" src="{{imageURL}}">
-	            	{{/ifFunction}}
-	            	<div class="pull-right">
-	            		{{#call "getStarHTML"}}{{/call}}
-	            	</div>
-	                <p>{{#call "getQuestionText"}}{{/call}}</p>
-	                <p>{{#call "getAnswerText"}}{{/call}}</p> 
-	            </a>  
- 
-            {{else}}
-            	<a class="list-group-item">
-            		<span class="text-danger">No cards match your criteria. :(</div>	
-            	</a>
-            {{/each}}    	
+        	
+        	<div class="table-responsive1">
+        		<table class="table table-striped table-hover">
+		        	{{#each cards}}
+			            <tr>
+			            	<td>
+				            	{{#ifFunction "hasImage"}}
+				            		<img class="img-responsive media-object" src="{{imageURL}}">
+				            	{{/ifFunction}}			            		
+			            	</td>
+							<td style="width: 35%"><p>{{#call "getQuestionText"}}{{/call}}</p></td>
+							<td style="width: 35%"><p>{{#call "getAnswerText"}}{{/call}}</p></td>
+							<td class="hidden-xs">{{#call "getStarHTML"}}{{/call}}</td>
+							<td>
+								<button class="btn btn-default btn-sm">
+									<span class="glyphicon glyphicon-edit"></span>
+								</button>
+							</td>
+			            </tr>  
+		 
+		            {{else}}
+		            	<tr class="alert-danger">
+		            		<td colspan="4">
+		            			No cards match your criteria. :(
+		            		</td>
+		            	</tr>
+		            {{/each}}         			
+        		</table>
+        	</div>
+        	
+        	
+   	
         </script>
 
         <!--for rendering the cards to be printed-->

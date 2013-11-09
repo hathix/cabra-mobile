@@ -166,7 +166,8 @@ getStarElement: function(self){
  		case 4: cssClass = "text-info"; break;
  		case 5: cssClass = "text-success"; break;
  	}
- 	starArea.removeClass().addClass(cssClass);
+ 	starArea.removeClass('text-default text-danger text-warning text-info text-success');
+ 	starArea.addClass(cssClass);
  	//fill stars
  	starArea.children().each(function(i){
  		//i = star index; 0-4
@@ -175,7 +176,8 @@ getStarElement: function(self){
  			$(this).addClass("glyphicon-star");
  		}
  		else{
- 			$(this).addClass("glyphicon-star-empty");
+ 			//$(this).addClass("glyphicon-star-empty");
+ 			$(this).remove(); //NEW: get rid of stars instead of leaving them empty
  		}
  	});	
  	
