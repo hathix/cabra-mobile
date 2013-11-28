@@ -80,6 +80,12 @@ var TOAST_DURATION_SHORT = 2000;
 var TOAST_DURATION_LONG = 5000;
 var TOAST_DURATION_FOREVER = 2013 * 1000; //you'll have to manually kill this
 var TOAST_VERTICAL_PLACEMENT = 4/5; //how far down page (vertically) to place the toast; Android uses 2/3 for landscape and 85% for portrait. I've found that 3/4 and 4/5 both work well
+var ToastTypes = {
+	SUCCESS:	'success',
+	INFO:		'info',
+	WARNING:	'warning',
+	DANGER:		'danger'	
+};
 
 /* API */
 //Quizlet - https://quizlet.com/api_dashboard/

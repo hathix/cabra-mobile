@@ -59,6 +59,12 @@
 			</div>
             <a class="navbar-brand" href="#">Cabra</a>
             <div class="navbar-collapse collapse navbar-left">
+            	<ul class="nav navbar-nav">
+            		<li class="hidden-md hidden-sm hidden-xs" id="breadcrumbs">BREADS HERE</li>
+            	</ul>
+            </div>
+            <div class="navbar-collapse collapse navbar-right">
+
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="#" data-href="_back"> <span class="glyphicon glyphicon-chevron-left"></span></a>
@@ -69,7 +75,7 @@
                     <li>
                         <a href="#" data-href="_forward"> <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </li>
-                    <li class="hidden-md hidden-sm hidden-xs" id="breadcrumbs">BREADS HERE</li>
+                    
                 </ul>
                 <div style="display: none;" id="triggers">
                     <a href="#home" data-toggle="tab" id="trigger-home"></a>
@@ -586,9 +592,9 @@
                     	
                     	<br>
                     	
-                        <button class="btn btn-block btn-lg btn-success" id="organize-button-save" type="button">
+                        <a data-href="home" class="btn btn-block btn-lg btn-success" id="organize-button-save" type="button">
                         	<span class="glyphicon glyphicon-saved"></span> Save
-                        </button>                    	
+                        </a>                    	
                     </div>
                 </div>
             </section>
@@ -731,6 +737,11 @@
         </div>
         <!-- /container -->
         
+        <!-- extra stuff that floats on top of page -->
+        <div id="floaters">
+        	
+        </div>
+        
         <!-- dialogs -->
 		 <div class="modal fade" id="dialog-deck-create" tabindex="-1" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
@@ -752,7 +763,7 @@
 		  </div><!-- /.modal -->        
         
         <!-- templates -->
-        <!-- panel containing info about each project -->
+        <!-- panel containing info about each project; on main page -->
         <script id="template-project-panel" type="text/x-handlebars-template">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -765,6 +776,12 @@
                             {{#if description}}
                                 <span class="text-muted">{{description}}</span>
                             {{/if}}
+                            
+                            <button type="button" class="close" aria-hidden="true">
+                            	<span class="glyphicon glyphicon-cog"></span>
+                            	
+                            </button>
+
                             <!--<p class="list-group-item-text pull-right">
                             	<button class="btn btn-default"><span class="glyphicon glyphicon-cog"></span></button>
                             </p>-->
@@ -1093,7 +1110,12 @@
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>        	
-	        </div>        	
+	        </div> 
+	        <div id="template-toast" class="alert alert-danger toast fade in">
+	        	<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>  
+	        	<span class="toast-text"></span>
+	        	  	
+	        </div>
         </div>
 
         

@@ -118,7 +118,7 @@ refreshProjectList: function(self){
          };
          
           //make panel containing each
-          var panel = template("template-project-panel", $('#project-list'), data, true);     
+          var panel = template("template-project-panel", $('#project-list'), data, true);    
     });
     
     //reload all clicks
@@ -126,6 +126,14 @@ refreshProjectList: function(self){
      var id = $(this).data('id');
      //load that project
      self.loadProject(self.getProjectByID(id));     
+    });
+    $('.project-list-item').find('.close').click(function(e){
+    	var id = $(this).closest('.project-list-item').data('id');
+    	var project = self.getProjectByID(id);
+    	e.stopPropagation(); //prevent the click handler for the whole thing being clicked (that'd take us to project home page)
+    	
+    	
+    	//TODO do something with this!!
     });
      
      //$('#project-list').listview('refresh');
@@ -515,6 +523,7 @@ syncDownload: function(self, unpack){
                 $.store.set(SL_KEYS.PROJECTS, projects);
                 //self.save(undefined, true); //no project; and don't sync it
                 
+                toast("Your cards were successfully synced!",{type: ToastTypes.SUCCESS});
                 //reload the page
                 //<TODO>: remove all projects and load in the new ones
                 //TODO: make this more efficient - keep a tag of when we synced; if that's more recent than this then don't sync
@@ -535,7 +544,7 @@ syncDownload: function(self, unpack){
             
             //tell user
             toast("Sync download failed (your device may be offline.) No worries - Cabra's loading flashcards from your device.", 
-               { error: true, duration: TOAST_DURATION_LONG });
+               { type: ToastTypes.DANGER, duration: TOAST_DURATION_LONG });
         }
     })
 }

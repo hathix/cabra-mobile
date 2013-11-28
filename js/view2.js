@@ -61,17 +61,30 @@ function initPages(){
     		$('#sync-passcode-reminder').html($.store.get(SL_KEYS.SYNC_KEY));
     		$('#sync-button-upload').oneClick(function(){
 			    chevre.syncUpload(
-			         function success(){ toast('Sync upload successful!', { duration: TOAST_DURATION_SHORT })},
-			         function failure(){ toast('Sync upload failed. Enable your internet connection and try again.', { error: true})}
+			         function success(){ toast('Your cards were successfully uploaded!', { type: ToastTypes.SUCCESS, duration: TOAST_DURATION_SHORT })},
+			         function failure(){ toast('Uploading your cards failed. Enable your internet connection and try again.', { type: ToastTypes.DANGER })}
 			    );
     		});
     		$('#sync-button-download').oneClick(function(){
-    			chevre.syncDownload();
+    			chevre.syncDownload(false);
+    			bootbox.dialog({
+    				message: "Your cards have been successfully downloaded! <strong>You'll now need to refresh the page.</strong>",
+    				title: "Download successful!",
+    				buttons: {
+    					main: {
+    						label: "OK",
+    						className: "btn-primary",
+    						callback: function(){
+    							reloadPage();
+    						}
+    					}
+    				}	
+    			});
     		});
     		$('#sync-button-stop').oneClick(function(){
 			    //cancel sync - destroy key
 			    $.store.remove(SL_KEYS.SYNC_KEY);
-			    nav.refreshPage();   			
+			    reloadPage();		
     		});
     	}
     	else{
