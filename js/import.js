@@ -11,6 +11,9 @@ quizlet: function(){
     $('#button-import-send').oneClick(function(){
         var searchText = $('#input-import-text').val();
         if(searchText){
+        	//put in the loader while we're waiting
+        	var html = getClonedTemplate('template-import-loading').html();
+        	$('#import-list-quizlet').html(html);
             importer.quizletText(searchText);
         }    
     });
@@ -54,7 +57,7 @@ quizletText: function(text){
 	           	var id = parent.data('id');
 	           	importer.quizletID(id);
 	           	nav.openPage(NAV_BASE);           		
-           });
+           });       
        }
    });    
 },

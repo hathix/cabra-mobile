@@ -2,8 +2,71 @@ function initUI(){
 	initPages();
 	initDialogs();
 	
-	//setup
+	//setup code
 	organizer.setup();
+	
+	//options
+	
+	//about
+    //just give a span any of these classes and the appropriate stuff will be entered
+    $('.about-version').html(ABOUT.version);
+    $('.about-codename').html(ABOUT.codename);
+    $('.about-released').html(ABOUT.date.short()); 
+    $('.about-copyright-year').html(Date.create().format("{yyyy}")); //current year for copyright stuff
+    
+    //this one requires a UL or OL
+    //grab the array of changes, and convert to a bunch of LI's
+    var changesLIs = ABOUT.changes.map(function(string){
+        return "<li>" + string + "</li>";
+    }).join("");
+    $('.about-changes').html(changesLIs); //must be ul or ol for this!	
+	
+	//init snapper!
+	var snapper = new Snap({
+		element: document.getElementById("main-container"),
+		disable: 'right',
+		hyperextensible: false,
+		minDragDistance: 10, //default 5
+		flickThreshold: 10, //default 50
+	});
+	$('#navbar-menu-button').oneClick(function(){
+		//if open, close
+		if(snapper.state().state == "left"){
+			snapper.close();
+		}
+		//if close, open
+		else{
+			snapper.open('left');
+		}
+	});
+	/*
+	//manage snapper classes - close button if opened, open button if closed
+	var closedClass = "glyphicon-th";
+	var openedClass = "glyphicon-remove";
+	snapper.on('open', function(){
+		//change arrow to opened state
+		$('#navbar-menu-button').find('.glyphicon').removeClass(closedClass).addClass(openedClass);
+	});
+	snapper.on('close', function(){
+		//change arrow to closed state
+		$('#navbar-menu-button').find('.glyphicon').addClass(closedClass).removeClass(openedClass);
+	});	
+	snapper.on('drag', function(){
+		$('#navbar-menu-button').find('.glyphicon').toggleClass(closedClass).toggleClass(openedClass);
+	});
+	*/
+	
+	/* MISCELLANEOUS STUFF */
+	//menu
+
+	$('#menu-links').find('a').oneClick(function(){
+		snapper.close();	
+		(function(){$('#menu-links').find('li').removeClass('active')}).delay(500); //prevents .active from 'sticking' to the pills; delay to avoid interfering with animation (not really sure why)
+	});
+	$('#menu-link-feedback').click(function(){
+		console.log(3);
+		feedback.ask(true); //force to show it
+	});
 }
 
 function initPages(){
@@ -20,7 +83,8 @@ function initPages(){
 	});
 	
 	PageDB.getJQuery('create').oneBind('load', function(){
-		chevre.p.prepareCreateCardPage();
+		//chevre.p.prepareCreateCardPage();
+		Editor.loadPage();
 	});	
 	PageDB.getJQuery('manage').oneBind('load', function(){
 		chevre.p.updateManager();
@@ -52,6 +116,16 @@ function initPages(){
     PageDB.getJQuery('organize').oneBind('load', function(){
     	organizer.load();
     });	    
+    PageDB.getJQuery('options').oneBind('load', function(){
+		loadOptions();
+    });
+    PageDB.getJQuery('contact').oneBind('load', function(){
+    	//prevent spammers from harvesting my email by doing this
+		var en = "neel";
+		var ed = "hathix [dot] com";
+		var at = "[at]";
+		$('#contact-email').html(en + " " + at + " " + ed);
+    });
     PageDB.getJQuery('sync').oneBind('load', function(){
     	var setup = chevre.syncActivated();
     	$('#sync-show-setup').toggle(setup); //show if setup
@@ -94,7 +168,7 @@ function initPages(){
     			if(passcode && passcode != ""){
     				$.store.set(SL_KEYS.SYNC_KEY, passcode);
     				chevre.syncDownload();
-    				nav.refreshPage();
+    				reloadPage();
     			}
     		})
     	}
@@ -103,15 +177,13 @@ function initPages(){
 
 function initDialogs(){
 	//CARD CREATE DIALOG
-	$('#dialog-deck-create').ready(function(){
-		$(this).find('.btn-submit').click(function(){
-			//add a deck w/ that name
-			var name = $('#input-deck-create-name').val();
-			if(name && name.trim()){
-				var deck = new Project(name);
-				chevre.addProject(deck);
-				$('#input-deck-create-name').val('');
-			}
-		});
+	$('#dialog-deck-create').find('.btn-submit').oneClick(function(){
+		//add a deck w/ that name
+		var name = $('#input-deck-create-name').val();
+		if(name && name.trim()){
+			var deck = new Project(name);
+			chevre.addProject(deck);
+			$('#input-deck-create-name').val('');
+		}
 	});
 }

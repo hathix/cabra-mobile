@@ -2,9 +2,9 @@ var PageDB = new Singleton({
 	
 __init__: function(self){
 	self.pages = [
-		new Page("home", "Home", "Home sweet home", "home"),
-		new Page("sync", "Sync", "Sync it up", "refresh"),
-		new Page("options","Options", "Optioned to AAA", "cog")
+		//new Page("home", "Home", "Home sweet home", "home"),
+		//new Page("sync", "Sync", "Sync it up", "refresh"),
+		//new Page("options","Options", "Optioned to AAA", "cog")
 	];
 },
 

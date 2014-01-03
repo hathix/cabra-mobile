@@ -2,22 +2,27 @@ body{
     padding-top: 60px;
 }
 
+#main-container{
+	padding-top: 60px;
+	background: #FFF; /* must have opaque bg to hide snapjs drawer */
+}
+
 /****************** NAVBAR ***********************/
 
 /*
 .navbar{
     background-color: rgb(220,60,60);
     color: #fafafa !important;
-    font-family: "quicksandbook";
+    font-family: "OpenSansRegular";
 }
 */
 
 .navbar-brand{
-    font-size: 200% !important;
+    font-size: 23px !important;
 }
 
 .navbar-brand, .stylized{
-    font-family: lobster2_regular !important;	
+    font-family: OpenSansBold, Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 .navbar .breadcrumb{
@@ -30,30 +35,65 @@ body{
 	background: inherit;
 }
 
-/******* DECK HOME ******/
-#deck-home-card-chart{
-	min-height: 200px;
+.breadcrumb li, .breadcrumb li a{
+	color: rgba(255,255,255,0.85) !important;
+}
+
+.breadcrumb li.active{
+	color: rgba(255,255,255,1) !important;
+}
+
+#navbar-menu-button-holder{
+	padding: 0;
+}
+
+/******* MENU ********/
+#menu{
+	padding-top: 0;
+}
+
+#menu-header{
+	text-align: center;
+}
+
+#menu-links .glyphicon{
+	margin-right: 6px;
 }
 
 
 /***** CONTENT *****/
-*, #main, h1, h2, h3, h4, h5, h6, p {
-    font-family: "quicksandbook";
+*, #main, h1, h2, h3, h4, h5, h6, p, .btn {
+    font-family: "OpenSansRegular", Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 .tab-pane{
     padding: 10px;
 }
 
-.btn{
-	font-family: "quicksandbook";
-}
-
 a[data-href]{
     cursor: pointer;
 }
 
-/****** DECK HOME ****/
+/****** HOME ****/
+
+.project-list-item .project-list-item-edit{
+	position: absolute;
+	right: 7px;
+	/* vertical center */
+	top: 0;
+	bottom: 0;
+	z-index: 5;
+}
+
+.project-list-item{
+	padding-right: 30px;
+}
+
+/******* DECK HOME ******/
+#deck-home-card-chart{
+	min-height: 200px;
+}
+
 
 /****** STUDYING *****/
 .study-main-card{
@@ -113,6 +153,25 @@ hr.divider{
 	background-color: rgb(217, 237, 247);
 }
 
+#organize-group-list{
+	padding-left: 0;
+}
+
+/******* ABOUT *******/
+.about-image{
+	max-width: 200px;
+	display: block;
+	margin: auto;
+}
+
+.about-app-name{
+	font-size: 40px;
+}
+
+.about-app-tagline{
+	font-size: 22px;
+}
+
 /****** INPUT MODS ***/
 .small-text-input{
     width: 16em;
@@ -138,6 +197,8 @@ hr.divider{
 	position: absolute;
 	display: none;
 	width: 65%;
+	
+	z-index: 10001;
 	
 	border: 1px solid rgba(0, 0, 0, 0.2);
 	border-radius: 6px;	
@@ -217,6 +278,10 @@ hr.divider{
 }
 
 
+/*** BOOTSTRAP TWEAKS ***/
+.btn-link{
+	text-shadow: none;
+}
 
 /* Useful */
 
@@ -238,7 +303,7 @@ hr.divider{
 }
 
 .large-text{
-	font-size: 22px;
+	font-size: 18px;
 }
 
 .space-ensurer{

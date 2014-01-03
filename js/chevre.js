@@ -54,13 +54,16 @@ start: function(self){
     var oldVersion = $.store.get(SL_KEYS.LAST_VERSION);
     if(oldVersion && oldVersion != ABOUT.version){
         //they loaded a new version.
-        $.mobile.changePage('#updated');
+        //$.mobile.changePage('#updated');
+        template('template-updated-changes',$('#updated-changes'),{items: ABOUT.changes});
+        nav.openPage('updated');
         console.log("Chevre updated to version " + ABOUT.version);
     }
     else if(oldVersion == undefined){
         //it's the first time they're using Cabra
         //this will only show once - EVER - because version is always set later on
         //$.mobile.changePage('#welcome');
+        nav.openPage('welcome');
     }
     $.store.set(SL_KEYS.LAST_VERSION, ABOUT.version);
     
@@ -127,14 +130,50 @@ refreshProjectList: function(self){
      //load that project
      self.loadProject(self.getProjectByID(id));     
     });
-    $('.project-list-item').find('.close').click(function(e){
+    $('.project-list-item').find('.project-list-item-edit').click(function(e){
     	var id = $(this).closest('.project-list-item').data('id');
     	var project = self.getProjectByID(id);
     	e.stopPropagation(); //prevent the click handler for the whole thing being clicked (that'd take us to project home page)
     	
+    	//populate fields
+    	var dialog = $('#dialog-deck-edit');
+    	dialog.find('.deck-name').html(project.name);
+    	//load the merge deck selector with the names of our othe rdecks
+    	$('#deck-edit-merge-into').html('');
+		chevre.projects.forEach(function(deck){
+		    if(deck.equals(project)) return; //can't merge into the project we're merging from
+		    var option = $('<option></option>');
+		    option.html(deck.name);
+		    option.val(deck.id);
+		    $('#deck-edit-merge-into').append(option); 
+		});
+        	
+    	//handle clicks
+    	dialog.find('.btn-merge').oneClick(function(){
+		    var mergeFrom = project;
+		    var mergeToID = $('#deck-edit-merge-into').val();
+		    var mergeTo = self.getProjectByID(mergeToID);
+		    //console.log(mergeFrom.name + " -> " + mergeTo.name);
+		    self.mergeProjects(mergeFrom, mergeTo);
+		    
+		    //close merge area
+			$("#deck-edit-merge").collapse('hide');		    
+    	});
+    	dialog.find('.btn-delete').oneClick(function(){
+    		//TODO decide if we need confirmation
+    		/*bootbox.confirm('Are you sure you want to permanently delete this deck?', function(){
+    			dialog.modal('hide');
+    		});*/
+    		
+    		dialog.modal('hide');
+    		self.removeProject(project);
+    	});
+    	//TODO HANDLE MERGING CLICKS
     	
-    	//TODO do something with this!!
+    	dialog.modal('show');
     });
+    //TODO make long-clicking open the edit dialog too, but that's its own can of worms...
+   
      
      //$('#project-list').listview('refresh');
 },

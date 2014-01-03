@@ -51,6 +51,23 @@ shuffle: function(self){
     self.save();
 },
 
+/**
+ * @param {String} sortType		use the SortType enum. This is what you're sorting based on: question, answer, etc. 
+ * @param {boolean} desc		if false, sorts increasing (A-Z); if true, decreasing (Z-A)
+ */
+sortCards: function(self, sortType, desc){
+	self.cards = self.cards.sortBy(function(card){
+		var sortOn;
+		switch(sortType){
+			case SortType.QUESTION: sortOn = card.getQuestionText(); break;
+			case SortType.ANSWER: sortOn = card.getAnswerText(); break;
+			case SortType.STARS: sortOn = card.getStars(); break;
+		}
+		
+		return sortOn;
+	}, desc);
+},
+
 resetCards: function(self){
     self.cards.forEach(function(card){
        card.setRank(Rank.A); 
@@ -67,6 +84,17 @@ flipCards: function(self){
         card.answer = question;    
     });
     self.save();
+},
+
+/**
+ * Given a hash, finds the appropriate card (using Card.getHash()) and returns it. If it returns null, you have a problem. 
+ */
+getCardByHash: function(self, hash){
+	var card = null;
+	self.cards.forEach(function(c){
+		if(c.getHash() == hash){ card = c; }
+	});
+	return card;
 },
 
 /**
@@ -138,6 +166,11 @@ load: function(self){
      //show them!
      template("template-project-pages",$('#project-page-list'),{pages: pages});
      
+     //managing clicking the buttons to go to each page; it's in the form .btn-launch-{slug}
+     $('.btn-launch-create').oneClick(function(){
+     	Editor.prepareCard(null); //to prepare for card __creation__	
+     });
+     
      //description & name
      $('.univ-deck-name').html(self.name);
      self.reloadDescription();
@@ -148,10 +181,12 @@ load: function(self){
      	self.loadCardChart();	
      });
      
-     //batch
+     //INSIDE the batch page
      $('#batch-button-create').oneClick(function(){
      	self.batchCreate();
      });
+     
+     //
      
      //var hasCards = self.cards.length > 0;
      //var hideIfNoCards = ['study'];
@@ -267,250 +302,31 @@ load: function(self){
     */
 },
 
-/**
- * Prepares/loads the card creation dialog/page. ONLY for making new cards.
- */
-prepareCreateCardPage: function(self){
-     
-    //handle clicks
-   var questionField = $('#create-input-question');
-   var answerField = $('#create-input-answer');
-   var imageField = $('#create-image-input-file');
-   var preview = $('#create-image-preview');
-   var previewHolder = $('#create-image-preview-holder');
-   var imageIfPresent = $('#create-image-if-present'); //show in image panel if there IS an image
-   var imageIfAbsent = $('#create-image-if-none'); //show in image panel if there is NOT an image
-   //var previewHolder = $('#create-card-image-holder');    
-     
-     questionField.val('');
-     answerField.val('');
-     
-     function adjustImageArea(imagePresent){
-	     imageIfPresent.toggle(imagePresent);
-	     imageIfAbsent.toggle(!imagePresent);
-	     if(imagePresent){
-	     	previewHolder.slideDown();
-	     }
-	     else{
-	     	previewHolder.slideUp();
-	     	preview.removeAttr('src');
-	     }    	
-     }
-     
-     //by default hide preview stuff; assume no image
-     adjustImageArea(false);
-     imageField.val(null);
-/*
-    previewHolder.slideUp();   
-    preview.removeAttr('src');       
-    $('#create-card-image-collapsible').trigger('collapse');   
-      $('.create-image-hint').show();
-      $('.edit-image-hint').hide();           
-     
-
-          $('#create-card-question').val('');
-          $('#create-card-answer').val('');
-*/
-     //$('label[for="create-card-image"]').html(editing ? "")  
-      
-    //when image is added/changed, immediately uploaded it
-    imageField.oneBind('change.uploadImage', function(){
-         
-         //clear the old stuff
-         adjustImageArea(false);
-         
-         //if val == "" then it was cleared, else it was set
-         if(imageField.val()){
-               //get uploading
-               imageField.uploadImage(function success(imageURL) {
-                    preview.attr('src', imageURL);
-					adjustImageArea(true);
-                    
-                    imageField.val(null);
-
-                    toast("Your image was successfully uploaded!")
-               }, function failure() {
-                    imageField.val(null);
-                    toast("Uploading image failed. Either your internet is disconnected, or something else is wrong. Try again later.", {
-                         duration : TOAST_DURATION_LONG,
-                         error : true
-                    });
-               });
-               
-                
-          }
-    });  
-    
-    //remove image?
-    $('#create-image-button-remove').oneClick(function(){
-    	adjustImageArea(false);  
-    });
-    
-    //card creator page!
-    var mcContainer = $('#create-mc-template-output');
-    
-    function addMCAnswer(){
-    	 //we're creating from scratch so pass no data
-    	 
-    	 var addedItem = template('template-create-mc-item', mcContainer, {}, true); //append
-    	 
-    	 addedItem.find('.btn-remove').oneClick(function(){
-    	 	//there MUST be at least 2 answer choices!
-    	 	var numChoices = mcContainer.find('.mc-item').length;
-    	 	if(numChoices <= 2) return;
-    	 	
-    	 	$(this).closest('.mc-item').remove();
-    	 	
-    	 	updateMCAnswers();
-    	 });
-         updateMCAnswers();
-         addedItem.find('.mc-item-input-text').focus();
-    }
-    
-    //call me when you add/remove a mc item
-    function updateMCAnswers(){
-         var numChoices = mcContainer.find('.mc-item').length;
-         //if there are 2 choices, hide the delete buttons, otherwise show them
-         $('.mc-item').find('.btn-remove').parent().toggle(numChoices > 2); //shown if >2, hidden otherwise
-    }
-    
-    //By default, let's put in a few ans. choices
-    function resetMCAnswers(){
-         //clear existing inputs
-         mcContainer.html('');
-         //add a few inputs
-          var DEFAULT_NUM_CHOICES = 4;
-          for(var i=0; i<DEFAULT_NUM_CHOICES; i++){
-               addMCAnswer();
-          }    
-    }
-    resetMCAnswers();
-    
-    //handle "add choice" click
-    $('#create-mc-button-add').oneClick(function(){
-    	addMCAnswer();
-    });
-    
-    /*
-    $('#question-choice-free').oneClick(function(){
-         $('#create-section-free').show();
-         $('#create-section-mc').hide();      
-    });
-    $('#question-choice-mc').oneClick(function(){
-         resetMCAnswers();  
-         $('#create-section-free').hide();
-         $('#create-section-mc').show(); 
-    });  
-    */
-        
-
-    //resetMCAnswers();
-     
-    
-    //the ACTUAL creation button
-    $('#create-button-add').oneClick(function(e){
-         //what type of question is it? based on that, choose question and answer vars accordingly
-         var question = questionField.val();
-         var answer;
-         var rightAnswer; //string of text of right answer
-         
-         if($('#create-nav-tab-fr').is('.active')){
-              //free-response is open
-              answer = answerField.val();
-         }
-         else{
-              //multiple-choice is open
-              
-              //check answer choices
-              var rawEntries = mcContainer.find('.mc-item-input-text').map(function(){ return $(this).val(); }); //jQuery; has value of every input, even empty ones
-              rawEntries = rawEntries.toArray().compact(true).unique(); //convert to normal js array and get rid of empty inputs which show up as ""
-              //there MUST be >=2 OK entries here
-              if(rawEntries.length >= 2){
-                   answer = { choices: rawEntries };
-              
-                   //check what the right answer index is
-                   var index = null;
-                   $('.mc-item-input-correct').each(function(i){
-                   	if($(this).is(':checked')) index = i;
-                   });
-                   if(index !== null){
-                        //we got an index!
-                        answer.right = index;
-                   }                   
-                   else{
-                   		//didn't check anything!
-                        answer = false;
-                   }
-              }
-              else{
-                   answer = false;
-              }
-
-         }
-         
-        
-        //must provide question & answer
-        if(question && answer){
-             //clean them out NOW for the only time
-             question = cleanInput(question);
-             if(answer.hasOwnProperty('choices')) answer.choices = cleanInput(answer.choices); //MC
-             else answer = cleanInput(answer); //free resp
-             
-
-              card = new Card(question, answer);
-              self.addCard(card);
-             self.save();
-            
-         
-            
-            //if they specified an image, have it be added and then re-save (async)
-            //do it now anyway (if they added an image, we'll just re-save later)
-            if(preview.attr('src')){
-                 //preview's already done, just grab the url they got there
-                 var imageURL = preview.attr('src');
-                 card.setImageURL(imageURL);    
-                 self.save();          
-            }
-            
-            
-            //clear the fields
-            questionField.val('');
-            answerField.val('');
-            imageField.val('');
-            adjustImageArea(false);
-            
-            if(card.isMultipleChoice())
-               resetMCAnswers();
-            
-            //give page focus to question field
-            questionField.focus();            
-        }
-        else{
-            //they omitted one or both
-            if(!question) questionField.focus();
-            else if(!answer) answerField.focus();
-            
-            e.preventDefault();
-        }
-
-    });
-    $('.cancel-create-card-button').oneClick(function(){
-        //empty fields and get back
-        $('#create-card-question').val('');
-        $('#create-card-answer').val('');  
-        $("#create-card-image").val(''); 
-    });
-    $('.delete-card-button').oneClick(function(){
-         if(editing){
-          self.cards = self.cards.subtract(card);
-          self.save();     
-         }
-    }); 
-},
-
 updateManager: function(self){
     //show the spinny thingy
     //$.mobile.showPageLoadingMsg();
+    
+    /**
+     * Enters either edit or delete mode, which changes what you can do to your cards.
+     * @param {String} mode		a mode; get it from the ManageMode enum. 
+     */
+    function enterMode(mode){
+    	//ensure buttons are correctly styled and hide/show buttons appropriately
+    	if(mode == ManageMode.EDIT){
+    		$('#manage-radio-mode-edit').parent().addClass('active');
+    		$('#manage-radio-mode-delete').parent().removeClass('active');
+    		
+    		$('.manage-edit-card').show();
+    		$('.manage-delete-card').hide();
+    	}
+    	else{
+    		$('#manage-radio-mode-edit').parent().removeClass('active');
+    		$('#manage-radio-mode-delete').parent().addClass('active');
+    		
+    		$('.manage-edit-card').hide();
+    		$('.manage-delete-card').show();    		
+    	}
+    }    
     
     //empty card manager and refill
     var list = $('#manage-card-list');
@@ -524,12 +340,16 @@ updateManager: function(self){
     function loadCards(cards, highlightText){
     	template('template-manage-cards', list, {cards: cards});
     	
+    	//by default, enter edit mode
+    	enterMode(ManageMode.EDIT);
+    	
     	//highlight any instances of given text
     	if(highlightText){
 	    	//q and a are in <p>'s; replace any instances of text with bolded version
 	    	list.find('p').each(function(){
-	    		var html = $(this).html();
+	    		var html = $(this).html(); //ONE question or answer text
 	    		var matches = html.match(new RegExp(highlightText, "ig")); //ignore case; global search
+	    		//matches is usually 1 item long, but can be more if the text is found more than once (eg "Ph" in "Philadelphia")
 	    		if(matches){
 	    			//We need to bold every matching text but not re-bold something we already looked at... therefore, we need to break stuff up and do a recursive method to bold each successive piece
 	    			function emphasize(text){
@@ -537,7 +357,7 @@ updateManager: function(self){
 	    				 * GAME PLAN:
 	    				 * 1. Find things in text that match one thing we found
 	    				 * 2. Break the string around that bit
-	    				 * 3. Format that bit, then call emphasize() on last bit
+	    				 * 3. Format that bit, then call this function on last bit
 	    				 */
 	    				var indices = matches.map(function(match){
 	    					return text.indexOf(match);
@@ -571,9 +391,42 @@ updateManager: function(self){
     //by default, use all cards
     loadCards(self.cards);
        
-    //handle clicks
+    //handle clicks in top bar
+
+    $('#manage-radio-mode-edit').parent().oneClick(function(){ enterMode(ManageMode.EDIT); });
+    $('#manage-radio-mode-delete').parent().oneClick(function(){ enterMode(ManageMode.DELETE); });
+    
+    $('#manage-sort-menu').find('a').oneClick(function(){
+    	//this is a sorting button. Figure out our sorting settings
+    	var sortOn = $(this).data('sorton');
+    	var desc = $(this).data('desc');
+    	self.sortCards(sortOn, desc);
+    	nav.refreshPage();
+    });
+    
+    //edit button
+    $('.manage-edit-card').oneClick(function(){
+    	//get the hash, match it up, and edit that card
+    	var hash = $(this).data('hash');
+    	var card = self.getCardByHash(hash);
+    	
+    	Editor.prepareCard(card);
+    	nav.openPage('create');	
+    });
+    $('.manage-delete-card').oneClick(function(){
+    	//get the hash, match it up, and edit that card
+    	var hash = $(this).data('hash');
+    	var card = self.getCardByHash(hash);
+    	
+      	//update view
+      	$(this).closest('tr').remove();
+      	//update model
+      	self.cards = self.cards.subtract(card);
+      	self.save();         	
+    });    
+    
     //$('#manage-button-filter').oneClick(function(){
-    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better?
+    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better? keyup is slicker but takes more resources since it reloads a lot
     $('#manage-input-filter').oneBind('change keyup', function(){
     	var filterText = $('#manage-input-filter').val();
     	if(filterText){

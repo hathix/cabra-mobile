@@ -37,7 +37,7 @@ function getClonedTemplate(id){
 
 /**
  * Creates a toast (a small popup) temporarily. Good for showing messages (like confirmation/success) that require no input from user and aren't critical to their use of the app.
- * @param {String}  text the text to show in the app. Can include HTML.
+ * @param {String}  text the text to show in the toast. Can include HTML.
  * @param {Object}     options  [optional] contents: duration (int), error (boolean) /
  *   duration: how long to show the text. Default TOAST_DURATION_DEFAULT. Use TOAST_DURATION_[X] for lengths.
  *   type:		the classification of the toast; 'success', 'info', 'warning', 'danger' (or something from enum ToastTypes.) Default ToastTypes.INFO.
@@ -549,8 +549,6 @@ $.fn.uploadImage = function(success, failure){
      // And now, we send the formdata
      xhr.send(fd); 
 }  
-
-
 
 /*
  * Usage:

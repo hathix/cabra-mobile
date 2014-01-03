@@ -49,6 +49,12 @@ setup: function(self){
 load: function(self){
 	//group our decks...
 	var rawGrouped = chevre.projects.groupBy('group'); // {"groupName": [proj1, proj2], "group2": [proj3] }
+	
+	//ensure we have an unorganized one even if there's no projects there
+	if(!rawGrouped[GROUP_DEFAULT]){
+		rawGrouped[GROUP_DEFAULT] = [];
+	}
+	
 	//let's change it to [{groupName: [proj1, proj2]},{group2: [proj3]}]
 	var groupArray = [];
 	Object.keys(rawGrouped, function(key, value){
@@ -77,6 +83,7 @@ load: function(self){
           items: "li.list-group-item:not(#organizer-top-divider)", //DON'T sort above unorganized item
           stop: function(event, ui){
                //sorting stopped, refresh
+               self.save();
           },
           revert: false
      });	
@@ -125,6 +132,8 @@ addProject: function(self, project){
 },
 
 deleteDivider: function(self, groupName){
+	
+	
 		console.log(groupName);
       self.reassignGroups();		
       //get rid of this divider; change all projects with this group to unorganized and reload 

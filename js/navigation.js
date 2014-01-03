@@ -62,6 +62,12 @@ refreshPage: function(self){
 	self.loadCurrentPage();	
 },
 
+/**
+ * Goes back a page. 
+ */
+back: function(self){
+	self.loadPage(NAV_BACK);
+},
 
 /**
  * PRIVATE USE ONLY.

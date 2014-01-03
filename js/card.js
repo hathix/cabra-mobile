@@ -189,6 +189,23 @@ getStarElement: function(self){
  */
 getStarHTML: function(self){
 	return self.getStarElement().outerHTML();
+},
+
+/**
+ * Returns a unique (but mutable) value for this card. 
+ * @param {Object} self
+ * @return {int}	a hash
+ */
+getHash: function(self){
+	var str = JSON.stringify(self);
+	
+	//SDBM algorithm - http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
+	var hash = 0;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = char + (hash << 6) + (hash << 16) - hash;
+    }
+    return hash;
 }
     
 });

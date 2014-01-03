@@ -1,14 +1,11 @@
 
 var ABOUT = {
-    version: "0.7.0",
-    codename: {
-        name:       "Lezard", //some animal name
-        language:   "French", //language it's in
-        translation:"Dinosaur" //animal's name in english
-    },
-    date: Date.create("August 13, 2013"),
+	appName: "Cabra",
+    version: "1.0.0",
+    codename: "Postseason",
+    date: Date.create("January 1, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
-        "<strong>Multiple-choice flashcards now available</strong>",
+        "Multiple-choice flashcards now available",
         "You see studying results in a pie chart",
         "Mass card creator improvements"
     ],
@@ -144,6 +141,17 @@ var FontSize = {
      LARGE:    44,
      XLARGE:   64,
      XXLARGE:  128
+};
+
+var ManageMode = {
+	EDIT: "Edit",
+	DELETE: "Delete"
+};
+
+var SortType = {
+	QUESTION: "question",
+	ANSWER: "answer",
+	STARS: "stars"	
 };
 
 /*function getStudyMode(stringMode){

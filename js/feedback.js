@@ -1,12 +1,12 @@
 var feedback = new Singleton({
 __init__: function(self){
      self.featureChoices = [
-          //'Fill-in-the-blank studying', WILL DO
           'Equation/LaTeX support',
-          'XML/CSV flashcard import',
-          'Printable flashcards',
           'Sharing flashcards with friends',
-          'Instant flashcard translation (good for foreign languages)'
+          'Instant flashcard translation',
+          'Multiple images per flashcard',
+          'Rich-text editing of flashcards',
+          'A points/rewards system'
      ];
 },
 
@@ -15,21 +15,22 @@ __init__: function(self){
  * This will do everything for you. Just call it when you're ready.
  * Note it may or may not open the dialog.
  * (You can also open that dialog directly.)
+ * @param {boolean}	force	[optional, default false] if true, will show dialog even if it isn't time
  * @return {boolean}     true if it opens the dialog (it's time), false otherwise
  */
-ask: function(self){
+ask: function(self, force){
      //hold on! do they even want us to?
-     if (!chevre.options.askFeedback) return false;
+     if (!chevre.options.askFeedback && !force) return false;
      
      var daysSinceAsked = Date.create().daysSince(Date.create($.store.get(SL_KEYS.FB_LAST_ASKED)));
      var usesSinceAsked = $.store.get(SL_KEYS.FB_USES_SINCE_ASKED);
      
-     if(daysSinceAsked >= FB_MIN_DAYS && usesSinceAsked >= FB_MIN_USES){
+     if(force || (daysSinceAsked >= FB_MIN_DAYS && usesSinceAsked >= FB_MIN_USES)){
           //yes, show the dialog
-         $('#feedback-why').show(); //explain WHY we're asking for feedback
-          $.mobile.changePage('#feedback',{
-               role: "dialog"
-          });
+         //$('#feedback-why').show(); //explain WHY we're asking for feedback
+          template('template-feedback', $('#dialog-feedback'), { items: self.featureChoices });
+          $('#dialog-feedback').modal('show');
+          
           //reset so we ask them again later
           self.resetUsageStats();
           return true;
