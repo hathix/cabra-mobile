@@ -1,3 +1,6 @@
+/**
+ * Manages card creation and editing.
+ */
 var Editor = new Singleton({
 
 __init__: function(self){
@@ -34,6 +37,7 @@ loadPage: function(self){
 
 /**
  * Fills the card creation/editing dialog with a current card and prepares it for editing.
+ * You will need to open any page yourself.
  * This is called behind the scenes, too, when creating a new card.
  * @param {Card} card	if editing, pass the card; if creating, omit this
  */
@@ -67,6 +71,16 @@ loadForEditing: function(self, card){
 	$('#create-button-save').toggle(isEditing);
 	//$('#create-button-delete').toggle(isEditing);
 	//cancel can stay no matter what
+	//IMAGE - if the card has one, show it
+	if(isEditing && card.hasImage()){
+		self.preview.attr('src',card.getImageURL());
+		self.adjustImageArea(true);
+		$('#create-collapsible-image').collapse('show');			
+	}
+	else{
+		self.adjustImageArea(false);
+		$('#create-collapsible-image').collapse('hide');					
+	}
 	
 	//when image is added/changed, immediately uploaded it
 	self.imageField.oneBind('change.uploadImage', function() {
@@ -105,8 +119,6 @@ loadForEditing: function(self, card){
 	});
 	$('#create-button-save').oneClick(function(e) {
 		self.createCard(e);
-		//go back to manager
-		nav.back();
 	});	
 	$('.cancel-create-card-button').oneClick(function() {
 		self.cancel();
@@ -225,6 +237,8 @@ createCard: function(self, e){
      var answer;
      var rightAnswer; //string of text of right answer
      
+     var errorMsg = null;
+     
      if($('#create-nav-tab-fr').is('.active')){
           //free-response is open
           answer = self.answerField.val();
@@ -250,10 +264,12 @@ createCard: function(self, e){
                }                   
                else{
                		//didn't check anything!
+               		errorMsg = "You need to select one answer choice (press one of the circular buttons to the left)."
                     answer = false;
                }
           }
           else{
+          		errorMsg = "You need at least 2 answer choices.";
                answer = false;
           }
      }
@@ -285,6 +301,14 @@ createCard: function(self, e){
              self.card.setImageURL(imageURL);    
              self.project.save();          
         }
+        else{
+        	//nothing there
+        	if(self.card && self.card.hasImage()){
+        		//well, it USED to have an image, but now it was cleared so it looks like it's been removed!
+        		self.card.setImageURL(null);
+        		self.project.save();
+        	}
+        }
         
         
         //clear the fields
@@ -304,8 +328,14 @@ createCard: function(self, e){
         if(!question) self.questionField.focus();
         else if(!answer) self.answerField.focus();
         
+        errorMsg = "You need to specify both a question and an answer."
+        
         e.preventDefault();
     }	
+    
+    if(errorMsg){
+    	toast(errorMsg, {type: ToastTypes.WARNING});
+    }
 },
 
 cancel: function(self){

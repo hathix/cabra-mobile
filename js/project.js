@@ -72,16 +72,17 @@ resetCards: function(self){
     self.cards.forEach(function(card){
        card.setRank(Rank.A); 
     });
+    self.save();
     self.loadCardChart();
 },
 
 flipCards: function(self){
     //make all cards' question the answer and vice versa
     self.cards.forEach(function(card){
-        var question = card.question;
-        var answer = card.answer;
-        card.question = answer;
-        card.answer = question;    
+        var question = card.getQuestionText();
+        var answer = card.getAnswerText(); //multiple choice card? sorry!
+        card.setQuestion(answer);
+        card.setAnswer(question);  
     });
     self.save();
 },
@@ -175,6 +176,11 @@ load: function(self){
      $('.univ-deck-name').html(self.name);
      self.reloadDescription();
      
+     //tools
+     $('#deck-btn-shuffle').oneClick(self.shuffle);
+     $('#deck-btn-reset').oneClick(self.resetCards);
+     $('#deck-btn-swap').oneClick(self.flipCards);
+     
      //card chart
      self.loadCardChart.delay(100);
      $(window).resize(function(){
@@ -185,6 +191,13 @@ load: function(self){
      $('#batch-button-create').oneClick(function(){
      	self.batchCreate();
      });
+     
+    var img = new Image();
+    self.cards.forEach(function(card){
+     if(card.imageURL){
+          img.src = card.imageURL;
+     }     
+    });     
      
      //
      
@@ -299,7 +312,7 @@ load: function(self){
           img.src = card.imageURL;
      }     
     });
-    */
+    */   
 },
 
 updateManager: function(self){
@@ -384,6 +397,33 @@ updateManager: function(self){
 	    		}
 	    	});
     	}
+    	
+    	//handle card clicks and all since these must be regenerated whenever you reload cards
+	    //edit button
+	    $('.manage-edit-card').oneClick(function(){
+	    	//get the hash, match it up, and edit that card
+	    	var hash = $(this).data('hash');
+	    	var card = self.getCardByHash(hash);
+	    	card.edit(function(){
+	    		//has the card been changed?
+	    		if(card.getHash() != hash){
+		    		//the card's been saved; reload
+		    		//TODO load just one card at a time (above) so we only need to reload THIS ROW
+		    		loadCards(cards, highlightText);	
+	    		}
+	    	});
+	    });
+	    $('.manage-delete-card').oneClick(function(){
+	    	//get the hash, match it up, and edit that card
+	    	var hash = $(this).data('hash');
+	    	var card = self.getCardByHash(hash);
+	    	
+	      	//update view
+	      	$(this).closest('tr').remove();
+	      	//update model
+	      	self.cards = self.cards.subtract(card);
+	      	self.save();         	
+	    });        	
     }
     
     
@@ -403,27 +443,6 @@ updateManager: function(self){
     	self.sortCards(sortOn, desc);
     	nav.refreshPage();
     });
-    
-    //edit button
-    $('.manage-edit-card').oneClick(function(){
-    	//get the hash, match it up, and edit that card
-    	var hash = $(this).data('hash');
-    	var card = self.getCardByHash(hash);
-    	
-    	Editor.prepareCard(card);
-    	nav.openPage('create');	
-    });
-    $('.manage-delete-card').oneClick(function(){
-    	//get the hash, match it up, and edit that card
-    	var hash = $(this).data('hash');
-    	var card = self.getCardByHash(hash);
-    	
-      	//update view
-      	$(this).closest('tr').remove();
-      	//update model
-      	self.cards = self.cards.subtract(card);
-      	self.save();         	
-    });    
     
     //$('#manage-button-filter').oneClick(function(){
     //change waits till they hit enter, keyup does it as soon as they hit a key... which is better? keyup is slicker but takes more resources since it reloads a lot
@@ -525,6 +544,7 @@ batchCreate: function(self){
     //break into individual cards
     var rawCards = rawText.split('\n'); //now ["Q-A", "Q-A", ...]
     var malformedCards = []; //raw strings that don't work will be stored in this
+    var numCardsCreated = 0;
     rawCards.each(function(rawCard){
          //TODO put this in the Card class
         //Q and A are separated by some delimiter; what they told us should be delimiter
@@ -541,6 +561,11 @@ batchCreate: function(self){
             //trim the question and answer and assign to a card
             var question = cleanInput(split[0].trim());
             var answer = cleanInput(split[1].trim());
+            
+            if(question == "" || answer == ""){
+            	malformedCards.push(rawCard);
+            	return;
+            }
 
             //see if it's multiple choice
             if(answer.has(mcChoiceDelim)){
@@ -568,6 +593,7 @@ batchCreate: function(self){
             var card = new Card(question, answer);
             //console.log(card);
             self.addCard(card);
+            numCardsCreated++;
         }            
     });
     
@@ -580,16 +606,16 @@ batchCreate: function(self){
     if(malformedCards.length > 0){
          var malformedString = malformedCards.join("\n");
          textarea.val(malformedString);//.css('height',0).change();
-         textarea.focus();   
+         textarea.focus();
          
-         e.preventDefault();
-         
-         toast("Sorry &ndash; some of your cards weren't formatted right; they're still in the text box! Check the Mass Creator Help.", { error: true });
+         toast("Sorry &ndash; some of your cards weren't formatted right; they're still in the text box. Check the examples for help.", { type: ToastTypes.WARNING });
     }
     else{
          //all ok
          //textarea.val('').css('height',0).change();
          textarea.val('');
+         
+         toast(sprintf("Successfully created %d cards!", numCardsCreated), {type: ToastTypes.SUCCESS});
     }
     
 
@@ -609,6 +635,18 @@ preparePrintOutput: function(self){
 	var options = {
 		printImages: $('#print-input-images').is(':checked')
 	};
+	var starsToPrint = []; //a card must have a number of stars equal to something in here, in order to be printed. we're using stars not ranks since the HTML uses stars and we can't easily work backwards
+	for(var i=MIN_STARS; i<=MAX_STARS; i++){
+		if($('#print-input-stars-' + i).hasClass('active')){
+			//good, include it
+			starsToPrint.push(i);
+		}
+	}
+	//narrow down cards
+	cards = cards.filter(function(card){
+		return $.inArray(card.getStars(), starsToPrint) > -1;
+	});
+	
 	template('template-print-table',$('#print-output-table-area'),{cards: cards, options: options});
 	
 	//handle clicks
@@ -617,11 +655,12 @@ preparePrintOutput: function(self){
 	});
 },
 
+/*
 print: function(self){
      var table = $('#printer-table');
      table.empty();
      
-     $.mobile.changePage('#printer-output');  
+     nav.openPage('printer-output');  
      //update header
      $('#printer-output').find('.project-name').html(self.name);
      
@@ -642,7 +681,8 @@ print: function(self){
      
        
 },
-
+*/
+/*
 decompress: function(self){
     //map each of the raw cards into an array of fixed cards
     self.cards = self.rawCards.map(function(rawCard){
@@ -663,6 +703,7 @@ decompress: function(self){
     self.raw = false;   
     delete self.rawCards;     
 },
+*/
 
 save: function(self){
     chevre.save(self);

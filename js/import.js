@@ -95,9 +95,9 @@ quizletID: function(id){
            var cards = response.terms.map(function(rawCard){
             //this has term (q) and definition (a), as well as image (rawCard.image.url)
             //convert to a proper card
-            //they may have nothing as question and answer (undefined), so make those things null to avoid function havoc
-            var question = orDefault(rawCard.term, " ");
-            var answer = orDefault(rawCard.definition, " ");
+            //they may have nothing as question and answer (undefined) or may have empty string, so give default values to avoid function havoc
+            var question = orIfFalsy(rawCard.term, " ");
+            var answer = orIfFalsy(rawCard.definition, " ");
             var imageURL = undefined;
             if(rawCard.image && rawCard.image.url) imageURL = rawCard.image.url;
             return new Card(question, answer, imageURL);  
@@ -117,8 +117,8 @@ acceptProject: function(project){
    chevre.addProject(project);
    
    //go to that project's page
-   $.mobile.changePage('#project-home');
-   chevre.loadProject(project);    
+   chevre.loadProject(project);
+   nav.openPage('deck-home');    
 }
     
 };

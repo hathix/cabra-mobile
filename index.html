@@ -8,7 +8,7 @@
         More info: h5bp.com/i/378 -->
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-        <title>Cabra Flashcards for Mobile - the powerful studying tool</title>
+        <title>Cabra Flashcards for Mobile - the ultimate studying app</title>
         <meta name="description" content="Cabra is an award-winning flashcard app for students. Study for free on your phone, tablet, or computer!">
 
         <!-- Mobile viewport optimized: h5bp.com/viewport -->
@@ -36,7 +36,7 @@
         
         <link rel="stylesheet" href="js/libs/snapjs/snap.css">
 
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+        <link rel="shortcut icon" type="image/x-icon" href="img/icons/icon16.png">
 
         <!-- apple touch icons -->
         <link rel="apple-touch-icon"  href="apple-touch-icon-114x114-precomposed.png">
@@ -76,13 +76,13 @@
             <div class="navbar-collapse collapse navbar-right">
 
                 <ul class="nav navbar-nav">
-                    <li>
+                    <li id="nav-button-back">
                         <a href="#" data-href="_back"> <span class="glyphicon glyphicon-chevron-left"></span></a>
                     </li>
-                    <li>
+                    <li id="nav-button-home">
                         <a href="#" data-href="_home"> <span class="glyphicon glyphicon-home"></span></a>
                     </li>
-                    <li>
+                    <li id="nav-button-forward">
                         <a href="#" data-href="_forward"> <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </li>
                     
@@ -111,11 +111,13 @@
             </div>
         </div>
 
-        <div class="tab-content">
+        <div class="tab-content" id="main-tab-content">
 
             <section id="home" class="tab-pane active" data-name="Home" data-description="" data-icon="home">
                 <div class="row">
                     <div class="col-lg-12">
+                    	<div id="welcome-message"></div>
+                    	
                         <div id="project-list">
                         	<div class="alert alert-info lead">
                         		<span class="glyphicon glyphicon-refresh"></span>
@@ -164,85 +166,39 @@
                     </div>-->
                 </div>
             </section>
-            <section id="deck-home" class="tab-pane" data-name="Deck home" data-description="SAFE AT HOME" data-icon="home">
+            <section id="deck-home" class="tab-pane fade" data-name="Deck home" data-description="SAFE AT HOME" data-icon="home">
                 <div class="page-header">
                     <h2>
-                        <span id="deck-title-holder"></span>
-                     </h2>                                        
+                        <span id="deck-title-holder"></span>                  
+                     </h2>
 				</div>
 
 				<div class="row">
-					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12" id="deck-home-card-chart"></div>
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+						<div id="deck-home-card-chart"></div>     
+					</div>
 					<div class="col-lg-9 col-md-8 col-sm-8 col-xs-12">
 		                <div class="row" id="project-page-list">
-						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="study"> <span class="glyphicon glyphicon-check"></span> 
-				                            Study </a></h4>
-				                    </div>
-				                    <p class="panel-body hidden-xs hidden-sm">
-				                        Review your flashcards.
-				                    </p>
-				                </div>
-				            </div>
-						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="create"> <span class="glyphicon glyphicon-plus"></span> 
-				                            Create </a></h4>
-				                    </div>
-				                    <p class="panel-body">
-				                        Make a new flashcard.
-				                    </p>
-				                </div>
-				            </div>
-						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="batch"> <span class="glyphicon glyphicon-list"></span> 
-				                            Batch create </a></h4>
-				                    </div>
-				                    <p class="panel-body">
-				                        Make many flashcards at once.
-				                    </p>
-				                </div>
-				            </div>
-						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="manage"> <span class="glyphicon glyphicon-edit"></span> 
-				                            Manager </a></h4>
-				                    </div>
-				                    <p class="panel-body">
-				                        View, edit, and delete flashcards.
-				                    </p>
-				                </div>
-				            </div>
-						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="print"> <span class="glyphicon glyphicon-print"></span> 
-				                            Print </a></h4>
-				                    </div>
-				                    <p class="panel-body">
-				                        Put your flashcards on paper.
-				                    </p>
-				                </div>
-				            </div>				            				            				            		            						   <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-				                <div class="panel panel-default">
-				                    <div class="panel-heading">
-				                        <h4><a data-href="export"> <span class="glyphicon glyphicon-export"></span> 
-				                            Export </a></h4>
-				                    </div>
-				                    <p class="panel-body">
-				                        Get your flashcards offline.
-				                    </p>
-				                </div>
-				            </div>	
-		                </div>						
+	
+		                </div>
+
+						<hr>
+						
+                		<div class="btn-group pull-right">
+						  <a href="#" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						    <span class="glyphicon glyphicon-cog"></span> &nbsp;Tools <span class="caret"></span>
+						  </a>
+						  <ul class="dropdown-menu" role="menu">
+						    <li><a href="#" id="deck-btn-shuffle">Shuffle flashcards</a></li>
+						    <li><a href="#" id="deck-btn-reset">Reset flashcard grades</a></li>
+						    <li><a href="#" id="deck-btn-swap">Swap questions and answers</a></li>
+						  </ul>
+						</div> 
+
 					</div>
 				</div>
+		                
+
 
             </section>
             <section id="study" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check">
@@ -277,7 +233,7 @@
 		            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 well" id="study-sidebar">
 		            	<div class="row">
 		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-		            			<button class="btn btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>
+		            			<button class="btn btn-default btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>		
 		            		</div>
 		            		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
 		            			<span class="btn-card-current"></span>
@@ -287,10 +243,25 @@
 									<span class="glyphicon glyphicon-star"></span>
 									<span class="glyphicon glyphicon-star"></span>
 									<span class="glyphicon glyphicon-star"></span>
-								</div>		            			
+								</div>
+								            			
+								<div class="btn-group">
+									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+										<span class="glyphicon glyphicon-cog"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li>
+											<a href="#" class="btn-quit">Quit</a>
+										</li>
+										<li>
+											<a href="#" class="btn-edit">Edit</a>
+										</li>										
+									</ul>
+								</div>
 		            		</div>
 		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-		            			<button class="btn btn-card-next"><span class="glyphicon glyphicon-chevron-right"></span></button>
+		            			<button class="btn btn-default btn-card-next"><span class="glyphicon glyphicon-chevron-right"></span></button>
+		            			<!--<button class="btn btn-default btn-quit-next btn-quit"><span class="glyphicon glyphicon-log-out"></span></button>-->
 		            		</div>		            				            		
 		            	</div>
 		            	<!--
@@ -341,7 +312,7 @@
                         <div class="tab-content">
                             <div class="tab-pane nopadding active" id="create-tab-fr">
                                 <span class="col-lg-2 col-md-2 col-sm-2 col-xs-2 label-control">Answer</span>
-                                <span class="col-lg-10 col-md-10 col-sm-10 col-xs-10"><textarea class="form-control" id="create-input-answer" placeholder="Answer"></textarea> </span>
+                                <span class="col-lg-10 col-md-10 col-sm-10 col-xs-10"><textarea class="form-control" id="create-input-answer"></textarea> </span>
                             </div>
                             <div class="tab-pane nopadding" id="create-tab-mc">
                                 <span class="col-lg-2 col-md-2 col-sm-2 hidden-xs label-control">Answer choices</span>
@@ -349,7 +320,7 @@
                                     <div id="create-input-answer" class="well">
                                     	<div id="create-mc-template-output"></div>
 
-                                        <button class="btn btn-default btn-block" id="create-mc-button-add" type="button">
+                                        <button class="btn btn-primary btn-block" id="create-mc-button-add" type="button">
                                             <span class="glyphicon glyphicon-plus"></span> Add choice
                                         </button>
 
@@ -379,7 +350,7 @@
 				      	<div id="create-image-if-present">
 				      		<p>Your image is below. To insert a different image, remove this one first.</p>
 				      		<div id="create-image-preview-holder">
-					      		<img id="create-image-preview" src="" class="img-responsive img-preview img-thumbnail">
+					      		<img id="create-image-preview" src="" class="img-responsive img-preview img-thumbnail img-lightbox">
 					      		<button id="create-image-button-remove" class="btn btn-danger" type="button">
 					      			<span class="glyphicon glyphicon-remove"></span> Remove image
 					      		</button>				      			
@@ -393,9 +364,9 @@
                     <button id="create-button-add" class="btn btn-primary btn-block" type="button">
                         <span class="glyphicon glyphicon-plus"></span> Add flashcard
                     </button>
-                    <button id="create-button-save" class="btn btn-primary btn-block" type="button">
+                    <a data-href="_back" id="create-button-save" class="btn btn-primary btn-block" type="button">
                         <span class="glyphicon glyphicon-saved"></span> Save flashcard
-                    </button>
+                    </a>
                     <a data-href="_back" id="create-button-cancel" class="btn btn-default btn-block" type="button">
                         <span class="glyphicon glyphicon-remove"></span> Cancel
                     </a>
@@ -588,14 +559,17 @@
             			<button class="btn btn-lg btn-primary hidden-print" id="print-output-button-print" type="button">
             				<span class="glyphicon glyphicon-print"></span> Print
             			</button>
+            			<a data-href="print" class="btn btn-sm btn-default hidden-print" id="print-output-button-back" type="button">
+            				<span class="glyphicon glyphicon-chevron-left"></span> Back to settings
+            			</a>
             		</h2>
             	</div>
             	
             	<div id="print-output-table-area"></div>
             </section>
-            <section class="tab-pane" id="export" data-name="Export" data-description="Get your flashcards offline" data-icon="export">
+            <section class="tab-pane" id="export" data-name="Export" data-description="Download your flashcards offline" data-icon="export">
                 <p>You can export these flashcards to your device as a backup or so you can use them with other apps.</p>
-                <p>First you'll need to choose a format. Comma/slash/enter-separated are good for storing your flashcards, while other apps may use XML or JSON.</p>
+                <p>First you'll need to choose a format. <strong>Comma/slash/enter-separated are good for storing your flashcards, while other apps may use XML or JSON.</strong></p>
                 <br>
                 <div class="form-group">
                     <span class="col-lg-2 control-label">Format</span>
@@ -665,10 +639,10 @@
 	                            Sync's already set up on this device. Your passcode is <strong id="sync-passcode-reminder"></strong>.
 	                        </p>
 	                        <p class="lead">
-	                        	Try syncing with other devices or Cabra's web app at <a href="http://chevre.hathix.com">chevre.hathix.com</a>!
+	                        	You can now sync with other devices or Cabra's web app at <a href="http://chevre.hathix.com">chevre.hathix.com</a>!
 	                        </p>
 	
-	                        <div class="btn-group">
+	                        <div class="btn-group btn-group-justified">
 	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-upload"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
 	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-download"><span class="glyphicon glyphicon-cloud-download"></span> Download</a>
 	                        </div>
@@ -676,6 +650,7 @@
 	                        <button class="btn btn-danger" id="sync-button-stop">
 	                            <span class="glyphicon glyphicon-ban-circle"></span> Stop syncing
 	                        </button>
+	                        <br>
                        </div>
                        <div id="sync-show-new">
 	                        <p class="lead">
@@ -720,7 +695,7 @@
                 </div>
             </section>
             <section class="tab-pane fade" id="options" data-name="Settings">
-    			<div class="form-horizontal">
+    			<div class="form-horizontal slight-padding">
 	                <div class="form-group">
 	                    <label for="option-max-cards" class="col-lg-2 control-label">Max. cards per studying session</label>
 	                    <span class="col-lg-10">
@@ -739,7 +714,7 @@
 	                        </select>
 	                    </span>
 	                </div>  
-	                <div class="form-group">
+	                <!--<div class="form-group">
 					    <div class="col-lg-offset-2 col-lg-10">
 					      <div class="checkbox">
 					        <label>
@@ -747,7 +722,7 @@
 					        </label>
 					      </div>
 					    </div>
-	                </div>
+	                </div>-->
 	                
 	                <hr>
 	                
@@ -770,30 +745,39 @@
 	                	</div>
 	                </div>
                   			                
-                </div>
-              
+                </div>     
                 
-                <br><br>
-                <button type="button" class="btn btn-lg btn-success" id="option-save">
-                	<span class="glyphicon glyphicon-saved"></span>
-                	Save
-                </button>
+                <br>
+                <br>
+                <div class="slight-padding">
+	                <button type="button" class="btn btn-lg btn-success" id="option-save">
+	                	<span class="glyphicon glyphicon-saved"></span>
+	                	Save
+	                </button>                	
+                </div>
+
             </section>
             <section class="tab-pane" id="contact" data-name="Contact">
             	<p class="lead">
-            		Feel free to contact me at <span id="contact-email" class="text-primary"></span>. Or try one of these social networks:
+            		I'm always eager to hear from you, the user, to improve Cabra. Feel free to email me with questions, comments, or suggestions at <span id="contact-email" class="text-primary"></span>. Or try one of these social networks:
             	</p>
-            	<div class="list-group">
-            		<a href="https://twitter.com/hathix" class="list-group-item">Twitter</a>
-            		<a href="https://facebook.com/hathix" class="list-group-item">Facebook</a>
-            		<a href="https://github.com/hathix/cabra-mobile" class="list-group-item">GitHub</a>
-            	</div>
+            	<div class="row">
+	    			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+	        			<a href="https://twitter.com/hathix" class="btn btn-default btn-block">Twitter</a>
+	        		</div>
+	     			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+	        			<a href="https://facebook.com/hathix" class="btn btn-default btn-block">Facebook</a>
+	        		</div>
+	        		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+	        			<a href="https://github.com/hathix/cabra-mobile" class="btn btn-default btn-block">GitHub</a>
+	        		</div>
+        		</div>
             </section>
             
             <section class="tab-pane" id="about" data-name="About">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-            			<img src="img/cardlogo512.png" class="about-image">
+            			<img src="img/icons/icon512.png" class="about-image">
             		</div>
             		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
 		    			<div class="text-center">
@@ -807,7 +791,7 @@
             		</div>
             	</div>
             	
-            	<div style="padding-left: 10%; padding-right: 10%;">
+            	<div class="add-padding">
 	        		<p>Cabra is a free, open-source studying app designed to help anyone, anywhere improve their education.</p>
 	        		<p>This app is officially called Cabra Mobile and is the web/mobile/phone/tablet edition of the studying platform Cabra (that's Spanish for goat, if you're wondering). For advertising purposes, it is known as Cabra Flashcards. Internally, it is called Chevre (that's French for goat).</p>
 	        		<p>Thanks to the following software that Cabra uses:
@@ -858,7 +842,7 @@
             <section class="tab-pane" id="welcome" data-name="Welcome!">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-            			<img src="img/cardlogo512.png" class="about-image">
+            			<img src="img/icons/icon512.png" class="about-image">
             		</div>
             		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
 		    			<div class="text-center">
@@ -891,7 +875,7 @@
             <section class="tab-pane" id="updated" data-name="Updated">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-            			<img src="img/cardlogo512.png" class="about-image">
+            			<img src="img/icons/icon512.png" class="about-image">
             		</div>
             		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
 		    			<div class="text-center">
@@ -926,16 +910,9 @@
                 </div>
             </section>
             <section class="tab-pane" id="deck-import" data-name="Importer" data-description="" data-icon="import">
-                <div class="input-group">
-                    <input type="text" class="form-control" id="input-import-text">
-                    <span class="input-group-btn">
-                        <button class="btn btn-primary" id="button-import-send" type="button">
-                            <span class="glyphicon glyphicon-search"></span> Search
-                        </button> </span>
-                </div>
 
                 <div class="row">
-                    <div class="col-lg-3 well">
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 well">
                         <!--<h4>Import from:</h4>
                         <ul class="nav nav-pills nav-justified">
                             <li class="active">
@@ -945,7 +922,14 @@
                         <h4>Importer help</h4>
                         <p>Find over 20 million flashcard sets on Quizlet and import them seamlessly. Just enter some keywords in the box and hit Search.</p>
                     </div>
-                    <div class="col-lg-9">
+                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+		                <div class="input-group">
+		                    <input type="text" class="form-control" id="input-import-text">
+		                    <span class="input-group-btn">
+		                        <button class="btn btn-primary" id="button-import-send" type="button">
+		                            <span class="glyphicon glyphicon-search"></span> Search
+		                        </button> </span>
+		                </div>
                         <div class="tab-content">
                             <div class="tab-pane active" id="import-list-quizlet">
                             	
@@ -961,7 +945,9 @@
         </div>
         <div id="main-drawers" class="snap-drawers">
         	<div class="snap-drawer snap-drawer-left well" id="menu">
-        		<h3 id="menu-header">Menu</h3>
+        		<h3 id="menu-header">Menu
+        			<button type="button" class="close" aria-hidden="true">&times;</button>
+        		</h3>
                 <ul class="nav nav-pills nav-stacked" id="menu-links">
                 	<li>
                 		<a href="#" data-href="home" data-toggle="tab"> <span class="glyphicon glyphicon-home"></span> Home</a>
@@ -1030,8 +1016,13 @@
 		        </div>
 		        <div class="modal-body">
 
-					<div class="panel panel-default">
-						<button class="btn btn-default btn-block" data-toggle="collapse" data-target="#deck-edit-merge">
+		        	<button class="btn btn-primary btn-block btn-rename" data-dismiss="modal">
+		        		<span class="glyphicon glyphicon-edit"></span>
+		        		Rename
+		        	</button>					
+					<br>
+					<div class="panel panel-default panel-merge">
+						<button class="btn btn-default btn-block btn-merge-opener" data-toggle="collapse" data-target="#deck-edit-merge">
 							<span class="glyphicon glyphicon-log-in"></span>
 							Merge
 						</button>						
@@ -1071,6 +1062,32 @@
 		 <div class="modal fade" id="dialog-feedback" tabindex="-1" role="dialog" aria-hidden="true">
 			<!-- filled with #template-feedback -->
 		  </div><!-- /.modal -->     
+        
+        <!-- image lightbox -->
+		<div id="demoLightbox" class="modal lightbox hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class='lightbox-content'>
+				<img src="img/icons/icon512.png">
+				<div class="lightbox-caption">
+					<p>
+						Your caption here
+					</p>
+				</div>
+			</div>
+		</div>
+    
+        <!-- shell for showing pages as modals -->
+		<div id="modal-shell" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		    <div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		          <h4 class="modal-title"><span class="page-name"></h4>
+		        </div>
+		        <div class="modal-body">
+		        </div>
+		      </div><!-- /.modal-content -->
+		    </div><!-- /.modal-dialog -->
+		</div>        
         
         <!-- templates -->
         <!-- panel containing info about each project; on main page -->
@@ -1171,37 +1188,37 @@
             	{{#with activeCard}}
 	            	<div class="study-main-card">
 	            		{{#ifFunction "hasImage"}}
-		            		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">	            		
-		            			<img src="{{imageURL}}" class="img-thumbnail img-responsive study-image">
+		            		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4" id="study-main-img-wrapper">
+	            				<img src="{{imageURL}}" id="study-main-img" class="img-thumbnail img-responsive study-image img-lightbox" alt="Internet access is required to show the image.">	
 		            		</div>	   
 		            		
 		            		<!-- BEGIN WRAPPER; allot enough space for img -->
-		            		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+		            		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
 		            	{{else}}
-		            		<div class="">         			
+		            		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">         			
 	            		{{/ifFunction}}
 	            		<div class="wrapper">
-            			<div id="study-main-card-question"
-            				{{#ifFunction "isMultipleChoice"}}
-            					class="question-mc"
-            				{{else}}
-            					class="question-fr"
-            				{{/ifFunction}}
-            				>
-   
-			                <p class="text-center lead study-text">
-			                	{{#ifFunction "isMultipleChoice"}}
-			                		{{question}}
-			                	{{else}}
-			                		{{! FREE RESPONSE }}
-				                	{{#compare ../../options.style "normal"}}
+	            			<div id="study-main-card-question"
+	            				{{#ifFunction "isMultipleChoice"}}
+	            					class="question-mc"
+	            				{{else}}
+	            					class="question-fr"
+	            				{{/ifFunction}}
+	            				>
+	   
+				                <p class="text-center lead study-text">
+				                	{{#ifFunction "isMultipleChoice"}}
 				                		{{question}}
 				                	{{else}}
-				                		{{answer}}
-				                	{{/compare}}	                	
-			                	{{/ifFunction}}
-			                </p>			            				
-            			</div>
+				                		{{! FREE RESPONSE }}
+					                	{{#compare ../../options.style "normal"}}
+					                		{{question}}
+					                	{{else}}
+					                		{{answer}}
+					                	{{/compare}}	                	
+				                	{{/ifFunction}}
+				                </p>			            				
+	            			</div>
             			</div>
             			{{#unlessFunction "isMultipleChoice"}}
             				<!--<hr class="divider hidden">-->
@@ -1234,7 +1251,7 @@
 	                			Next <span class="glyphicon glyphicon-arrow-right"></span></span>
 	                		</a>      
 		                {{else}}
-		                	<button class="btn btn-primary btn-lg btn-show-answer" type="button">
+		                	<button class="btn btn-primary btn-lg btn-block btn-show-answer" type="button">
 		                		<span class="glyphicon glyphicon-eye-open"></span> 
 		                		Show 
 			                	{{#compare ../../options.style "normal"}}
@@ -1278,7 +1295,7 @@
 			            <tr>
 			            	<td>
 				            	{{#ifFunction "hasImage"}}
-				            		<img class="img-responsive media-object" src="{{imageURL}}">
+				            		<img class="img-responsive img-rounded media-object img-lightbox" src="{{imageURL}}">
 				            	{{/ifFunction}}			            		
 			            	</td>
 							<td style="width: 35%"><p>{{#call "getQuestionText"}}{{/call}}</p></td>
@@ -1404,7 +1421,7 @@
         	{{#each cards}}
                 <li class="list-group-item import-card-preview text-info">
                     {{#if image}}
-                    	<img class="img-rounded pull-left media-object" src="{{image.url}}">
+                    	<img class="img-rounded pull-left media-object img-lightbox" src="{{image.url}}">
                     {{/if}}
                     <p>{{term}}</p>
                     <p>{{definition}}</p>
@@ -1448,7 +1465,7 @@
 	  				
 	  				<hr>
 	  				
-		            <label for="feedback-comments">2. Any other comments, suggestions, or feature requests?</label>
+		            <label for="feedback-comments">2. Do you have any other comments, suggestions, or feature requests?</label>
 		            <textarea id="feedback-comments" class="form-control" placeholder="Type here..."></textarea>
 		            
 		            <hr>
@@ -1476,6 +1493,32 @@
         
         <!-- pure, Handlebars-free templates -->
         <div style="display:none;">
+        	<div id="template-welcome" class="alert alert-info">
+        		<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+        		<div class="guide-new">
+	        		<p class="lead">Hi and welcome once again! To help you get studying right away, here's a brief look at the controls:</p>
+	        		<ul>
+	        			<li>Press the "Sample Flashcards" button below to open that set of flashcards (they're called <em>decks</em> in Cabra). From there, you can study the flashcards in that set, create new ones, and more.</li>
+	        			<li><strong>Cabra is separated into pages</strong>: a home page, a page for a deck of flashcards, a studying page, and so on. Use the buttons in the top right corner to move between pages. If you're ever lost, push the home button to come back to this page.</li>
+	        			<li>Press the button in the top left corner to <strong>open the menu</strong> and access important features like syncing your flashcards, organizing your decks, or changing settings.</li>
+	        		</ul>        			
+	        		<p>To get started, open the sample flashcard set and explore the features inside. Questions or comments? Contact us - you'll find that button in the menu!</p>
+        		</div>
+        		<div class="guide-returning">
+        			<p class="lead">Hi and welcome back to Cabra! This new version looks really different than the old one, but almost everything is in the same place as before. Here's what has changed:</p>
+        			<ul>
+        				<li>The menu has been moved to the top left corner of the page.</li>
+        				<li><strong>The Organize, Sync, and Options (renamed Settings) pages are now found in the menu in the top left, not on the home page itself.</strong></li>
+        				<li>The back and home buttons are now in the top right and have been joined by a forward button.</li>
+        				<li class="visible-lg">You can also move around using the "breadcrumb trail" in the top bar.</li>
+        				<li>Instead of ranks (A through E), flashcards now have stars (1 through 5). Everything behind the scenes is the same as before.</li>
+        				<li>The Mass Card Creator has been renamed the Batch Creator, but its function remains the same.</li>
+        			</ul>
+        			<p>This new version has been engineered to help you adjust as fast as possible. If you have questions, let us know - the contact button is in the menu!</p>
+        		</div>
+        		
+        		<button class="btn btn-primary btn-block" data-dismiss="alert">Got it!</button>
+        	</div>
 	        <div id="template-pure-stars">
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>

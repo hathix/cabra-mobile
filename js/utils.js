@@ -111,9 +111,8 @@ String.prototype.splitOnce = function (delim) {
 function ensureNoDuplicateNames(proposedName, existingNames){
      while($.inArray(proposedName, existingNames) != -1){
          //there exists an item whose name matches
-         //we will add a (1) to the end
-         //if it (somehow) already has a (1), change to (2)
-         var inParens = proposedName[0].match(/\(\d\)$/); //like (1); this only works at end
+         //we will add a (1) to the end, unless there's already a (1), in which case we do (2), etc.
+         var inParens = proposedName.match(/\(\d\)$/); //like (1); this only works at end
          if(inParens !== null){
               //has a (1) or something, replace
               //the results of match() always come in array form (i.e. ["3"]) so get rid of those with .last()
@@ -341,13 +340,13 @@ function decompress(obj, className, keysInInit, keysOutsideInit){
     var args = keysInInit.map(function(key){
         var value = obj[key];
         if(value === undefined){
-            //nothing saved there; omit it
+            //nothing saved there, but for placement purposes it  may be important. return null so it recognizes it
             return null;
         }
         return JSON.stringify(value); //turns raw strings into strings with quotes around them 
     });
     //this may have some null values in it
-    args = args.compact();
+    //args = args.compact();
     
     //make a big string and eval it
     var str = sprintf("new %s(%s)", className, args.join(","));
@@ -465,6 +464,19 @@ $.fn.oneBind = function(event, callback){
 $.fn.outerHTML = function(){
     return this.clone().wrap('<p>').parent().html();
 }
+
+/**
+ * Toggles the visibility - not the display - of the element. Even if hidden, this element will continue to take up layout space.
+ * @param {boolean} show	 if true, show it; if false, hide it
+ */
+/*$.fn.toggleVisibility = function(show){
+	if(show){
+		this.css('visibility','visible');
+	}
+	else{
+		this.css('visibility','hidden');
+	}
+}*/
 
 // JQUERY PLUGIN: I append each jQuery object (in an array of
 // jQuery objects) to the currently selected collection.

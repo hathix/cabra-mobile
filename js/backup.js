@@ -20,6 +20,10 @@ loadPage: function(self){
 	     //update live preview
 	     var format = $('#export-input-format').val();
 	     self.livePreview(format);
+	     
+	     //hide results area
+	     $('#export-output').hide();
+	     $('#export-output-text').html('');	     
 	});
 	$('#export-button-run').oneClick(function(){
 	     var format = $('#export-input-format').val();
@@ -55,7 +59,7 @@ livePreview: function(self, format){
  */
 runBackup: function(self, format){
      //ensure it's a valid format
-     if(Object.values(self.formats).indexOf(format) == -1) return false;
+     //if(Object.values(self.formats).indexOf(format) == -1) return false;
      
      var text = self.formatCards(format, chevre.p.cards, false); //in textarea not html
      $('#export-output-text').val(text);

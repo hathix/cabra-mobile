@@ -5,9 +5,13 @@ var ABOUT = {
     codename: "Postseason",
     date: Date.create("January 1, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
-        "Multiple-choice flashcards now available",
-        "You see studying results in a pie chart",
-        "Mass card creator improvements"
+        "Refreshed interface with a brand-new theme",
+        "Printing flashcards added",
+        "Faster and leaner",
+        "New slide-out menu on the left",
+        "You can now edit a flashcard while studying it",
+        "Massively improved flashcard manager and importer""
+        "New icon!"
     ],
     
     //TODO: show some warning if it's a beta build (not tested and ready)

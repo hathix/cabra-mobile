@@ -50,22 +50,36 @@ start: function(self){
     
     //now that we're done... at this point not much is happening
     
+    
     //check version
     var oldVersion = $.store.get(SL_KEYS.LAST_VERSION);
+    var updated = false;
+    var newUser = false;
     if(oldVersion && oldVersion != ABOUT.version){
         //they loaded a new version.
         //$.mobile.changePage('#updated');
         template('template-updated-changes',$('#updated-changes'),{items: ABOUT.changes});
         nav.openPage('updated');
         console.log("Chevre updated to version " + ABOUT.version);
+        updated = true;
     }
     else if(oldVersion == undefined){
         //it's the first time they're using Cabra
         //this will only show once - EVER - because version is always set later on
         //$.mobile.changePage('#welcome');
         nav.openPage('welcome');
+        newUser = true;
     }
     $.store.set(SL_KEYS.LAST_VERSION, ABOUT.version);
+    
+    //show another welcome message if it's their first time here, this time showing them the controls
+    if(updated || newUser){
+    	var welcome = getClonedTemplate('template-welcome');
+    	$('#welcome-message').html(welcome);
+    	//show diff things to diff people
+    	welcome.find('.guide-new').toggle(newUser);
+    	welcome.find('.guide-returning').toggle(updated);
+    }
     
     //feedback tracking
     //when we last asked them for feedback
@@ -135,6 +149,12 @@ refreshProjectList: function(self){
     	var project = self.getProjectByID(id);
     	e.stopPropagation(); //prevent the click handler for the whole thing being clicked (that'd take us to project home page)
     	
+    	//only show merge/delete buttons if >1 project
+    	var multiProjects = chevre.projects.length > 1;
+    	$('.btn-merge-opener').toggle(multiProjects);
+    	$('.btn-delete').toggle(multiProjects);
+    	$('.panel-merge').toggle(multiProjects);
+    	
     	//populate fields
     	var dialog = $('#dialog-deck-edit');
     	dialog.find('.deck-name').html(project.name);
@@ -161,14 +181,22 @@ refreshProjectList: function(self){
     	});
     	dialog.find('.btn-delete').oneClick(function(){
     		//TODO decide if we need confirmation
-    		/*bootbox.confirm('Are you sure you want to permanently delete this deck?', function(){
-    			dialog.modal('hide');
+    		/*bootbox.confirm('Are you sure you want to permanently delete this deck?', function(result){
+    			if(result)
+    				dialog.modal('hide');
     		});*/
     		
     		dialog.modal('hide');
     		self.removeProject(project);
     	});
-    	//TODO HANDLE MERGING CLICKS
+    	dialog.find('.btn-rename').oneClick(function(){
+    		//defer to the actual editing area on the project page
+    		self.loadProject(project);
+    		nav.openPage('deck-home');
+    		project.isEditing = true;
+    		project.reloadDescription();
+    		$('.input-name').focus();
+    	});
     	
     	dialog.modal('show');
     });
@@ -359,25 +387,17 @@ loadLocally: function(self){
 unpackProjects: function(self){
     var rawProjects = $.store.get(SL_KEYS.PROJECTS);
     //UGLY CODE AHEAD
-    var goodProjects = rawProjects.map(function(rawProj){
-        return decompress(rawProj, "Project",
-        [ 'name', 'description', 'id', 'group' ], //in init
-        [ 
-            { cards: function(goodProj, rawCards){
-                    //obj is the good object, value is the raw cards
-                    //NEW: store them as raw until the project is loaded; THEN convert them
-                    goodProj.raw = true; //not converted yet
-                    goodProj.rawCards = rawCards;
-                }}
-        ]);    
-    });
-    
-    //add in the projects
-    goodProjects.forEach(function(project){
-        self.addProject(project, true); //don't save at all; the data has been saved BEFORE now     
-        
-        //decompress the project to normal
-        project.decompress();
+    rawProjects.forEach(function(rawProj){
+    	var project = new Project(rawProj.name, rawProj.description, rawProj.id, rawProj.group);
+    	//add in cards
+    	project.cards = rawProj.cards.map(function(rawCard){
+    		var card = new Card(rawCard.question, rawCard.answer, rawCard.imageURL);
+    		card.repsLeft = rawCard.repsLeft;
+    		card.rank = Rank[rawCard.rank];	
+    		return card;
+    	});
+    	
+    	self.addProject(project, true);
     });
 },
 
@@ -388,10 +408,9 @@ unpackProjects: function(self){
 loadDefaultProjects: function(self){
     console.log("Defaults...");
     //temporary!
-    var proj = new Project("Sample Flashcards (try me out!)", "Try out Cabra with this sample set of flashcards!");
+    var proj = new Project("Sample Flashcards (try me out!)", "Try out Cabra with this sample deck of flashcards!");
     var cards = [
          new Card("What animal is this?", "A goat", "http://imgur.com/wSyzk7l.png"),
-         new Card("sin²θ =","2sinθcosθ"),
          new Card("What color is the sky?", {choices: ["Green","Blue","Yellow","Red"], right: 1}),
          new Card("'Goat' in Spanish", "'Cabra'")
     ];

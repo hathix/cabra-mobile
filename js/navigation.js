@@ -8,6 +8,8 @@ __init__: function(self){
      //start at home since that's where app opens
      self.history = [PageDB.get("home")];  //stores past Pages
      self.index = 0; //where we are in history
+     
+     self.modalOpen = false; //true if the page we have open is in a modal
 },
 
 /**
@@ -20,9 +22,9 @@ __init__: function(self){
 
 /**
  * PUBLIC!
- * Opens the given page or goes home/back/forward depending on the href.
+ * Opens the given page (in a normal view, not as a modal) or goes home/back/forward depending on the href.
  * This is like clicking a link in a browser window.
- * @param {String} href  the slug of the page to navigate to. Exclude the hashtag.
+ * @param {String}	href	the page's slug, like 'create'.
  */
 openPage: function(self, href){
 
@@ -31,7 +33,16 @@ openPage: function(self, href){
           self.home();
      }
      else if(href == NAV_BACK){
-          self.back();
+     	if(self.modalOpen){
+     		//close that modal
+     		$('#modal-shell').modal('hide');
+     		self.modalOpen = false;
+     	}
+     	else{
+     		//do it normally
+     		self.back();
+     	}
+          
      }
      else if(href == NAV_FORWARD){
           self.forward();
@@ -48,10 +59,21 @@ openPage: function(self, href){
 		} 
 		else {
 			//normal full page
+
 			self.addHistoryItem(href);
 			self.loadCurrentPage();
 		}
      }
+},
+
+/**
+ * PUBLIC! Opens the given page in a modal instead of in a normal page.
+ * @param {String}	href	the page's slug, like 'create'.
+ * @param {Function} callback	[optional] will be called (with no arguments) once the modal is CLOSED.
+ */
+openPageInModal: function(self, href, callback){
+	var page = PageDB.get(href);
+	self.loadInModal(page, callback);
 },
 
 /**
@@ -60,13 +82,6 @@ openPage: function(self, href){
  */
 refreshPage: function(self){
 	self.loadCurrentPage();	
-},
-
-/**
- * Goes back a page. 
- */
-back: function(self){
-	self.loadPage(NAV_BACK);
 },
 
 /**
@@ -92,11 +107,40 @@ loadPage: function(self, page){
      if(!self.hasTrigger(page)){
           self.makeTrigger(page);
      }
+     
      //open that tab
      $('#trigger-' + page.slug).tab('show');
      $(page).trigger('load'); //TODO maybe move above the line that actually shows it?
      
      self.buildBreadcrumbs();	
+     self.updateNavButtons();
+},
+
+/**
+ * Loads the given page in a modal. It won't show up in history so pass it here.
+ * @param {Page} page	the page (can be any normal page)
+ * @param {Function} callback	[optional] will be called once the dialog is closed.
+ */
+loadInModal: function(self, page, callback){
+     //move the page into our modal
+     var modal = $('#modal-shell');
+     page.getElement().detach().appendTo(modal.find('.modal-body')); //move it to the modal body
+     modal.find('.page-name').html(page.name); //load page name
+     
+     //show it!
+     modal.modal('show');
+     page.getElement().removeClass('fade');
+     $(page).trigger('load'); //run page's startup code
+     
+     self.modalOpen = true;
+     
+     modal.off('hidden.bs.modal').on('hidden.bs.modal', function(){
+     	//put that thing [the page] back where it came from
+     	page.getElement().detach().appendTo($('#main-tab-content'))
+     		.addClass('fade');	
+     	self.modalOpen = false;
+     	if(callback) callback();
+     });
 },
 
 addHistoryItem: function(self, href){
@@ -180,6 +224,15 @@ buildBreadcrumbs: function(self){
      $('#breadcrumbs').empty().append(container);
      
      //TODO handle what happens when you click the a's... it should take you to PRECISELY that spot in the history and clear out anything else;resurrect #breadcrumbs
+},
+
+/**
+ * Based on where you are in the hierarchy, dims out unusable buttons. 
+ */
+updateNavButtons: function(self){
+	//TODO decide: do we hide button entirely or just disable it?
+	$('#nav-button-back').toggleClass('disabled', self.index == 0); //only show if we're not at the first page
+	$('#nav-button-forward').toggleClass('disabled', self.index == (self.history.length - 1)); //only show if we're not at last page (history.length = last index + 1)
 },
 
 /**

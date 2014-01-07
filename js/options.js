@@ -7,7 +7,7 @@
  */
 function loadOptions(){
 	var options = chevre.options;
-	console.log(options);
+	//console.log(options);
 	//numbers
 	$('#option-max-cards').val(options.maxCardsPerSession);
 	$('#option-max-cards').change(function(){
@@ -46,9 +46,11 @@ function loadOptions(){
 	
 	//and bind click handlers
 	$('#option-delete-all').oneClick(function(){
-		bootbox.confirm("Are you sure you want to delete all of your data forever, including your flashcards and settings? (If you've set up sync, your data is safe in the cloud but will be removed from this device.)", function(){
-			$.store.clear();
-			reloadPage();
+		bootbox.confirm("Are you sure you want to delete all of your data forever, including your flashcards and settings? (If you've set up sync, your data is safe in the cloud but will be removed from this device.)", function(confirmed){
+			if(confirmed){
+				$.store.clear();
+				reloadPage();				
+			}
 		});
 	});
 	$('#option-save').oneClick(function(){

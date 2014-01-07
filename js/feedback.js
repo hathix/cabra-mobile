@@ -29,7 +29,17 @@ ask: function(self, force){
           //yes, show the dialog
          //$('#feedback-why').show(); //explain WHY we're asking for feedback
           template('template-feedback', $('#dialog-feedback'), { items: self.featureChoices });
+          $('#feedback-dont-show').attr('checked', options.askFeedback);
           $('#dialog-feedback').modal('show');
+          
+          //hook up buttons
+          $('#dialog-feedback').find('.btn-submit').oneClick(function(){
+          	self.submit();
+          });
+          $('#dialog-feedback').off('hidden.bs.modal').on('hidden.bs.modal', function(){
+          	//see if they want to give feedback again
+          		
+          });
           
           //reset so we ask them again later
           self.resetUsageStats();
@@ -47,6 +57,7 @@ resetUsageStats: function(self){
      $.store.set(SL_KEYS.FB_USES_SINCE_ASKED, 0);
 },
 
+/*
 loadDialog: function(self){
   //specifically load the feature choices
   var holder = $('#feedback-choices');  
@@ -64,6 +75,7 @@ loadDialog: function(self){
   
   holder.trigger('create').controlgroup();
 },
+*/
 
 /**
  * Sends the feedback. Call this when the submit button's pushed. 
@@ -71,7 +83,7 @@ loadDialog: function(self){
 submit: function(self){
      //get their actual feedback
      var results = self.grabFeedback();
-     //console.log(results);
+     console.log(results);
      
      console.log('Sending feedback...');
     $.post(
@@ -95,7 +107,7 @@ grabFeedback: function(self){
      //get from choices list
      //TODO find some way to make these things required so they HAVE to fill it out (put in form?)
      
-     var choices = $('#feedback-choices input:checked').val(); //gives you text or id (#) of what they want
+     var choices = $('input:radio[name="feedback-choices"]:checked').val();
      var comments = $('#feedback-comments').val(); //comments
      var email = $('#feedback-email').val();
      
@@ -110,11 +122,11 @@ grabFeedback: function(self){
 },
 
 /**
- * Checks what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly 
+ * Looks at what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly 
  * @param {Object} self
  */
 checkDontShow: function(self){
-     var dontShow = truthiness($('#feedback-dont-show:checked').length);
+     var dontShow = $('#feedback-dont-show').is(':checked');
      chevre.options.askFeedback = !dontShow; //cause we're asking if they DON'T want to be asked again
      chevre.saveOptions();
 }

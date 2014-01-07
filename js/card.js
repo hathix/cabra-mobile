@@ -23,6 +23,7 @@ setAnswer: function(self, answer){
      self.answer = prettify(answer);
 },
 setImageURL: function(self, imageURL){
+	if(imageURL === null) imageURL = undefined; //just for consistency, especially when exporting
      self.imageURL = imageURL;
 },
 
@@ -66,7 +67,7 @@ getQuestionText: function(self){
 },
 
 /**
- * Report the answer. This is used in formats when you CAN'T show all choices; for instance, when exporting or showing in the list view. 
+ * Report the answer. This is used in formats when you CAN'T show all choices; for instance, when exporting.
  */
 getAnswerText: function(self){
      if(self.isMultipleChoice()){
@@ -121,31 +122,15 @@ studied: function(self, result){
 },
 
 /**
- * Fills a <li> containing info about a card (this is found in the card manager and other places.) 
- * @param {$li} li  A jQuery object containing the <li>. Use getClonedTemplate() to find it (it's from #template-card).
+ * Opens a dialog (anywhere, anytime) where the user can edit the card.
+ * @param {Function} callback	[optional] will be called when the dialog is closed. 
  */
-fillLI: function(self, li){
-     li.find('.card-manager-question').html(self.getQuestionText());
-     li.find('.card-manager-answer').html(self.getAnswerText());
-     
-     if(self.imageURL){
-          //add a thumbnail image to the li
-          //don't put it in the template cause then everything gets that weird padding
-          var image = getClonedTemplate('template-flashcard-image');
-          image.attr('src', self.imageURL);
-          
-          li.find('a').prepend(image);
-          //li.find('.card-manager-image').show().attr('src',self.imageURL);
-     }
-     
-     //li of count
-     //darken the color of the rank
-     var rgb = hexToRGB(self.rank.color);
-     var REDUCE_FACTOR = 0.85; // new colors will be this times as much as the original
-     rgb = rgb.map(function(x){ return (x * REDUCE_FACTOR).round(); });     
-     var hex = '#' + rgbToHex(rgb);
-     
-     li.find('.ui-li-count').html(self.rank.name).attr('title', "Rank " + self.rank.name).css('color',hex); //TODO maybe remove the color part... looks bad for C (yellow is illegible)x
+edit: function(self, callback){	
+	Editor.prepareCard(self);
+	nav.openPageInModal('create', callback);	
+	
+	//kludgy solution to dynamically changing page title. TODO figure out some way we can change the page title temporarily. This is bad for i18n too.
+	$('#modal-shell').find('.page-name').html('Editing flashcard');	
 },
 
 /**
@@ -206,6 +191,10 @@ getHash: function(self){
         hash = char + (hash << 6) + (hash << 16) - hash;
     }
     return hash;
+},
+
+equals: function(self, other){
+	return self.getHash() == other.getHash();
 }
     
 });

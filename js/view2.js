@@ -26,6 +26,7 @@ function initUI(){
 		element: document.getElementById("main-container"),
 		disable: 'right',
 		hyperextensible: false,
+		touchToDrag: false, //TODO this prevents you from swiping to open the menu; should we allow this? (it's really wonky on mobile, but intuitive)
 		minDragDistance: 10, //default 5
 		flickThreshold: 10, //default 50
 	});
@@ -38,6 +39,9 @@ function initUI(){
 		else{
 			snapper.open('left');
 		}
+	});
+	$('#menu').find('.close').oneClick(function(){
+		snapper.close();
 	});
 	/*
 	//manage snapper classes - close button if opened, open button if closed
@@ -64,16 +68,28 @@ function initUI(){
 		(function(){$('#menu-links').find('li').removeClass('active')}).delay(500); //prevents .active from 'sticking' to the pills; delay to avoid interfering with animation (not really sure why)
 	});
 	$('#menu-link-feedback').click(function(){
-		console.log(3);
+		//console.log(3);
 		feedback.ask(true); //force to show it
 	});
+	
+	/*
+	 * TOO MANY PROBLEMS TO WORK EFFECTIVELY NOW - TODO IMPLEMENT LATER (1/3/14)
+	 * http://jasonbutz.info/bootstrap-lightbox/
+	 *
+	//whenever a thumbnail image (created dynamically in the future) is clicked, show it in a lightbox
+	$(document).on('click.lightbox','.img-lightbox', function(){
+		$('#lightbox-shell')
+	});
+	*/
 }
 
 function initPages(){
 	//home
 	PageDB.getJQuery('home').oneBind('load', function(){
-		//un-set active projects
+		//un-set active projects in the deck home
 		$('.univ-deck-name').html("Cabra");
+		//refresh view
+		chevre.refreshProjectList();
 	});
 	
 	//deck home
@@ -183,7 +199,7 @@ function initDialogs(){
 		if(name && name.trim()){
 			var deck = new Project(name);
 			chevre.addProject(deck);
-			$('#input-deck-create-name').val('');
+			$('#input-deck-create-name').val('').focus();
 		}
 	});
 }

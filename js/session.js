@@ -3,11 +3,7 @@ var Session = new Class({
 __init__: function(self, project){
     self.project = project;
     self.cards = null; //only cards to study
-    self.results = {};
-    //load it up: each field of results is a study result name: "yes", "no"
-    Object.values(StudyResult, function(result){
-    	self.results[result] = [];
-    });
+    self.results = []; //each studied card, as well as its result (knew it, didn't know, etc) goes in here. {card: Card, result: StudyResult}
     self.cardIndex = 0;
     self.activeCard = null; //card we're currently studying
     self.status = SessionStatus.SETUP;
@@ -75,6 +71,10 @@ start: function(self){
     }
     //we've decided which cards to study
     self.cards = cardsToStudy;
+    //fill the self.results with {card: Card, result: null} (for now)
+    self.results = self.cards.map(function(card){
+    	return {card: card, result: StudyResult.SKIPPED}; //if this result isn't updated, var result will remain at SKIPPED so we know it hasn't been studied
+    });
 
   /*
     //on swipe left - skip the card
@@ -94,7 +94,7 @@ loadCard: function(self, card){
         card = self.cards[self.cardIndex];
         
     self.activeCard = card;
-	card = self.activeCard; 
+	//card = self.activeCard; 
  
     //render template
     template("template-study-main",$('#study-card-area'), self); 
@@ -153,6 +153,9 @@ loadCard: function(self, card){
     		correct = false;
     	}
     	
+    	//disable old buttons
+    	MCButtons.addClass('disabled').unbind('click');
+    	
     	//show next button
     	area.find('.hidden').removeClass('hidden');
     	
@@ -166,13 +169,32 @@ loadCard: function(self, card){
  	//sidebar
  	var sidebar = $('#study-sidebar');
  	sidebar.find('.btn-card-current').html(sprintf("Card %d of %d", self.cardIndex+1, self.cards.length)); //card count
- 	sidebar.find('.btn-card-prev').toggle(self.cardIndex > 0).oneClick(function(){
+ 	var isFirstCard = self.cardIndex == 0;
+ 	var isLastCard = self.cardIndex == self.cards.length-1;
+ 	sidebar.find('.btn-card-prev').toggle(!isFirstCard).oneClick(function(){
  		self.cardIndex--;
  		self.loadCard();	
  	});
- 	sidebar.find('.btn-card-next').toggle(self.cardIndex < self.cards.length-1).oneClick(function(){
+ 	sidebar.find('.btn-card-next').toggle(!isLastCard).oneClick(function(){
  		self.cardIndex++;
  		self.loadCard();	
+ 	});
+ 	//replace side buttons with quit ones when at first/last card??
+ 	//sidebar.find('.btn-quit-prev').toggle(isFirstCard);
+ 	//sidebar.find('.btn-quit-next').toggle(isLastCard);
+ 	sidebar.find('.btn-quit').oneClick(function(){
+ 		self.end();
+ 	});
+ 	sidebar.find('.btn-edit').oneClick(function(){
+ 		var oldHash = card.getHash();
+ 		card.edit(function(){
+ 			//modal closed
+ 			//was the card even changed?
+ 			if(card.getHash() != oldHash){
+	 			//reload this card so we see the difference
+	 			self.loadCard(card); 				
+ 			}
+ 		}); 		
  	});
  	//stars
  	var starArea = $('#study-sidebar-stars');
@@ -231,7 +253,15 @@ loadCard: function(self, card){
  */
 studiedCard: function(self, card, result){
     card.studied(result); //updates the rank & therefore reps left
-    self.results[result].add(card);
+    
+    //find the matching card in results & update its status
+    self.results.forEach(function(resultObject){
+    	//if the card referenced here is what we studied, update its status
+    	if(resultObject.card == card){
+    		//match!
+    		resultObject.result = result;
+    	}
+    });
     
     self.cardIndex++;
     
@@ -261,6 +291,9 @@ studiedCard: function(self, card, result){
      })}).delay(100);     
 },*/
 
+/**
+ * End the studying session. 
+ */
 end: function(self){
     //update the study session end page (switch when we're all done)
     
@@ -295,27 +328,24 @@ getStudiedCards: function(self){
 
 loadResultsChart: function(self){
      $('#study-result-chart').empty();
-     
+  
+     var rawResults = self.results.map('result'); //the result objects contain {card, result}; get just the result (StudyResult) part. So this is a StudyResult array.
      /**
       * Returns the number of cards with a certain StudyResult type.
       * @param {String} type  StudyResult.YES, StudyResult.NO, etc.
       */
      function countResultType(type){
-          return self.results[type].length;
+          return rawResults.count(type);
      }
      
-     var studiedCards = self.getStudiedCards();
-     var numStudied = studiedCards.length;
-     var numTotal = self.cards.length;
-     var numSkipped = numTotal - numStudied; //self.cards is all cards we SHOULD HAVE studied
-     
+     var numTotal = self.results.length;
      var title = sprintf("Studied %d card%s", numTotal, numTotal != 1 ? 's' : '');
      
      var data = [
           [ "Knew it", countResultType(StudyResult.YES) ],
           [ "Sort of knew", countResultType(StudyResult.SORT_OF) ],
           [ "Didn't know", countResultType(StudyResult.NO) ],
-          [ "Skipped", numSkipped ]
+          [ "Skipped", countResultType(StudyResult.SKIPPED) ] //at the outset we set the default value of the result var to SKIPPED, so if it wasn't updated to something else, we know the card wasn't studied
      ];
      
      var colors = [
