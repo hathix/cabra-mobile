@@ -199,6 +199,13 @@ loadCard: function(self, card){
  	//stars
  	var starArea = $('#study-sidebar-stars');
  	starArea.empty().append(card.getStarElement());
+ 	//if this has already been studied, put a little check mark in front
+ 	
+ 	//notification if you've already studied it
+ 	if(self.hasStudiedCard(card)){
+ 		$('.btn-card-current').prepend(getClonedTemplate('template-checkmark'));
+ 	} 	
+ 	
  	/*
  	var stars = card.getStars(); //1-5
  	//color text
@@ -243,7 +250,7 @@ loadCard: function(self, card){
     if(self.front == CardParts.QUESTION) text = card.question;
     else if(self.front == CardParts.ANSWER) text = card.answer;
     self.setStudyText(text);
-    */
+    */   
 },
 
 /**
@@ -303,17 +310,32 @@ end: function(self){
     //$.mobile.changePage('#study-session-end');   
     nav.openPage('study-end');
     
+    //TODO update so that this uses results
     //for each card that WASN'T studied, reduce its sessions left by 1
     //cards that were skipped count as not studied too. their sessions left should remain at 0
         //and by making it one less, or zero (whatever's bigger), this does that
-    var studiedNotSkipped = self.getStudiedCards(); //we just have a list of cards now
-    var notStudied = self.project.cards.subtract(studiedNotSkipped); //not studied and not skipped
+    var notStudied = new Array();
+    self.results.forEach(function(modResult){
+    	//contains {card: Card, result: StudyResult}
+    	if(modResult.result === StudyResult.SKIPPED){
+    		//we did NOT study it
+    		notStudied.push(modResult.card);
+    	}
+    });
     notStudied.forEach(function(card){
         //reduce repsLeft
         card.repsLeft = Math.max(card.repsLeft - 1, 0); //so it's 0 at minimum
     });
-    //for cards the user got wrong, let the project know so that the user can study just those next time
-    self.project.wrongCards = self.results[StudyResult.NO];
+    
+    
+    //for cards the user got wrong, let the project know so that the user can study just those next time, if they so desire
+    self.project.wrongCards = new Array();
+    self.results.forEach(function(modResult){
+    	//contains {card: Card, result: StudyResult}
+    	if(modResult.result === StudyResult.NO){
+    		self.project.wrongCards.push(modResult.card);
+    	}
+    });    
     
     //save this project only. we're saving it at the very end
     self.project.save();
@@ -326,9 +348,21 @@ getStudiedCards: function(self){
 	return Object.values(self.results).flatten().unique();
 },
 
+hasStudiedCard: function(self, card){
+	var hasStudied = false;
+	self.results.each(function(resultObj){
+		if(resultObj.card == card && resultObj.result !== StudyResult.SKIPPED){ 
+			hasStudied = true;	
+			return false;
+		}
+	});
+	return hasStudied;
+},
+
+
 loadResultsChart: function(self){
      $('#study-result-chart').empty();
-  
+  	
      var rawResults = self.results.map('result'); //the result objects contain {card, result}; get just the result (StudyResult) part. So this is a StudyResult array.
      /**
       * Returns the number of cards with a certain StudyResult type.
@@ -391,8 +425,8 @@ loadResultsChart: function(self){
 responsiveMeasure: function(self, elem){
 	elem.responsiveMeasure({
       //idealLineLength: 66 //amazingly the default is right
-      minimumFontSize: 18,
-      maximumFontSize: 18*2    		
+      minimumFontSize: chevre.options.fontSize,
+      maximumFontSize: chevre.options.fontSize    		
 	});	
 }
     

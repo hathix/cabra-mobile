@@ -54,6 +54,8 @@ body{
 /******* MENU ********/
 #menu{
 	padding-top: 0;
+	border-radius: 0;
+	height: 100%;
 }
 
 #menu-header{
@@ -91,6 +93,11 @@ a[data-href]{
 
 .project-list-item{
 	padding-right: 30px;
+}
+
+#welcome-helper-image{
+	margin: 5px 10px;
+	max-width: 100px;
 }
 
 /******* DECK HOME ******/

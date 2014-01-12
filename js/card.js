@@ -141,8 +141,16 @@ edit: function(self, callback){
  *  </div>
  */
 getStarElement: function(self){
+	
+	var stars = self.getStars(); //1-5
+	
+	//is there a cached one already?
+	if(chevre.cache.cardStars && chevre.cache.cardStars[stars]){
+		//yup! use that one instead
+		return chevre.cache.cardStars[stars].clone();
+	}
+	
 	var starArea = getClonedTemplate('#template-pure-stars');
- 	var stars = self.getStars(); //1-5
  	//color text
  	var cssClass = "text-default";
  	switch(stars){
@@ -166,6 +174,12 @@ getStarElement: function(self){
  		}
  	});	
  	
+ 	//cache it, since this operation is really expensive
+ 	if(!chevre.cache.cardStars){
+ 		chevre.cache.cardStars = new Array();
+ 	}
+ 	chevre.cache.cardStars[stars] = starArea.clone();
+ 	
  	return starArea;
 },
 
@@ -173,7 +187,9 @@ getStarElement: function(self){
  * Like getStarElement(), but returns the stars in HTML, not jQuery.
  */
 getStarHTML: function(self){
-	return self.getStarElement().outerHTML();
+	//return self.getStarElement().outerHTML();
+	//NEW use preloaded ones
+	return getClonedTemplate('template-stars-' + self.getStars()).outerHTML();
 },
 
 /**

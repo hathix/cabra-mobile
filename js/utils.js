@@ -80,7 +80,6 @@ function toast(text, options){
      (function(){
      	burnToast();
      }).delay(options.duration);
-     //TODO make it positioned near bottom of screen
 }
 
 /**
@@ -588,3 +587,65 @@ function sprintf(s) {
     }
     return out;
 }
+
+/**
+ * Used to dynamically load a JS file. Calls callback if successful. 
+ */
+function require(file, callback) {
+   var script = document.getElementsByTagName('script')[0],
+   newjs = document.createElement('script');
+
+  // IE
+  newjs.onreadystatechange = function () {
+     if (newjs.readyState === 'loaded' || newjs.readyState === 'complete') {
+        newjs.onreadystatechange = null;
+        callback();
+     }
+  };
+  // others
+  newjs.onload = function () {
+     callback();
+  }; 
+  newjs.src = file;
+  script.parentNode.insertBefore(newjs, script);
+}
+
+/* DEBUG TOOLS */
+var Timer = {
+	started: null, //time when the timer started
+	lapText: "", //if you call lap(), results stored here
+	
+	/*
+	 * Begins the timer.
+	 * @param {boolean} lap	[optional, default false] only pass true if you're in the middle of using laps.
+	 */
+	begin: function(lap){
+		this.started = Date.now();
+		if(!lap){
+			this.lapText = "";
+		}
+	},
+	
+	//returns the time difference between now and when the timer started.
+	getDiff: function(){
+		var after = Date.now();
+		return after - this.started;
+	},
+	
+	//prints the time difference in the console.
+	logDiff: function(){
+		console.log(this.getDiff());
+	},
+	
+	/**
+	 * Measures how long it's been since the last lap() was called, and stores that in memory. Use getLapText() to get a full listing 
+	 */
+	lap: function(){
+		this.lapText += this.getDiff() + " ";
+		this.begin(true);
+	},
+	
+	getLapText: function(){
+		return this.lapText;
+	}
+};

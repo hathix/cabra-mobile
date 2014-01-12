@@ -199,120 +199,6 @@ load: function(self){
      }     
     });     
      
-     //
-     
-     //var hasCards = self.cards.length > 0;
-     //var hideIfNoCards = ['study'];
-     
-    //load home page
-    //$('#project-name').html(self.name);
-    //$(document).attr('title', self.name);
-    
-    //$('#study-session-init-button').toggle(self.cards.length > 0);
-/*    
-    //show description text if there is any; otherwise show the description entry stuff
-    self.showOrHideDescription();
-    
-    //self.prepareCreateCardPage(CARD_CREATE);
-    $('#create-card-link').oneBind('click.cc', function(){
-     self.prepareCreateCardPage(CARD_CREATE);      
-    });
-    
-    //create card button in batch creator
-    $('#batch-create-button').oneClick(function(e){
-
-    });
-    
-    //start studying button in the study init page
-    $('#study-session-start').oneClick(function(event){
-        //make a session and start it
-        self.session = new Session(self);
-        self.session.start(); 
-    });
-    
-    //this will be called the page loaded
-    $('#project-home').oneBind('pageshow', function(){
-        //show chart with cards
-        self.loadCardChart();
-        
-        //enable/disable study button (the one to start initialization) if there are no cards
-        var disable = self.cards.isEmpty(); //bool
-        //$('#study-session-init-button').button(disable ? 'disable' : 'enable');
-        //disable each of these
-        var buttonIDsToDisable = [ '#study-session-init-button', '#card-manager-button', '#backup-launch-button', '#project-shuffle', '#project-reset', '#project-flip', '#project-print' ];
-        buttonIDsToDisable.forEach(function(id){
-            disable ? $(id).hide() : $(id).show();
-            //$(id).toggleClass('ui-disabled', disable);
-        });
-        
-        //the top/bottom buttons may have been removed so you may see square edges. Re-round them
-        $('.project-main-controlgroup').controlgroup();
-    });    
-    $('#card-manager').oneBind('pageshow', function(){
-        //update card manager list
-        self.updateManager();
-    });*/
-    /*$('#card-viewer').oneBind('pageshow', function(){
-          // set up click/tap panels
-          $('.flip-click').click(function() {
-               $(this).toggleClass('flip');
-          });
-    });*/
-   /*
-   $('#project-print').oneClick(function(){
-        self.setupPrint();
-   });
-   
-    $('#study-session-init').oneBind('pageshow', function(){
-        //user given choice to study only cards they got wrong last time
-        //but if no cards were wrong, or there WAS no last time (this is first run since opening Cabra), disable it
-        var wrongCardsItem = $('#study-mode-perfection');    
-        var modeSelect = $('#study-mode');
-        
-        if(self.wrongCards && self.wrongCards.length > 0){
-            //there are some cards we could study
-            wrongCardsItem.removeAttr('disabled');
-        }
-        else{
-            //no cards we could study, so no point; disable that choice
-            wrongCardsItem.attr('disabled', 'disabled');
-            
-            //if they had chosen to study perfection and now it got disabled, change the choice
-            if(modeSelect.val() == StudyMode.PERFECTION){
-                modeSelect.val(StudyMode.NORMAL); //will be refreshed later
-            }
-        }
-        
-        //refresh study mode select menu to reflect change
-        modeSelect.selectmenu('refresh', true); //true is to rebuild it
-    });
-    
-    
-    //project manager & more tools
-    $('#project-shuffle').oneClick(self.shuffle);
-    $('#project-reset').oneClick(self.resetCards); //that'll save too
-    $('#project-flip').oneClick(self.flipCards);
-    $('#project-clear-description').oneClick(self.clearDescription);
-    $('#project-edit').oneClick(function(){
-        //give that dialog this project so it can access it
-        $('#project-edit-dialog').jqmData('project', self);
-        
-        //rename the dialog
-        $('#project-edit-header').html(self.name);        
-    });
-    
-    //jqm init
-    $('#create-mc-answers').find('input.mc-answer-radio').checkboxradio(); //init it now
-    
-    //now at the very end...
-    //pre-load all images so that they're cached - so it's quicker to load them when you go to study
-    var img = new Image();
-    self.cards.forEach(function(card){
-     if(card.imageURL){
-          img.src = card.imageURL;
-     }     
-    });
-    */   
 },
 
 updateManager: function(self){
@@ -326,18 +212,30 @@ updateManager: function(self){
     function enterMode(mode){
     	//ensure buttons are correctly styled and hide/show buttons appropriately
     	if(mode == ManageMode.EDIT){
+    		//Timer.begin();
     		$('#manage-radio-mode-edit').parent().addClass('active');
     		$('#manage-radio-mode-delete').parent().removeClass('active');
+    		//Timer.lap();
     		
     		$('.manage-edit-card').show();
     		$('.manage-delete-card').hide();
+    		//$('.manage-delete-card').addClass('manage-edit-card btn-default').removeClass('manage-delete-card btn-warning')
+    		//	.find('.glyphicon').addClass('glyphicon-edit').removeClass('glyphicon-remove');
+    		//Timer.lap();
+    		//toast(Timer.getLapText(), {type: ToastTypes.SUCCESS});
     	}
     	else{
+    		//Timer.begin();
     		$('#manage-radio-mode-edit').parent().removeClass('active');
     		$('#manage-radio-mode-delete').parent().addClass('active');
+    		//Timer.lap();
     		
     		$('.manage-edit-card').hide();
-    		$('.manage-delete-card').show();    		
+    		$('.manage-delete-card').show();    
+    		//$('.manage-edit-card').removeClass('manage-edit-card btn-default').addClass('manage-delete-card btn-warning')
+    		//	.find('.glyphicon').removeClass('glyphicon-edit').addClass('glyphicon-remove');    			
+    		//Timer.lap();	
+    		//toast(Timer.getLapText(), {type: ToastTypes.DANGER});
     	}
     }    
     
@@ -345,16 +243,26 @@ updateManager: function(self){
     var list = $('#manage-card-list');
     list.empty();
     
+    //but first put in a loading text while we wait!
+    list.append(getClonedTemplate('template-flashcard-loading'));
+    
     /**
      * Loads the given Card[] into the card list. 
      * @param {Card[]}	cards	all cards to load.
      * @param {String}	highlightText	[optional] if given, all instances of that text in the card are highlighted. Good for filtering.
      */
     function loadCards(cards, highlightText){
+    	//Timer.begin();
+    	//var timeString = "";
+    	
     	template('template-manage-cards', list, {cards: cards});
     	
+    	//timeString += Timer.getDiff() + " "; Timer.begin();
+    	
     	//by default, enter edit mode
-    	enterMode(ManageMode.EDIT);
+    	//enterMode(ManageMode.EDIT); //NEW this is already on by default
+    	
+    	//timeString += Timer.getDiff() + " "; Timer.begin();
     	
     	//highlight any instances of given text
     	if(highlightText){
@@ -398,6 +306,8 @@ updateManager: function(self){
 	    	});
     	}
     	
+    	//timeString += Timer.getDiff() + " "; Timer.begin();
+    	
     	//handle card clicks and all since these must be regenerated whenever you reload cards
 	    //edit button
 	    $('.manage-edit-card').oneClick(function(){
@@ -408,11 +318,13 @@ updateManager: function(self){
 	    		//has the card been changed?
 	    		if(card.getHash() != hash){
 		    		//the card's been saved; reload
-		    		//TODO load just one card at a time (above) so we only need to reload THIS ROW
 		    		loadCards(cards, highlightText);	
 	    		}
 	    	});
 	    });
+	    
+	    //timeString += Timer.getDiff() + " "; Timer.begin();
+	    
 	    $('.manage-delete-card').oneClick(function(){
 	    	//get the hash, match it up, and edit that card
 	    	var hash = $(this).data('hash');
@@ -423,49 +335,59 @@ updateManager: function(self){
 	      	//update model
 	      	self.cards = self.cards.subtract(card);
 	      	self.save();         	
-	    });        	
+	    });     
+	    
+	    //timeString += Timer.getDiff() + " "; Timer.begin();
+	    
+	    //toast(timeString);	
     }
     
-    
-    //template it up
-    //by default, use all cards
-    loadCards(self.cards);
-       
-    //handle clicks in top bar
-
-    $('#manage-radio-mode-edit').parent().oneClick(function(){ enterMode(ManageMode.EDIT); });
-    $('#manage-radio-mode-delete').parent().oneClick(function(){ enterMode(ManageMode.DELETE); });
-    
-    $('#manage-sort-menu').find('a').oneClick(function(){
-    	//this is a sorting button. Figure out our sorting settings
-    	var sortOn = $(this).data('sorton');
-    	var desc = $(this).data('desc');
-    	self.sortCards(sortOn, desc);
-    	nav.refreshPage();
-    });
-    
-    //$('#manage-button-filter').oneClick(function(){
-    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better? keyup is slicker but takes more resources since it reloads a lot
-    $('#manage-input-filter').oneBind('change keyup', function(){
-    	var filterText = $('#manage-input-filter').val();
-    	if(filterText){
-    		var filterLower = filterText.toLowerCase();
-    		
-    		var cards = self.cards.filter(function(card){
-    			//q or a must contain filter text
-    			return card.getQuestionText().toLowerCase().indexOf(filterLower) > -1 
-    			    || card.getAnswerText().toLowerCase().indexOf(filterLower) > -1;
-    			//TODO search other answer choices too
-    		});
-    		loadCards(cards, filterText);
-    	}
-    	else{
-    		loadCards(self.cards);
-    	}
-    });
-    $('#manage-button-filter-clear').oneClick(function(){
-    	$('#manage-input-filter').val('').trigger('change').trigger('keyup').focus();
-    });
+    //do this stuff later to reduce lag
+    (function(){
+	    //template it up
+	    //by default, use all cards
+	    loadCards(self.cards);
+	       
+	    //handle clicks in top bar
+	
+	    $('#manage-radio-mode-edit').parent().oneClick(function(){ enterMode(ManageMode.EDIT); });
+	    $('#manage-radio-mode-delete').parent().oneClick(function(){ enterMode(ManageMode.DELETE); });
+	    
+	    $('#manage-sort-menu').find('a').oneClick(function(){
+	    	//this is a sorting button. Figure out our sorting settings
+	    	var sortOn = $(this).data('sorton');
+	    	var desc = $(this).data('desc');
+	    	self.sortCards(sortOn, desc);
+	    	nav.refreshPage();
+	    });
+	    
+	    //$('#manage-button-filter').oneClick(function(){
+	    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better? keyup is slicker but takes more resources since it reloads a lot
+	    $('#manage-input-filter').oneBind('change keyup', function(){
+	    	var filterText = $('#manage-input-filter').val();
+	    	if(filterText){
+	    		var filterLower = filterText.toLowerCase();
+	    		
+	    		var cards = self.cards.filter(function(card){
+	    			//q or a must contain filter text
+	    			return card.getQuestionText().toLowerCase().indexOf(filterLower) > -1 
+	    			    || card.getAnswerText().toLowerCase().indexOf(filterLower) > -1;
+	    			//TODO search other answer choices too
+	    		});
+	    		loadCards(cards, filterText);
+	    	}
+	    	else{
+	    		loadCards(self.cards);
+	    	}
+	    });
+	    $('#manage-button-filter-clear').oneClick(function(){
+	    	$('#manage-input-filter').val('').trigger('change').trigger('keyup').focus();
+	    });
+	    
+	    //now we have some time. The first click of the mode buttons takes a LONG time (subsequent ones are faster), so get it out of the way now
+	    //enterMode(ManageMode.DELETE);
+	    enterMode(ManageMode.EDIT);
+    }).delay(500);
 },
 
 loadCardChart: function(self){
@@ -615,7 +537,8 @@ batchCreate: function(self){
          //textarea.val('').css('height',0).change();
          textarea.val('');
          
-         toast(sprintf("Successfully created %d cards!", numCardsCreated), {type: ToastTypes.SUCCESS});
+         toast(sprintf("Successfully created %d card%s!", numCardsCreated, numCardsCreated == 1 ? '' : 's'), 
+         	{type: ToastTypes.SUCCESS});
     }
     
 
@@ -623,7 +546,6 @@ batchCreate: function(self){
       textarea.change(); //in case it got stuck @ 0 height... that tends to happen
  }).delay(200); //wait for a few pending things to finish
     */
-    //TODO: prevent the button from going back to main immediately; only go there programmatically if all cards are well-formed	
 },
 
 /*
@@ -631,7 +553,7 @@ batchCreate: function(self){
  */
 preparePrintOutput: function(self){
 	
-	var cards = self.cards; //TODO narrow it down based on which ones they chose
+	var cards = self.cards;
 	var options = {
 		printImages: $('#print-input-images').is(':checked')
 	};
@@ -655,33 +577,6 @@ preparePrintOutput: function(self){
 	});
 },
 
-/*
-print: function(self){
-     var table = $('#printer-table');
-     table.empty();
-     
-     nav.openPage('printer-output');  
-     //update header
-     $('#printer-output').find('.project-name').html(self.name);
-     
-     self.cards.forEach(function(card){
-          var tr = getClonedTemplate('template-print-row');
-          if(card.hasImage()){
-               tr.find('.print-image').attr('src', card.getImageURL());
-          }
-          else{
-               tr.find('.print-image').hide();
-          }
-          tr.find('.print-question-text').html(card.getQuestionText());
-          tr.find('.print-answer-text').html(card.getAnswerText());
-          table.append(tr);
-     });
-     
-     (function(){window.print();}).delay(1000);
-     
-       
-},
-*/
 /*
 decompress: function(self){
     //map each of the raw cards into an array of fixed cards

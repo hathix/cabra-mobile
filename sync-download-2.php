@@ -4,6 +4,12 @@
     //grab data from the server
     //we were given passcode, fetch projects
     $passcode = $_POST['passcode'];
+	
+	//Prevent someone from accessing this page via their browser.
+	$pw = $_POST['pw'];
+	if($pw !== 'o9fxxyouwT6N'){
+		exit();
+	}
     
     //constants
     define('DB_LOCATION','localhost');  

@@ -22,14 +22,7 @@ __init__: function(self){
     };
     self.options = {};
     
-    /*self.pages = [
-    	new Page("Home", "Home sweet home", "home", "home"),
-    	new Page("Deck Home", "Deck home", "home", "deck-home")
-    ];*/
-   
-   /*pageDB.getJQuery('deck-home').bind('load', function(){
-   		self.loadProject();
-   });*/
+    self.cache = {}; //various objects can cache stuff here
 },
 
 /**
@@ -113,12 +106,6 @@ addProject: function(self, project, dontSave){
     //TODO: maybe sort projects when a new one's added? but that involves adding the li to a custom spot...
     
     self.refreshProjectList();
-    
-    /*
-    var li = getClonedTemplate('template-divider');
-    li.`html(project.group);
-    $('#project-list').append(li).listview('refresh');
-    */
    
     if(!dontSave)
         self.save(project); 
@@ -511,10 +498,11 @@ syncUpload: function(self, success, failure){
     //pass the passcode & projects (strings, stored in browser) to php, which will store in table
     //TODO: instead of storing pure form, store it compressed
     $.post(
-        syncBaseURL + 'sync-upload.php',
+        syncBaseURL + 'sync-upload-2.php',
         {
             'passcode': $.store.get(SL_KEYS.SYNC_KEY),
-            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)) //what's nice is that this won't store undefined values
+            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)), //what's nice is that this won't store undefined values
+            'pw': 'o9fxxyouwT6N'            
         },
         function(data){
              //it's just 1 (literally just that number)
@@ -542,9 +530,10 @@ syncDownload: function(self, unpack){
     //pass the passcode; get projects in return
     $.ajax({
         type: 'POST',
-        url: syncBaseURL + 'sync-download.php',
+        url: syncBaseURL + 'sync-download-2.php',
         data: {
-            'passcode': $.store.get(SL_KEYS.SYNC_KEY)
+            'passcode': $.store.get(SL_KEYS.SYNC_KEY),
+            'pw': 'o9fxxyouwT6N'
         },
         
         success: function(data){
@@ -604,7 +593,7 @@ syncDownload: function(self, unpack){
             toast("Sync download failed (your device may be offline.) No worries - Cabra's loading flashcards from your device.", 
                { type: ToastTypes.DANGER, duration: TOAST_DURATION_LONG });
         }
-    })
+    });
 }
         
       

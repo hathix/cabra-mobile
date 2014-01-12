@@ -3,14 +3,15 @@ var ABOUT = {
 	appName: "Cabra",
     version: "1.0.0",
     codename: "Postseason",
-    date: Date.create("January 1, 2014"),
+    date: Date.create("January 11, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
         "Refreshed interface with a brand-new theme",
         "Printing flashcards added",
-        "Faster and leaner",
+        "Significantly faster and leaner",
         "New slide-out menu on the left",
         "You can now edit a flashcard while studying it",
-        "Massively improved flashcard manager and importer""
+        "Massively improved flashcard importer",
+        "You can now sort and delete flashcards easily in the manager",        
         "New icon!"
     ],
     
@@ -184,9 +185,9 @@ var SL_KEYS = {
 var Rank = {
     A: { name: "A", baseReps: 0,  color: "#FF0000" },
     B: { name: "B", baseReps: 2,  color: "#FF7F00" },
-    C: { name: "C", baseReps: 5,  color: "#FFC800" },
-    D: { name: "D", baseReps: 9,  color: "#0094FF" },
-    E: { name: "E", baseReps: 14, color: "#00E500" },
+    C: { name: "C", baseReps: 6,  color: "#FFC800" },
+    D: { name: "D", baseReps: 12, color: "#0094FF" },
+    E: { name: "E", baseReps: 16, color: "#00E500" },
 };
 
 function nextRank(rank){

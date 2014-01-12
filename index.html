@@ -455,10 +455,10 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="#" data-sorton="stars" data-desc="false"><span class="glyphicon glyphicon-sort-by-attributes"></span> Stars Inc.</a>
+								<a href="#" data-sorton="stars" data-desc="false"><span class="glyphicon glyphicon-sort-by-attributes"></span> Stars 1-5</a>
 							</li>
 							<li>
-								<a href="#" data-sorton="stars" data-desc="true"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span> Stars Dec.</a>
+								<a href="#" data-sorton="stars" data-desc="true"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span> Stars 5-1</a>
 							</li>
 						</ul>
 					</div>
@@ -636,15 +636,15 @@
                     <div class="col-lg-9 col-md-9 col-sm-8">
                     	<div id="sync-show-setup">
 	                        <p class="lead">
-	                            Sync's already set up on this device. Your passcode is <strong id="sync-passcode-reminder"></strong>.
-	                        </p>
-	                        <p class="lead">
-	                        	You can now sync with other devices or Cabra's web app at <a href="http://chevre.hathix.com">chevre.hathix.com</a>!
+	                            Sync's already set up on this device - your passcode is <strong id="sync-passcode-reminder"></strong>.
+	                            To sync with another device, enter your passcode on that device.
 	                        </p>
 	
 	                        <div class="btn-group btn-group-justified">
-	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-upload"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
-	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-download"><span class="glyphicon glyphicon-cloud-download"></span> Download</a>
+	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-upload" data-loading-text="Uploading...">
+	                            	<span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
+	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-download" data-loading-text="Downloading...">
+	                            	<span class="glyphicon glyphicon-cloud-download"></span> Download</a>
 	                        </div>
 	                        <br /><br />
 	                        <button class="btn btn-danger" id="sync-button-stop">
@@ -654,7 +654,11 @@
                        </div>
                        <div id="sync-show-new">
 	                        <p class="lead">
-	                            You haven't set up sync yet on this device. If you haven't synced before, create a unique, 3- or 4-word passcode and enter it below. If you set up sync on another device, enter your passcode below, and your flashcards will be downloaded onto this device.
+	                            You haven't set up sync yet on this device.
+		                        <ul class="lead">
+		                        	<li>If you haven't synced before, create a unique, 3- or 4-word passcode and enter it below.</li>
+		                        	<li>If you've set up sync on another device, enter your passcode below.</li>
+		                        </ul>
 	                        </p>
 	
 	                        <div class="input-group">
@@ -838,6 +842,31 @@
                 </ul>
             </section>
             
+            <section class="tab-pane" id="apps" data-name="Apps">
+            	<p class="lead">
+            		Want to study on your other devices? Get the Cabra app for all your favorite platforms, including:
+            	</p>
+            	<div class="list-group">
+        			<a href="http://chevre.hathix.com" class="list-group-item" target="_blank">
+        				<span class="glyphicon"><img src="img/apps/internet.png"></span>
+        				Web <span class="text-muted">on any device</span>
+        			</a>
+        			<a href="https://play.google.com/store/apps/details?id=com.hathix.android.chevre" class="list-group-item" target="_blank">
+        				<span class="glyphicon"><img src="img/apps/android.png"></span>
+        				Android <span class="text-muted">phones and tablets</span>
+        			</a>     
+        			<a href="https://chrome.google.com/webstore/detail/hipdbdkehfdnnhhifipnpkejnijbijam" class="list-group-item" target="_blank">
+        				<span class="glyphicon"><img src="img/apps/chrome.png"></span>
+        				Chrome <span class="text-muted">on computers</span>
+        			</a>	
+        			<a href="https://marketplace.mozilla.org/app/cabra" class="list-group-item" target="_blank">
+        				<span class="glyphicon"><img src="img/apps/firefox.png"></span>
+        				Firefox <span class="text-muted">on computers and Android phones and tablets</span>
+        			</a>        				
+            	</div>
+            	
+            </section>            
+            
             
             <section class="tab-pane" id="welcome" data-name="Welcome!">
             	<div class="row">
@@ -970,6 +999,9 @@
                     </li>
                     <li>
                     	<a href="#" data-href="contact" data-toggle="tab"><span class="glyphicon glyphicon-envelope"></span> Contact</a>
+                    </li>
+                    <li>
+                    	<a href="#" data-href="apps" data-toggle="tab"><span class="glyphicon glyphicon-download"></span> Get the App</a>
                     </li>
                     <li>
                         <a href="#" data-href="about" data-toggle="tab"><span class="glyphicon glyphicon-question-sign"></span> About</a>
@@ -1289,7 +1321,6 @@
         <!-- Pass {cards:[Card,Card,Card...]} - that's right, ALL CARDS in project! (or at least as many as you want to show) -->
         <script id="template-manage-cards" type="text/x-handlebars-template">
         	
-        	<div class="table-responsive1">
         		<table class="table table-striped table-hover">
 		        	{{#each cards}}
 			            <tr>
@@ -1305,7 +1336,7 @@
 								<button class="btn btn-default btn-sm manage-edit-card" data-hash='{{#call "getHash"}}{{/call}}' tabindex="-1">
 									<span class="glyphicon glyphicon-edit"></span>
 								</button>
-								<button class="btn btn-danger btn-sm manage-delete-card" data-hash='{{#call "getHash"}}{{/call}}' tabindex="-1">
+								<button class="btn btn-danger btn-sm manage-delete-card" style="display: none;" data-hash='{{#call "getHash"}}{{/call}}' tabindex="-1">
 									<span class="glyphicon glyphicon-remove"></span>
 								</button>
 							</td>
@@ -1318,9 +1349,6 @@
 		            	</tr>
 		            {{/each}}         			
         		</table>
-        	</div>
-        	
-        	
    	
         </script>
 
@@ -1330,13 +1358,6 @@
         	<table class="table table-bordered table-striped">
          	{{#each cards}}
                 <tr>
-                	<!--{{#if ../options.printImages}}
-                		<td>
-                			{{#ifFunction "hasImage"}}
-                				<img class="media-object" src="{{imageURL}}">
-                			{{/ifFunction}}
-                		</td>
-                	{{/if}}-->
                 	
                 	<td>
 	                	{{#if ../options.printImages}}
@@ -1495,29 +1516,31 @@
         <div style="display:none;">
         	<div id="template-welcome" class="alert alert-info">
         		<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+        		<img src="img/icons/icon128.png" class="pull-left" id="welcome-helper-image">
         		<div class="guide-new">
-	        		<p class="lead">Hi and welcome once again! To help you get studying right away, here's a brief look at the controls:</p>
+	        		<p class="lead">Hi and welcome again to Cabra (that's Spanish for <em>goat</em>). Here's a quick look at the controls:</p>
 	        		<ul>
 	        			<li>Press the "Sample Flashcards" button below to open that set of flashcards (they're called <em>decks</em> in Cabra). From there, you can study the flashcards in that set, create new ones, and more.</li>
-	        			<li><strong>Cabra is separated into pages</strong>: a home page, a page for a deck of flashcards, a studying page, and so on. Use the buttons in the top right corner to move between pages. If you're ever lost, push the home button to come back to this page.</li>
-	        			<li>Press the button in the top left corner to <strong>open the menu</strong> and access important features like syncing your flashcards, organizing your decks, or changing settings.</li>
+	        			<li><strong>Cabra is separated into pages</strong>: a home page, a studying page, and so on. Use the buttons in the top right corner to move between pages. Push the home button to come back to this page.</li>
+	        			<li>Press the button in the top left corner to <strong>open the menu</strong> and access important features like syncing your flashcards or changing settings.</li>
 	        		</ul>        			
-	        		<p>To get started, open the sample flashcard set and explore the features inside. Questions or comments? Contact us - you'll find that button in the menu!</p>
+	        		<p>To get started, open the sample flashcard set and explore the features inside. If you have questions or comments, contact us - you'll find that button in the menu!</p>
         		</div>
         		<div class="guide-returning">
-        			<p class="lead">Hi and welcome back to Cabra! This new version looks really different than the old one, but almost everything is in the same place as before. Here's what has changed:</p>
+        			<p class="lead">Hi and welcome back to Cabra! This new version looks different than the old one, but almost everything is in the same place. Here's what's changed:</p>
         			<ul>
         				<li>The menu has been moved to the top left corner of the page.</li>
-        				<li><strong>The Organize, Sync, and Options (renamed Settings) pages are now found in the menu in the top left, not on the home page itself.</strong></li>
+        				<li><strong>The Organize, Sync, and Options (renamed Settings) pages are now in the menu in the top left, not on the home page itself.</strong></li>
         				<li>The back and home buttons are now in the top right and have been joined by a forward button.</li>
         				<li class="visible-lg">You can also move around using the "breadcrumb trail" in the top bar.</li>
-        				<li>Instead of ranks (A through E), flashcards now have stars (1 through 5). Everything behind the scenes is the same as before.</li>
-        				<li>The Mass Card Creator has been renamed the Batch Creator, but its function remains the same.</li>
+        				<li>Instead of ranks (A through E), flashcards now have stars (1 through 5). Everything behind the scenes is the same.</li>
+        				<li>The Mass Card Creator has been renamed the Batch Creator.</li>
         			</ul>
-        			<p>This new version has been engineered to help you adjust as fast as possible. If you have questions, let us know - the contact button is in the menu!</p>
+        			<p>If you have questions, let us know - the contact button is in the menu!</p>
         		</div>
         		
-        		<button class="btn btn-primary btn-block" data-dismiss="alert">Got it!</button>
+        		<button class="btn btn-primary btn-block" data-dismiss="alert">
+        			<span class="glyphicon glyphicon-flash"></span> Got it!</button>
         	</div>
 	        <div id="template-pure-stars">
 				<span class="glyphicon glyphicon-star"></span>
@@ -1526,6 +1549,7 @@
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>        	
 	        </div> 
+	        <span id="template-checkmark" class="glyphicon glyphicon-check">&nbsp;</span>
 	        <div id="template-toast" class="alert alert-danger toast fade in">
 	        	<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>  
 	        	<span class="toast-text"></span>
@@ -1537,6 +1561,45 @@
             		Finding flashcards...
             	</div>	        	
 	        </div>
+	        <div id="template-import-failure">
+            	<div class="alert alert-warning lead">
+            		<span class="glyphicon glyphicon-remove"></span>
+            		No flashcards found! Change your search text.
+            	</div>	        	
+	        </div>	        
+
+            <div id="template-flashcard-loading">
+            	<div class="alert alert-info lead">
+            		<span class="glyphicon glyphicon-refresh"></span>
+            		Loading your flashcards...
+            	</div>
+            </div>	        
+	        
+	        <div id="template-stars-1" class="text-danger">
+				<span class="glyphicon glyphicon-star"></span>      	
+	        </div> 	   
+	        <div id="template-stars-2" class="text-warning">
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>      	
+	        </div> 	  
+	        <div id="template-stars-3" class="">
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>     	
+	        </div> 	  
+	        <div id="template-stars-4" class="text-info">
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>     	
+	        </div> 	  
+	        <div id="template-stars-5" class="text-success">
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>
+				<span class="glyphicon glyphicon-star"></span>        	
+	        </div> 	  	        	        	        	             
         </div>
 
         

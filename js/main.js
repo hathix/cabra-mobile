@@ -8,6 +8,44 @@ Cobra.install();
  * Called when the app is fully loaded.
  */
 $(document).ready(function(){
+	FastClick.attach(document.body);
+	
+	//see if we can get Cordova (for Android)
+	require('cordova.js', function(){
+		//Handle back button. Go back in history, dialogs, etc.
+		document.addEventListener("backbutton", function(){
+			if($('.modal').is('.in')){
+				//a NORMAL modal is open; close it
+				$('.modal.in').modal('hide');
+			}
+			else if(View.snapper.state().state == "left"){
+				//slideout menu is open; close it
+				View.snapper.close();
+			}			
+			else if(nav.index > 0 || nav.modalOpen){
+				nav.openPage(NAV_BACK); //go back a page or close the modal (special case), it'll handle it
+			}
+			else{
+				//quit app, but save first
+				chevre.save();
+				navigator.app.exitApp();
+			}
+		}, false);
+		
+		//Handle menu button. Just show/hide the slideout menu.
+		document.addEventListener("menubutton", function(){
+			//Open/close the slideout (snapper) menu, as appropriate
+			//if open, close
+			if(View.snapper.state().state == "left"){
+				View.snapper.close();
+			}
+			//if closed, open
+			else{
+				View.snapper.open('left');
+			}
+		}, false);
+	});
+	
      $('body').on('click','a[data-href]',function(){
           //open whatever had that trigger
           var href = $(this).data('href'); //like 'home' or something

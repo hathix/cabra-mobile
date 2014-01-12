@@ -27,9 +27,10 @@ quizletText: function(text){
        dataType: "jsonp",
        success: function(response){
            //if there was an error, response has .error
-           if(response.error){
+           if(response.error){ //probably NOT going to happen!
                //clean up and get out
-               //TODO add alert
+	        	//var html = getClonedTemplate('template-import-failure').html();
+	        	//$('#import-list-quizlet').html(html);
                //$('#quizlet-list').empty().append($('<li>No projects found! :(</li>')).listview('refresh');
                
                //console.log(response);
@@ -39,6 +40,14 @@ quizletText: function(text){
            var projects = response.sets.first(QUIZLET.maxToLoad); //array of Set objs; there are tons of these
            //Set has id, title, term_count, description
            //https://quizlet.com/api/2.0/docs/searching-sets/
+           
+           if(projects.length == 0){
+           		//found nothing!
+           	    var html = getClonedTemplate('template-import-failure').html();
+        		$('#import-list-quizlet').html(html);
+        		return;
+           }
+           
            var list = $('#import-list-quizlet');
            template("template-quizlet-import-project", list, {projects:projects});
            list.find('.panel-collapse').on('show.bs.collapse', function(){

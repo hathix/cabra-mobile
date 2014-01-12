@@ -7,6 +7,12 @@
     $passcode = $_POST['passcode'];
     $projects = $_POST['projects'];
     
+	//Prevent someone from accessing this page via their browser.
+	$pw = $_POST['pw'];
+	if($pw !== 'o9fxxyouwT6N'){
+		exit();
+	}	
+	
     //put it into the table
     
     //constants

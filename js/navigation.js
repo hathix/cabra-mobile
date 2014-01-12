@@ -108,7 +108,7 @@ loadPage: function(self, page){
           self.makeTrigger(page);
      }
      
-     //open that tab
+     //open that tab	
      $('#trigger-' + page.slug).tab('show');
      $(page).trigger('load'); //TODO maybe move above the line that actually shows it?
      

@@ -15,6 +15,10 @@ setup: function(self){
      	//add a new, empty group
      	var groupName = $('#organize-input-group-name').val().trim();
      	if(groupName && groupName !== ""){
+     		//make sure there's no duplicate group names
+     		var existingGroupNames = $.makeArray($('#organize-group-list').find('.list-group-name')).map(function(e){ return $(e).html() });
+     		groupName = ensureNoDuplicateNames(groupName, existingGroupNames);
+     		
      		var li = template('template-organize-group', $('#organize-group-list'), {name: groupName}, true);
 		    li.find('.action-delete').oneClick(function(){
 		    	self.deleteDivider(groupName);
@@ -134,7 +138,7 @@ addProject: function(self, project){
 deleteDivider: function(self, groupName){
 	
 	
-		console.log(groupName);
+		//console.log(groupName);
       self.reassignGroups();		
       //get rid of this divider; change all projects with this group to unorganized and reload 
       chevre.projects.each(function(project){

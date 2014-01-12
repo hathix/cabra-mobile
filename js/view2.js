@@ -1,3 +1,7 @@
+var View = {
+	snapper: null //slideout menu
+};
+
 function initUI(){
 	initPages();
 	initDialogs();
@@ -6,7 +10,12 @@ function initUI(){
 	organizer.setup();
 	
 	//options
-	
+	/*
+	$(window).resize(function(){
+		var mainHeight = $('#main-container').height();
+		$('.study-main-card').css('height', mainHeight - 150); //reserve space for other buttons etc	
+	});
+	*/
 	//about
     //just give a span any of these classes and the appropriate stuff will be entered
     $('.about-version').html(ABOUT.version);
@@ -30,12 +39,13 @@ function initUI(){
 		minDragDistance: 10, //default 5
 		flickThreshold: 10, //default 50
 	});
+	View.snapper = snapper;
 	$('#navbar-menu-button').oneClick(function(){
 		//if open, close
 		if(snapper.state().state == "left"){
 			snapper.close();
 		}
-		//if close, open
+		//if closed, open
 		else{
 			snapper.open('left');
 		}
@@ -150,13 +160,24 @@ function initPages(){
     	if(setup){
     		$('#sync-passcode-reminder').html($.store.get(SL_KEYS.SYNC_KEY));
     		$('#sync-button-upload').oneClick(function(){
+    			var self = $(this);
+    			self.button('loading');
 			    chevre.syncUpload(
-			         function success(){ toast('Your cards were successfully uploaded!', { type: ToastTypes.SUCCESS, duration: TOAST_DURATION_SHORT })},
-			         function failure(){ toast('Uploading your cards failed. Enable your internet connection and try again.', { type: ToastTypes.DANGER })}
+			         function success(){ 
+			         	toast('Your cards were successfully uploaded!', { type: ToastTypes.SUCCESS, duration: TOAST_DURATION_SHORT });
+			         	self.button('reset');
+			         },
+			         function failure(){ 
+			         	toast('Uploading your cards failed. Enable your internet connection and try again.', { type: ToastTypes.DANGER });
+			         	self.button('reset');
+			         	}
 			    );
     		});
     		$('#sync-button-download').oneClick(function(){
+    			var self = $(this);
+    			self.button('loading');
     			chevre.syncDownload(false);
+    			self.button('reset');
     			bootbox.dialog({
     				message: "Your cards have been successfully downloaded! <strong>You'll now need to refresh the page.</strong>",
     				title: "Download successful!",
