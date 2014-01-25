@@ -1,12 +1,12 @@
 var feedback = new Singleton({
 __init__: function(self){
      self.featureChoices = [
-          //'Fill-in-the-blank studying', WILL DO
           'Equation/LaTeX support',
-          'XML/CSV flashcard import',
-          'Printable flashcards',
           'Sharing flashcards with friends',
-          'Instant flashcard translation (good for foreign languages)'
+          'Instant flashcard translation',
+          'Multiple images per flashcard',
+          'Rich-text editing of flashcards',
+          'A points/rewards system'
      ];
 },
 
@@ -15,21 +15,32 @@ __init__: function(self){
  * This will do everything for you. Just call it when you're ready.
  * Note it may or may not open the dialog.
  * (You can also open that dialog directly.)
+ * @param {boolean}	force	[optional, default false] if true, will show dialog even if it isn't time
  * @return {boolean}     true if it opens the dialog (it's time), false otherwise
  */
-ask: function(self){
+ask: function(self, force){
      //hold on! do they even want us to?
-     if (!chevre.options.askFeedback) return false;
+     if (!chevre.options.askFeedback && !force) return false;
      
      var daysSinceAsked = Date.create().daysSince(Date.create($.store.get(SL_KEYS.FB_LAST_ASKED)));
      var usesSinceAsked = $.store.get(SL_KEYS.FB_USES_SINCE_ASKED);
      
-     if(daysSinceAsked >= FB_MIN_DAYS && usesSinceAsked >= FB_MIN_USES){
+     if(force || (daysSinceAsked >= FB_MIN_DAYS && usesSinceAsked >= FB_MIN_USES)){
           //yes, show the dialog
-         $('#feedback-why').show(); //explain WHY we're asking for feedback
-          $.mobile.changePage('#feedback',{
-               role: "dialog"
+         //$('#feedback-why').show(); //explain WHY we're asking for feedback
+          template('template-feedback', $('#dialog-feedback'), { items: self.featureChoices });
+          $('#feedback-dont-show').attr('checked', options.askFeedback);
+          $('#dialog-feedback').modal('show');
+          
+          //hook up buttons
+          $('#dialog-feedback').find('.btn-submit').oneClick(function(){
+          	self.submit();
           });
+          $('#dialog-feedback').off('hidden.bs.modal').on('hidden.bs.modal', function(){
+          	//see if they want to give feedback again
+          		
+          });
+          
           //reset so we ask them again later
           self.resetUsageStats();
           return true;
@@ -46,6 +57,7 @@ resetUsageStats: function(self){
      $.store.set(SL_KEYS.FB_USES_SINCE_ASKED, 0);
 },
 
+/*
 loadDialog: function(self){
   //specifically load the feature choices
   var holder = $('#feedback-choices');  
@@ -63,6 +75,7 @@ loadDialog: function(self){
   
   holder.trigger('create').controlgroup();
 },
+*/
 
 /**
  * Sends the feedback. Call this when the submit button's pushed. 
@@ -70,7 +83,7 @@ loadDialog: function(self){
 submit: function(self){
      //get their actual feedback
      var results = self.grabFeedback();
-     //console.log(results);
+     console.log(results);
      
      console.log('Sending feedback...');
     $.post(
@@ -94,7 +107,7 @@ grabFeedback: function(self){
      //get from choices list
      //TODO find some way to make these things required so they HAVE to fill it out (put in form?)
      
-     var choices = $('#feedback-choices input:checked').val(); //gives you text or id (#) of what they want
+     var choices = $('input:radio[name="feedback-choices"]:checked').val();
      var comments = $('#feedback-comments').val(); //comments
      var email = $('#feedback-email').val();
      
@@ -109,11 +122,11 @@ grabFeedback: function(self){
 },
 
 /**
- * Checks what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly 
+ * Looks at what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly 
  * @param {Object} self
  */
 checkDontShow: function(self){
-     var dontShow = truthiness($('#feedback-dont-show:checked').length);
+     var dontShow = $('#feedback-dont-show').is(':checked');
      chevre.options.askFeedback = !dontShow; //cause we're asking if they DON'T want to be asked again
      chevre.saveOptions();
 }

@@ -21,6 +21,15 @@ __init__: function(self){
         theme: Theme.BLUE
     };
     self.options = {};
+    
+    self.cache = {}; //various objects can cache stuff here
+},
+
+/**
+ * Returns the page with the given slug. 
+ */
+page: function(self, slug){
+	return PageDB.get(slug);
 },
 
 /**
@@ -30,21 +39,40 @@ start: function(self){
     //load options & projects
     self.load();
     
+    nav.home(); //open home page
+    
     //now that we're done... at this point not much is happening
+    
     
     //check version
     var oldVersion = $.store.get(SL_KEYS.LAST_VERSION);
+    var updated = false;
+    var newUser = false;
     if(oldVersion && oldVersion != ABOUT.version){
         //they loaded a new version.
-        $.mobile.changePage('#updated');
+        //$.mobile.changePage('#updated');
+        template('template-updated-changes',$('#updated-changes'),{items: ABOUT.changes});
+        nav.openPage('updated');
         console.log("Chevre updated to version " + ABOUT.version);
+        updated = true;
     }
     else if(oldVersion == undefined){
         //it's the first time they're using Cabra
         //this will only show once - EVER - because version is always set later on
-        $.mobile.changePage('#welcome');
+        //$.mobile.changePage('#welcome');
+        nav.openPage('welcome');
+        newUser = true;
     }
     $.store.set(SL_KEYS.LAST_VERSION, ABOUT.version);
+    
+    //show another welcome message if it's their first time here, this time showing them the controls
+    if(updated || newUser){
+    	var welcome = getClonedTemplate('template-welcome');
+    	$('#welcome-message').html(welcome);
+    	//show diff things to diff people
+    	welcome.find('.guide-new').toggle(newUser);
+    	welcome.find('.guide-returning').toggle(updated);
+    }
     
     //feedback tracking
     //when we last asked them for feedback
@@ -78,12 +106,6 @@ addProject: function(self, project, dontSave){
     //TODO: maybe sort projects when a new one's added? but that involves adding the li to a custom spot...
     
     self.refreshProjectList();
-    
-    /*
-    var li = getClonedTemplate('template-divider');
-    li.html(project.group);
-    $('#project-list').append(li).listview('refresh');
-    */
    
     if(!dontSave)
         self.save(project); 
@@ -92,85 +114,89 @@ addProject: function(self, project, dontSave){
 refreshProjectList: function(self){
      $('#project-list').empty();
      
-     var append = function(project){
-          var li = self.createProjectLI(project);
-          $('#project-list').append(li);
-     };
-     
      var groupedProjects = self.projects.groupBy('group'); //object { groupName: [proj1, proj2, proj3], ... }
+    Object.keys(groupedProjects, function(groupName, projects){
+         var data = {
+              groupName: groupName,
+              decks: projects
+         };
+         
+          //make panel containing each
+          var panel = template("template-project-panel", $('#project-list'), data, true);    
+    });
     
-     //stick on unorganized's first (since that divider is at the top)...
-     if(Object.has(groupedProjects, GROUP_DEFAULT)){
-          /* //TODO consider showing 'unorganized' label on unorganized projects on main screen
-          //stick on that divider
-              var li = getClonedTemplate('template-divider');
-              li.html(GROUP_DEFAULT);
-              $('#project-list').append(li);   
-           */
-          groupedProjects[GROUP_DEFAULT].each(function(project){
-               append(project);     
-          });
-     }
-     //and tack on everything else
-     Object.keys(groupedProjects, function(groupName, projects){
-          //make divider for each; we already added Unorganizd
-          if(groupName != GROUP_DEFAULT){
-               //make divider
-              var li = getClonedTemplate('template-divider');
-              li.find('.divider-name').html(groupName);
-              
-              //TODO this works but not sure why it's needed. consider rolling out
-              /*//THIS IS TO SHOW/HIDE PROJECTS BELOW GROUP DIVIDER
-               //hide/show button              
-              var button = li.find('button');
-              button.button();
-              //open by default
-              button.data('expanded',true);
-              function update(){
-                    var projects = chevre.projects.filter(function(project) {
-                         return project.group == groupName;
-                    });
-                    if (button.data('expanded') == true) {
-                         //currently showing, image is -, li's all visible
-                         //now hide any project with that group name
-                         projects.forEach(function(project){
-                              chevre.findProjectLI(project).hide();
-                         });
-                         button.data('expanded', false);
-                         button.parent().find('.ui-icon').removeClass('ui-icon-minus').addClass('ui-icon-plus');
-                    }
-                    else{
-                         //currently hiding, image is +, li's all hidden
-                         //open it up & show li's
-                         projects.forEach(function(project){
-                              chevre.findProjectLI(project).show();
-                         });
-                         button.data('expanded', true);
-                         button.parent().find('.ui-icon').removeClass('ui-icon-plus').addClass('ui-icon-minus');
-                    }
-
-              }
-              button.oneClick(function(){
-               //toggle show/hide    
-               update();
-              });*/
-              
-             
-              $('#project-list').append(li);
-                       
-               projects.each(function(project){
-                    append(project);
-               });
-          }
-     });     
+    //reload all clicks
+    $('.project-list-item').click(function(){
+     var id = $(this).data('id');
+     //load that project
+     self.loadProject(self.getProjectByID(id));     
+    });
+    $('.project-list-item').find('.project-list-item-edit').click(function(e){
+    	var id = $(this).closest('.project-list-item').data('id');
+    	var project = self.getProjectByID(id);
+    	e.stopPropagation(); //prevent the click handler for the whole thing being clicked (that'd take us to project home page)
+    	
+    	//only show merge/delete buttons if >1 project
+    	var multiProjects = chevre.projects.length > 1;
+    	$('.btn-merge-opener').toggle(multiProjects);
+    	$('.btn-delete').toggle(multiProjects);
+    	$('.panel-merge').toggle(multiProjects);
+    	
+    	//populate fields
+    	var dialog = $('#dialog-deck-edit');
+    	dialog.find('.deck-name').html(project.name);
+    	//load the merge deck selector with the names of our othe rdecks
+    	$('#deck-edit-merge-into').html('');
+		chevre.projects.forEach(function(deck){
+		    if(deck.equals(project)) return; //can't merge into the project we're merging from
+		    var option = $('<option></option>');
+		    option.html(deck.name);
+		    option.val(deck.id);
+		    $('#deck-edit-merge-into').append(option); 
+		});
+        	
+    	//handle clicks
+    	dialog.find('.btn-merge').oneClick(function(){
+		    var mergeFrom = project;
+		    var mergeToID = $('#deck-edit-merge-into').val();
+		    var mergeTo = self.getProjectByID(mergeToID);
+		    //console.log(mergeFrom.name + " -> " + mergeTo.name);
+		    self.mergeProjects(mergeFrom, mergeTo);
+		    
+		    //close merge area
+			$("#deck-edit-merge").collapse('hide');		    
+    	});
+    	dialog.find('.btn-delete').oneClick(function(){
+    		//TODO decide if we need confirmation
+    		/*bootbox.confirm('Are you sure you want to permanently delete this deck?', function(result){
+    			if(result)
+    				dialog.modal('hide');
+    		});*/
+    		
+    		dialog.modal('hide');
+    		self.removeProject(project);
+    	});
+    	dialog.find('.btn-rename').oneClick(function(){
+    		//defer to the actual editing area on the project page
+    		self.loadProject(project);
+    		nav.openPage('deck-home');
+    		project.isEditing = true;
+    		project.reloadDescription();
+    		$('.input-name').focus();
+    	});
+    	
+    	dialog.modal('show');
+    });
+    //TODO make long-clicking open the edit dialog too, but that's its own can of worms...
+   
      
-     $('#project-list').listview('refresh');
+     //$('#project-list').listview('refresh');
 },
 
 /**
  * Creates a list item for a given project. 
  */
-createProjectLI: function(self, project){
+/*createProjectLI: function(self, project){
     //add to view - grab template and modify it
     var li = getClonedTemplate("template-project");
     li.find(".project-name").html(project.name);
@@ -198,13 +224,13 @@ createProjectLI: function(self, project){
     li.attr('id', 'project-div-' + project.id);
     
     return li;
-},
+},*/
 
 /**
  * Finds and returns the $li of the given project. 
  */
 findProjectLI: function(self, project){
-     return $('#project-div-' + project.id);
+     return $('#project-list-item-' + project.id);
 },
 
 /**
@@ -227,7 +253,7 @@ removeProject: function(self, project){
     }
  
     //remove from view
-    $('#project-div-' + project.id).remove();
+    $('#project-list-item-' + project.id).remove();
     self.refreshProjectList();
     
     self.save();
@@ -348,25 +374,17 @@ loadLocally: function(self){
 unpackProjects: function(self){
     var rawProjects = $.store.get(SL_KEYS.PROJECTS);
     //UGLY CODE AHEAD
-    var goodProjects = rawProjects.map(function(rawProj){
-        return decompress(rawProj, "Project",
-        [ 'name', 'id', 'description', 'group' ], //in init
-        [ 
-            { cards: function(goodProj, rawCards){
-                    //obj is the good object, value is the raw cards
-                    //NEW: store them as raw until the project is loaded; THEN convert them
-                    goodProj.raw = true; //not converted yet
-                    goodProj.rawCards = rawCards;
-                }}
-        ]);    
-    });
-    
-    //add in the projects
-    goodProjects.forEach(function(project){
-        self.addProject(project, true); //don't save at all; the data has been saved BEFORE now     
-        
-        //decompress the project to normal
-        project.decompress();
+    rawProjects.forEach(function(rawProj){
+    	var project = new Project(rawProj.name, rawProj.description, rawProj.id, rawProj.group);
+    	//add in cards
+    	project.cards = rawProj.cards.map(function(rawCard){
+    		var card = new Card(rawCard.question, rawCard.answer, rawCard.imageURL);
+    		card.repsLeft = rawCard.repsLeft;
+    		card.rank = Rank[rawCard.rank];	
+    		return card;
+    	});
+    	
+    	self.addProject(project, true);
     });
 },
 
@@ -377,10 +395,9 @@ unpackProjects: function(self){
 loadDefaultProjects: function(self){
     console.log("Defaults...");
     //temporary!
-    var proj = new Project("Sample Flashcards (try me out!)", "Try out Cabra with this sample set of flashcards!");
+    var proj = new Project("Sample Flashcards (try me out!)", "Try out Cabra with this sample deck of flashcards!");
     var cards = [
          new Card("What animal is this?", "A goat", "http://imgur.com/wSyzk7l.png"),
-         new Card("sin²θ =","2sinθcosθ"),
          new Card("What color is the sky?", {choices: ["Green","Blue","Yellow","Red"], right: 1}),
          new Card("'Goat' in Spanish", "'Cabra'")
     ];
@@ -481,10 +498,11 @@ syncUpload: function(self, success, failure){
     //pass the passcode & projects (strings, stored in browser) to php, which will store in table
     //TODO: instead of storing pure form, store it compressed
     $.post(
-        syncBaseURL + 'sync-upload.php',
+        syncBaseURL + 'sync-upload-2.php',
         {
             'passcode': $.store.get(SL_KEYS.SYNC_KEY),
-            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)) //what's nice is that this won't store undefined values
+            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)), //what's nice is that this won't store undefined values
+            'pw': 'o9fxxyouwT6N'            
         },
         function(data){
              //it's just 1 (literally just that number)
@@ -512,9 +530,10 @@ syncDownload: function(self, unpack){
     //pass the passcode; get projects in return
     $.ajax({
         type: 'POST',
-        url: syncBaseURL + 'sync-download.php',
+        url: syncBaseURL + 'sync-download-2.php',
         data: {
-            'passcode': $.store.get(SL_KEYS.SYNC_KEY)
+            'passcode': $.store.get(SL_KEYS.SYNC_KEY),
+            'pw': 'o9fxxyouwT6N'
         },
         
         success: function(data){
@@ -551,6 +570,7 @@ syncDownload: function(self, unpack){
                 $.store.set(SL_KEYS.PROJECTS, projects);
                 //self.save(undefined, true); //no project; and don't sync it
                 
+                toast("Your cards were successfully synced!",{type: ToastTypes.SUCCESS});
                 //reload the page
                 //<TODO>: remove all projects and load in the new ones
                 //TODO: make this more efficient - keep a tag of when we synced; if that's more recent than this then don't sync
@@ -571,9 +591,9 @@ syncDownload: function(self, unpack){
             
             //tell user
             toast("Sync download failed (your device may be offline.) No worries - Cabra's loading flashcards from your device.", 
-               { error: true, duration: TOAST_DURATION_LONG });
+               { type: ToastTypes.DANGER, duration: TOAST_DURATION_LONG });
         }
-    })
+    });
 }
         
       

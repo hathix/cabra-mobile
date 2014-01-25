@@ -1,0 +1,342 @@
+body{
+    padding-top: 60px;
+}
+
+#main-container{
+	padding-top: 60px;
+	background: #FFF; /* must have opaque bg to hide snapjs drawer */
+}
+
+/****************** NAVBAR ***********************/
+
+/*
+.navbar{
+    background-color: rgb(220,60,60);
+    color: #fafafa !important;
+    font-family: "OpenSansRegular";
+}
+*/
+
+.navbar-brand{
+    font-size: 23px !important;
+}
+
+.navbar-brand, .stylized{
+    font-family: OpenSansBold, Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.navbar .breadcrumb{
+	padding-top: 15px;
+	padding-bottom: 15px;
+	margin-bottom: 0;
+}
+
+.breadcrumb{
+	background: inherit;
+}
+
+.breadcrumb li, .breadcrumb li a{
+	color: rgba(255,255,255,0.85) !important;
+}
+
+.breadcrumb li.active{
+	color: rgba(255,255,255,1) !important;
+}
+
+#navbar-menu-button-holder{
+	padding: 0;
+}
+
+.navbar-nav>.disabled>a{
+	color: rgba(255,255,255,0.65) !important;
+}
+
+/******* MENU ********/
+#menu{
+	padding-top: 0;
+	border-radius: 0;
+	height: 100%;
+}
+
+#menu-header{
+	text-align: center;
+}
+
+#menu-links .glyphicon{
+	margin-right: 6px;
+}
+
+
+/***** CONTENT *****/
+*, #main, h1, h2, h3, h4, h5, h6, p, .btn {
+    font-family: "OpenSansRegular", Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+.tab-pane{
+    padding: 10px;
+}
+
+a[data-href]{
+    cursor: pointer;
+}
+
+/****** HOME ****/
+
+.project-list-item .project-list-item-edit{
+	position: absolute;
+	right: 7px;
+	/* vertical center */
+	top: 0;
+	bottom: 0;
+	z-index: 5;
+}
+
+.project-list-item{
+	padding-right: 30px;
+}
+
+#welcome-helper-image{
+	margin: 5px 10px;
+	max-width: 100px;
+}
+
+/******* DECK HOME ******/
+#deck-home-card-chart{
+	min-height: 200px;
+}
+
+
+/****** STUDYING *****/
+.study-main-card{
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 4px;
+	box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.176);
+	overflow: auto;
+	height: 17em;
+	text-align: center;
+}
+
+.wrapper{
+	display: table;
+	width: 100%;
+}
+
+#study-main-card-question, #study-main-card-answer{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#study-main-card-question.question-mc{
+	height: 16em;
+}
+
+#study-main-card-question.question-fr{
+	height: 7em;
+}
+
+#study-main-card-answer{
+	height: 7em;
+}
+
+.study-text{
+	font-size: 21px;
+}
+
+#study-main-img-wrapper{
+	line-height: 16em; /* not 17 since the parent's is 17em-a bit of border, so 17 would put us over */
+}
+
+#study-main-img{
+	max-height: 16em; /* so it doesn't overflow studying area */
+}
+
+hr.divider{
+	height: 1px;
+	margin: 1em 0;
+	overflow: hidden;
+	background-color: rgb(229, 229, 229);	
+}
+
+/*
+ * AVOID THIS since on smaller screens the sidebar (now a bottom bar) will overlap content
+@media (max-width: 768px) {
+	#study-sidebar{
+		position: absolute;
+		bottom: 0;
+		margin-bottom: 0;
+	}
+}*/
+
+/****** ORGANIZER ******/
+.list-group-item.list-divider{
+	/* copied from .alert-info */
+	color: rgb(58, 135, 173);
+	background-color: rgb(217, 237, 247);
+}
+
+#organize-group-list{
+	padding-left: 0;
+}
+
+/******* ABOUT *******/
+.about-image{
+	max-width: 200px;
+	display: block;
+	margin: auto;
+}
+
+.about-app-name{
+	font-size: 40px;
+}
+
+.about-app-tagline{
+	font-size: 22px;
+}
+
+/****** INPUT MODS ***/
+.small-text-input{
+    width: 16em;
+    display: inline;
+}
+
+/* Media */
+.media-object{
+    width: 48px;
+    margin: 4px;
+}
+
+/* Import */
+.import-card-preview{
+    border-radius: 0 !important;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+
+/********** NOTIFICATIONS ***************/
+.toast{
+	position: absolute;
+	display: none;
+	width: 65%;
+	
+	z-index: 10001;
+	
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 6px;	
+	box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.5);
+	
+	font-weight: bold;
+}
+
+
+/* BOILERPLATE */
+
+/******* UNDO RESPONSIVE NAVBAR; our navbar is plenty OK, thanks ********/
+@media all{
+  .navbar-right .dropdown-menu {
+    right: 0;
+    left: auto;
+  }
+  .navbar-left {
+    float: left !important;
+  }
+  .navbar-right {
+    float: right !important;
+  }
+  .navbar-nav {
+    float: left;
+    margin: 0;
+  }
+  .navbar-nav > li {
+    float: left;
+  }
+  .navbar-nav > li > a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+
+  .navbar-toggle {
+    display: none;
+  }
+  .navbar > .container .navbar-brand {
+    margin-left: -15px;
+  }
+  .navbar-fixed-top,
+  .navbar-fixed-bottom {
+    border-radius: 0;
+  }
+  .navbar-static-top {
+    border-radius: 0;
+  }
+  .container > .navbar-header,
+  .container > .navbar-collapse {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  .navbar-collapse {
+    width: auto;
+    border-top: 0;
+    box-shadow: none;
+  }
+  .navbar-collapse.collapse {
+    display: block !important;
+    height: auto !important;
+    padding-bottom: 0;
+    overflow: visible !important;
+  }
+  .navbar-collapse.in {
+    overflow-y: visible;
+  }
+  .navbar-collapse .navbar-nav.navbar-left:first-child {
+    margin-left: -15px;
+  }
+  .navbar-collapse .navbar-nav.navbar-right:last-child {
+    margin-right: -15px;
+  }
+  .navbar-collapse .navbar-text:last-child {
+    margin-right: 0;
+  }
+}
+
+
+/*** BOOTSTRAP TWEAKS ***/
+.btn-link{
+	text-shadow: none;
+}
+
+/* Useful */
+
+.spaced{
+	margin: 10px;
+}
+
+.nopadding{
+	padding: 0;
+}
+
+.img-preview{
+	max-height: 150px;
+}
+
+.text-center{
+	text-align: center;
+	margin: auto;
+}
+
+.large-text{
+	font-size: 18px;
+}
+
+.space-ensurer{
+	min-height: 4em;
+}
+
+.add-padding{
+	padding-left: 10%;
+	padding-right: 10%;
+}
+
+.slight-padding{
+	padding-left: 10px;
+	padding-right: 10px;
+}

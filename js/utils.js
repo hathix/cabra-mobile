@@ -3,6 +3,26 @@
  */
 
 /**
+ * Loads the container with HTML from the source, with the data supplied. This uses Handlebars.
+ * @param {String}  source    the name of the index. Omit the hashtag. e.g. "template-project".
+ * @param {jQuery}  container the element to put the rendered HTML into.
+ * @param {Object}  data      the data used to render the template.
+ * @param {boolean} append    [optional; default false] if true, container will have HTML appended, not replaced.
+ * @return {jQuery} the jQuery items that were loaded into the container. This is just a collection of items, so to find something inside use [return value].closest([selector]).
+ */
+function template(source, container, data, append){
+     var sourceHTML = $('#' + source).html();
+     var templateFn = Handlebars.compile(sourceHTML);
+     var html = templateFn(data);
+     var jQ = $(html);
+     if(append)
+          container.append(jQ);
+     else
+          container.empty().append(jQ);
+     return jQ;
+}
+
+/**
  * Clones an HTML template with the given ID and returns it.
  * The template should have the class "hidden".
  * @param {String}  id  the id of the template you want to clone in the HTML (don't include the hashtag #).
@@ -17,54 +37,49 @@ function getClonedTemplate(id){
 
 /**
  * Creates a toast (a small popup) temporarily. Good for showing messages (like confirmation/success) that require no input from user and aren't critical to their use of the app.
- * @param {String}  text the text to show in the app. Can include HTML.
+ * @param {String}  text the text to show in the toast. Can include HTML.
  * @param {Object}     options  [optional] contents: duration (int), error (boolean) /
  *   duration: how long to show the text. Default TOAST_DURATION_DEFAULT. Use TOAST_DURATION_[X] for lengths.
- *   error:    if true, the toast will show as yellow. Default false (black.)
+ *   type:		the classification of the toast; 'success', 'info', 'warning', 'danger' (or something from enum ToastTypes.) Default ToastTypes.INFO.
  */
 function toast(text, options){
      var defaults = {
           duration: TOAST_DURATION_DEFAULT,
-          error:    false
+          type:		ToastTypes.INFO
      };
      var options = Object.merge(defaults, options, true, true); //custom options override
      
-     var popup = $('#toast');
-     popup.html(text);
-     //edit class
-     if(options.error){
-          popup.removeClass('ui-body-a').addClass('ui-body-e');
-     }
-     else{
-          popup.removeClass('ui-body-e').addClass('ui-body-a');
-     }
+     //wait, first clear out old toasts
+     burnToast();
      
-     popup.popup({
-          positionTo: "origin",
-          history: false,
-          transition: "pop",
-          afterOpen: function(event, ui){
-               //close soon
-               (function(){
-                    popup.popup('close');
-               }).delay(options.duration);
-          }
-     });
+     var toast = getClonedTemplate('template-toast');
+     $('#floaters').append(toast);
+     toast.find('.toast-text').html(text);
      
+     //add style
+     toast.alterClass('alert-*', 'alert-' + options.type);
+    
      //place it partway down the page
      //horiz centered, but farther than 1/2 down the page vertically (like Android toasts)
-     //we specify x and y; toast will be centered there
-     var width = $(window).width();
-     var height = $(window).height();
-     var x = width * 1/2;
-     var y = height * TOAST_VERTICAL_PLACEMENT;
+     var windowWidth = $(window).width();
+     var ourWidth = toast.width();
+     var windowHeight = $(window).height();
+     var ourHeight = toast.height();
      
-     popup.popup('open', {
-          x: x,
-          y: y
-     });;
-     //TODO make it positioned near bottom of screen
-     //api.jquerymobile.com/popup/#option-positionTo
+     //x and y are top left coords; (bigger-smaller)/2
+     var x = (windowWidth - ourWidth) / 2;
+     var y = windowHeight * TOAST_VERTICAL_PLACEMENT - ourHeight / 2;
+     
+     toast.css({
+     	left: x,
+     	top: y,
+     });
+     //toast.fadeIn();
+     toast.alert();
+     toast.show();
+     (function(){
+     	burnToast();
+     }).delay(options.duration);
 }
 
 /**
@@ -72,7 +87,7 @@ function toast(text, options){
  * If you used TOAST_DURATION_FOREVER as the duration you'll have to call this eventually. 
  */
 function burnToast(){
-     $('#toast').popup('close');
+     $('#floaters').find('.toast').alert('close');
 }
 
 String.prototype.splitOnce = function (delim) {
@@ -95,9 +110,8 @@ String.prototype.splitOnce = function (delim) {
 function ensureNoDuplicateNames(proposedName, existingNames){
      while($.inArray(proposedName, existingNames) != -1){
          //there exists an item whose name matches
-         //we will add a (1) to the end
-         //if it (somehow) already has a (1), change to (2)
-         var inParens = proposedName[0].match(/\(\d\)$/); //like (1); this only works at end
+         //we will add a (1) to the end, unless there's already a (1), in which case we do (2), etc.
+         var inParens = proposedName.match(/\(\d\)$/); //like (1); this only works at end
          if(inParens !== null){
               //has a (1) or something, replace
               //the results of match() always come in array form (i.e. ["3"]) so get rid of those with .last()
@@ -325,13 +339,13 @@ function decompress(obj, className, keysInInit, keysOutsideInit){
     var args = keysInInit.map(function(key){
         var value = obj[key];
         if(value === undefined){
-            //nothing saved there; omit it
+            //nothing saved there, but for placement purposes it  may be important. return null so it recognizes it
             return null;
         }
         return JSON.stringify(value); //turns raw strings into strings with quotes around them 
     });
     //this may have some null values in it
-    args = args.compact();
+    //args = args.compact();
     
     //make a big string and eval it
     var str = sprintf("new %s(%s)", className, args.join(","));
@@ -450,6 +464,19 @@ $.fn.outerHTML = function(){
     return this.clone().wrap('<p>').parent().html();
 }
 
+/**
+ * Toggles the visibility - not the display - of the element. Even if hidden, this element will continue to take up layout space.
+ * @param {boolean} show	 if true, show it; if false, hide it
+ */
+/*$.fn.toggleVisibility = function(show){
+	if(show){
+		this.css('visibility','visible');
+	}
+	else{
+		this.css('visibility','hidden');
+	}
+}*/
+
 // JQUERY PLUGIN: I append each jQuery object (in an array of
 // jQuery objects) to the currently selected collection.
 /**
@@ -534,8 +561,6 @@ $.fn.uploadImage = function(success, failure){
      xhr.send(fd); 
 }  
 
-
-
 /*
  * Usage:
  * sprintf('You bought %s widgets', numWidgets);
@@ -562,3 +587,65 @@ function sprintf(s) {
     }
     return out;
 }
+
+/**
+ * Used to dynamically load a JS file. Calls callback if successful. 
+ */
+function require(file, callback) {
+   var script = document.getElementsByTagName('script')[0],
+   newjs = document.createElement('script');
+
+  // IE
+  newjs.onreadystatechange = function () {
+     if (newjs.readyState === 'loaded' || newjs.readyState === 'complete') {
+        newjs.onreadystatechange = null;
+        callback();
+     }
+  };
+  // others
+  newjs.onload = function () {
+     callback();
+  }; 
+  newjs.src = file;
+  script.parentNode.insertBefore(newjs, script);
+}
+
+/* DEBUG TOOLS */
+var Timer = {
+	started: null, //time when the timer started
+	lapText: "", //if you call lap(), results stored here
+	
+	/*
+	 * Begins the timer.
+	 * @param {boolean} lap	[optional, default false] only pass true if you're in the middle of using laps.
+	 */
+	begin: function(lap){
+		this.started = Date.now();
+		if(!lap){
+			this.lapText = "";
+		}
+	},
+	
+	//returns the time difference between now and when the timer started.
+	getDiff: function(){
+		var after = Date.now();
+		return after - this.started;
+	},
+	
+	//prints the time difference in the console.
+	logDiff: function(){
+		console.log(this.getDiff());
+	},
+	
+	/**
+	 * Measures how long it's been since the last lap() was called, and stores that in memory. Use getLapText() to get a full listing 
+	 */
+	lap: function(){
+		this.lapText += this.getDiff() + " ";
+		this.begin(true);
+	},
+	
+	getLapText: function(){
+		return this.lapText;
+	}
+};

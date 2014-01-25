@@ -6,7 +6,7 @@
   Author: Neel Mehta
   Site: hathix.com
   Twitter: @hathix
-  Location: Philadelphia, PA (aka Fluffya)
+  Location: Philadelphia, PA
 
 /* THANKS */
   Names (& URL):

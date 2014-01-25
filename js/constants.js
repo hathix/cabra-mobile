@@ -1,20 +1,36 @@
 
 var ABOUT = {
-    version: "0.7.0",
-    codename: {
-        name:       "Lezard", //some animal name
-        language:   "French", //language it's in
-        translation:"Dinosaur" //animal's name in english
-    },
-    date: Date.create("August 13, 2013"),
+	appName: "Cabra",
+    version: "1.0.0",
+    codename: "Postseason",
+    date: Date.create("January 11, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
-        "<strong>Multiple-choice flashcards now available</strong>",
-        "You see studying results in a pie chart",
-        "Mass card creator improvements"
+        "Refreshed interface with a brand-new theme",
+        "Printing flashcards added",
+        "Significantly faster and leaner",
+        "New slide-out menu on the left",
+        "You can now edit a flashcard while studying it",
+        "Massively improved flashcard importer",
+        "You can now sort and delete flashcards easily in the manager",        
+        "New icon!"
     ],
     
     //TODO: show some warning if it's a beta build (not tested and ready)
 }
+
+//nav
+//these are shortcuts to a certain location; NOT ACTUAL PAGES
+var NAV_BACK = '_back';
+var NAV_HOME = '_home';
+var NAV_FORWARD = '_forward';
+var NAV_BASE = 'home'; //page to start on
+
+//pages
+//PageEvents: listen for these things to happen to pages
+var PageEvents = {
+	LOAD: "load",
+	HIDE: "hide"	
+};
 
 //cards
 
@@ -53,6 +69,11 @@ var GROUP_DEFAULT = "Unorganized";
 var CHUNK_SIZE = 50; //#cards in a chunk; this many are added at once. if it lags reduce this
 var BREAK_TIME = 500; //how long, in ms, to wait between chunks. if it lags increase this.
 
+//card
+var MIN_STARS = 1;
+var MAX_STARS = 5;
+var STAR_COLORS = [ "#FF0000", "#FF7F00", "#FFC800", "#0094FF", "#00E500"];
+
 //interface
 var FADE_SPEED = 300; //ms it takes to fade html in/out
 //toast
@@ -61,6 +82,12 @@ var TOAST_DURATION_SHORT = 2000;
 var TOAST_DURATION_LONG = 5000;
 var TOAST_DURATION_FOREVER = 2013 * 1000; //you'll have to manually kill this
 var TOAST_VERTICAL_PLACEMENT = 4/5; //how far down page (vertically) to place the toast; Android uses 2/3 for landscape and 85% for portrait. I've found that 3/4 and 4/5 both work well
+var ToastTypes = {
+	SUCCESS:	'success',
+	INFO:		'info',
+	WARNING:	'warning',
+	DANGER:		'danger'	
+};
 
 /* API */
 //Quizlet - https://quizlet.com/api_dashboard/
@@ -87,10 +114,10 @@ QUIZLET.api = {
 
 /* Enums */
 var StudyResult = {
-    YES: {id: 1},
-    SORT_OF: {id: 2},
-    NO: {id: 3},
-    SKIPPED: {id: 4}
+    YES: "yes",
+    SORT_OF: "sortof",
+    NO: "no",
+    SKIPPED: "skipped"
 };
 
 var StudyMode = {
@@ -103,6 +130,11 @@ var StudyStyle = {
      JEOPARDY: "jeopardy",
      RANDOM: "random"
 };
+var SessionStatus = {
+	SETUP: "setup", //setting up session; choosing cards/options
+	STUDYING: "studying", //actually studying
+	FINISHED: "finished" //reviewing results
+};
 var CardParts = {
      QUESTION: "question",
      ANSWER: "answer"
@@ -114,6 +146,17 @@ var FontSize = {
      LARGE:    44,
      XLARGE:   64,
      XXLARGE:  128
+};
+
+var ManageMode = {
+	EDIT: "Edit",
+	DELETE: "Delete"
+};
+
+var SortType = {
+	QUESTION: "question",
+	ANSWER: "answer",
+	STARS: "stars"	
 };
 
 /*function getStudyMode(stringMode){
@@ -142,9 +185,9 @@ var SL_KEYS = {
 var Rank = {
     A: { name: "A", baseReps: 0,  color: "#FF0000" },
     B: { name: "B", baseReps: 2,  color: "#FF7F00" },
-    C: { name: "C", baseReps: 5,  color: "#FFC800" },
-    D: { name: "D", baseReps: 9,  color: "#0094FF" },
-    E: { name: "E", baseReps: 14, color: "#00E500" },
+    C: { name: "C", baseReps: 6,  color: "#FFC800" },
+    D: { name: "D", baseReps: 12, color: "#0094FF" },
+    E: { name: "E", baseReps: 16, color: "#00E500" },
 };
 
 function nextRank(rank){

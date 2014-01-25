@@ -8,20 +8,18 @@ var importer = {
 
 quizlet: function(){
     //when the quizlet submit button is clicked, grab the search text
-    $('#quizlet-search-submit').oneClick(function(){
-        var searchText = $('#quizlet-search').val();
+    $('#button-import-send').oneClick(function(){
+        var searchText = $('#input-import-text').val();
         if(searchText){
+        	//put in the loader while we're waiting
+        	var html = getClonedTemplate('template-import-loading').html();
+        	$('#import-list-quizlet').html(html);
             importer.quizletText(searchText);
         }    
     });
 },
 quizletText: function(text){
     //called with certain text to search for
-    $.mobile.loading('show', {
-        text: 'Finding projects...',
-        textVisible: true,
-        theme: 'b'
-    }); //that spinner thingy
     //grab JSON
    $.ajax({
        url: QUIZLET.api.searchSets + text.escapeURL(),
@@ -29,45 +27,69 @@ quizletText: function(text){
        dataType: "jsonp",
        success: function(response){
            //if there was an error, response has .error
-           if(response.error){
+           if(response.error){ //probably NOT going to happen!
                //clean up and get out
-               $.mobile.loading('hide');
-               //TODO: show an alert (this would be best with jqm1.2 which will have this feature), and remove the stuff below
-               $('#quizlet-list').empty().append($('<li>No projects found! :(</li>')).listview('refresh');
+	        	//var html = getClonedTemplate('template-import-failure').html();
+	        	//$('#import-list-quizlet').html(html);
+               //$('#quizlet-list').empty().append($('<li>No projects found! :(</li>')).listview('refresh');
                
                //console.log(response);
                return;
            }
            
-           var projects = response.sets.first(QUIZLET.maxToLoad); //array of Set objs
-           //Set has id, title, term_count
+           var projects = response.sets.first(QUIZLET.maxToLoad); //array of Set objs; there are tons of these
+           //Set has id, title, term_count, description
            //https://quizlet.com/api/2.0/docs/searching-sets/
-           var list = $('#quizlet-list');
-           list.empty();
-           projects.forEach(function(project){
-                //create an li from the template and add to the list; the user will choose one of these
-                var li = getClonedTemplate('template-quizlet');
-                li.find('.quizlet-name').html(project.title);
-                //li.find('.quizlet-description').html(project.description); //not available in short form
-                //li.find('.quizlet-description').html(project.subjects.first(5).join(", ")); //this shows tags
-                li.find('.quizlet-card-count').html(project.term_count);
-                li.find('.quizlet-import-button').oneClick(function(){
-                    //we now have the id; look that up!
-                    importer.quizletID(project.id);
-                });
-                
-                //grab a few cards from the top
-                
-                list.append(li);
+           
+           if(projects.length == 0){
+           		//found nothing!
+           	    var html = getClonedTemplate('template-import-failure').html();
+        		$('#import-list-quizlet').html(html);
+        		return;
+           }
+           
+           var list = $('#import-list-quizlet');
+           template("template-quizlet-import-project", list, {projects:projects});
+           list.find('.panel-collapse').on('show.bs.collapse', function(){
+	           	//collapsible opened; show some samples
+	           	var id = $(this).data('id');
+	           	importer.quizletGetSampleCards(id, $(this).find('.import-preview-list'));	
            });
-           
-            //hide that spinner thingy which we showed earlier
-            $.mobile.loading('hide');
-           
-           list.listview('refresh');
+           list.find('.btn-more-samples').oneClick(function(){
+	           	//more samples!
+	           	var parent = $($(this).closest('.panel-collapse'));
+	           	var id = parent.data('id');
+	           	importer.quizletGetSampleCards(id, parent.find('.import-preview-list'), false); //NEW: replace, don't append... TODO consider appending (but then there's problems if the list is too short or cards are repeated)        	
+           });
+           list.find('.btn-import').oneClick(function(){
+	           	var parent = $($(this).closest('.panel-collapse'));
+	           	var id = parent.data('id');
+	           	importer.quizletID(id);
+	           	nav.openPage(NAV_BASE);           		
+           });       
        }
    });    
 },
+
+/*
+ * Loads sample cards for the project with the given ID and puts it in the given container.
+ * @param {String} id	from Quizlet
+ * @param {jQuery} container	where to put some sample cards. They'll be added as list items so give a list view.
+ * @param {boolen} append		[optional, default false] if true, we'll add to the current list of samples.
+ */
+quizletGetSampleCards: function(id, container, append){
+   $.ajax({
+       url: QUIZLET.api.getSet + id,
+       crossDomain: true,
+       dataType: "jsonp",
+       success: function(response){
+       		//we want a few terms (aka cards)
+       		var cards = response.terms.randomize().first(NUM_SAMPLE_CARDS);
+       		template("template-quizlet-import-preview",container,{cards:cards}, append);   
+       }
+   }); 	
+},
+
 quizletID: function(id){
     //called with certain id of project to get
    $.ajax({
@@ -82,47 +104,16 @@ quizletID: function(id){
            var cards = response.terms.map(function(rawCard){
             //this has term (q) and definition (a), as well as image (rawCard.image.url)
             //convert to a proper card
-            //they may have nothing as question and answer (undefined), so make those things null to avoid function havoc
-            var question = orDefault(rawCard.term, " ");
-            var answer = orDefault(rawCard.definition, " ");
+            //they may have nothing as question and answer (undefined) or may have empty string, so give default values to avoid function havoc
+            var question = orIfFalsy(rawCard.term, " ");
+            var answer = orIfFalsy(rawCard.definition, " ");
             var imageURL = undefined;
             if(rawCard.image && rawCard.image.url) imageURL = rawCard.image.url;
             return new Card(question, answer, imageURL);  
            }); //this is good cards
            project.cards = cards;
-            
-           //show them sample cards & info about proj
-           //the #importer-sample dialog has been opened by <a> elem, let's fill it w/ info
-           $('#importer-sample-name').html(project.name);
-           $('#importer-sample-description').html(project.description);
-           $('#importer-sample-numcards').html(project.cards.length);
            
-           //fill in some sample cards so they know what they're importing
-           var sampleCards = project.cards.sample(NUM_SAMPLE_CARDS); //a few random cards
-           //get an li for each
-           var list = $('#importer-sample-list');
-           list.empty();
-           sampleCards.forEach(function(card){                   
-               var li = getClonedTemplate('template-card');
-               //fill in Q&A
-               card.fillLI(li);
-               //get rid of <a>... links to edit card which is useless
-               li.find('a').attr('href','#');
-               //get rid of any counter w/ the rank
-               li.find('.ui-li-count').remove();
-               //TODO copy that template in the HTML code... it's becoming very different than template-card. Maybe call it template-quizlet-card.
-               list.append(li);
-           });
-           list.listview('refresh');
-            
-           //hook up buttons to accept/reject this set
-           $('#importer-sample-accept').oneClick(function(){
-            importer.acceptProject(project);
-            //$(this).unbind('click'); //TODO figure out why this works. WITHOUT IT: first time you import something it's OK. Second time (w/ same keyword), you import the first thing AND the second thing. It appears that this click handler fires twice
-           });
-           $('#importer-sample-cancel').oneClick(function(){
-               //$('#importer-sample').dialog('close');
-           });           
+           importer.acceptProject(project);
        }
    });      
 },
@@ -135,8 +126,8 @@ acceptProject: function(project){
    chevre.addProject(project);
    
    //go to that project's page
-   $.mobile.changePage('#project-home');
-   chevre.loadProject(project);    
+   chevre.loadProject(project);
+   nav.openPage('deck-home');    
 }
     
 };
