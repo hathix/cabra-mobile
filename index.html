@@ -33,6 +33,7 @@
         <link rel="stylesheet" href="css/fonts/open-sans/stylesheet.css">
         <!--<link rel="stylesheet" href="css/fonts/lobster/stylesheet.css">
         <link rel="stylesheet" href="css/fonts/lobster-two/stylesheet.css">-->
+        <link rel="stylesheet" href="fonts/bootstrap-glyphicons.css">
         
         <link rel="stylesheet" href="js/libs/snapjs/snap.css">
 
@@ -485,6 +486,10 @@
                 <br>
 
                 <div class="list-group" id="manage-card-list">
+                	        	
+        			<table class="table table-striped table-hover" id="manage-card-table">
+        				
+        			</table>
                 </div>
             </section>
             <section class="tab-pane" id="print" data-name="Print" data-description="Put your flashcards on paper" data-icon="print">
@@ -637,7 +642,10 @@
                     	<div id="sync-show-setup">
 	                        <p class="lead">
 	                            Sync's already set up on this device - your passcode is <strong id="sync-passcode-reminder"></strong>.
-	                            To sync with another device, enter your passcode on that device.
+		                        <ul class="lead">
+		                        	<li>If you want to manually send your flashcards from this device to your other devices, press Upload. <small>(Your flashcards are also automatically uploaded whenever you make changes.)</small></li>
+		                        	<li>If you have flashcards on your other devices and want to get them on this device too, press Download.</li>
+		                        </ul>
 	                        </p>
 	
 	                        <div class="btn-group btn-group-justified">
@@ -656,8 +664,8 @@
 	                        <p class="lead">
 	                            You haven't set up sync yet on this device.
 		                        <ul class="lead">
-		                        	<li>If you haven't synced before, create a unique, 3- or 4-word passcode and enter it below.</li>
-		                        	<li>If you've set up sync on another device, enter your passcode below.</li>
+		                        	<li>If you have flashcards on another device, enter your passcode below.</li>
+		                        	<li>If you have never synced before or have no cards on your other devices, create a unique, 3- or 4-word passcode and enter it below.</li>
 		                        </ul>
 	                        </p>
 	
@@ -679,9 +687,9 @@
 							  <div class="panel-body">
 							  	Think of a memorable, unique passcode that's about 3-4 words long. Favorite book/movie names, pet names, and crazy phrases work. Some examples (don't use these!):
 							  	<ul>
-							  		<li><em>the good dinosaur</em></li>
-							  		<li><em>chicago white sox</em></li>
-							  		<li><em>dastardly penguin toys</em></li>
+							  		<li><em>twenty thousand leagues</em></li>
+							  		<li><em>philadelphia phillies phan</em></li>
+							  		<li><em>swashbuckling penguin ghosts</em></li>
 							  	</ul>
 							  </div>
 	                       	</div>                  	
@@ -697,6 +705,119 @@
                         </p>
                     </div>
                 </div>
+            </section>
+            <section class="tab-pane fade" id="share" data-name="Share">
+            	
+            	<ul class="nav nav-pills nav-justified">
+            		<li class="active"><a href="#share-tab-upload" data-toggle="tab">Upload</a></li>
+            		<li><a href="#share-tab-download" data-toggle="tab">Download</a></li>
+            	</ul>
+            	<div class="tab-content">
+            		<div class="tab-pane active" id="share-tab-upload">
+		    			<div class="form-horizontal slight-padding">
+			                <div class="form-group">
+			                    <label for="share-upload-deck-select" class="col-lg-3 col-md-3 control-label">Deck to upload</label>
+			                    <span class="col-lg-9 col-md-9">
+			                        <select id="share-upload-deck-select" class="form-control">
+				                       	<option value="SMALL">Small</option>
+				                        <option value="MEDIUM">Medium</option>
+				                        <option value="LARGE">Large</option>
+				                        <option value="XLARGE">Extra Large</option>
+				                        <option value="XXLARGE">Huge (Projector)</option>
+			                        </select>
+			                    </span>
+			                </div>
+			                <div class="form-group">
+			                    <label for="share-upload-password" class="col-lg-3 col-md-3 control-label">Protect with password</label>
+			                    <span class="col-lg-9 col-md-9">
+			                   		<span class="help-block">If you set a password, only people who know the password will be able to download this deck.</span>
+			                   		<div class="checkbox">
+			                   			<label>
+			                   				<input id="share-upload-password-checkbox" type="checkbox">
+			                   				Password-protect this deck
+			                   			</label>
+			                   		</div>
+			                   		<br>
+			                        <input id="share-upload-password" type="text" class="form-control" placeholder="Password">
+
+			                    </span>
+			                </div>
+			                <div class="form-group">
+			                    <label for="share-upload-creator" class="col-lg-3 col-md-3 control-label">Your name</label>
+			                    <span class="col-lg-9 col-md-9">
+			                   		<span class="help-block">People who search for or download your deck will be able to see your name.</span>
+			                        <input id="share-upload-creator" type="text" class="form-control" placeholder="Anonymous">
+
+			                    </span>
+			                </div>
+			                
+			                <button class="btn btn-lg btn-success" id="share-upload-button-send">
+			                	<span class="glyphicon glyphicon-cloud-upload"></span> Upload deck
+			                </button>		                
+			        	</div>
+			        	
+			        	<br>
+			        	<div class="alert alert-success" id="share-upload-result">
+			        		<button type="button" class="close" data-dismiss="alert">&times;</button>
+			        		<p>Congrats - your deck was uploaded to Cabra's servers! Share this URL with your friends so that they can also get it:</p>
+			        		<p class="slight-padding"><strong id="share-upload-result-url"></strong></p>
+			        		<p class="share-if-password">Remind your friends to use the password <strong id="share-upload-result-password"></strong>!</p>
+			        	</div>           			
+            		</div>
+            		<div class="tab-pane" id="share-tab-download">
+            			<div class="row">
+            				<div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 well">
+            					<!--<h3>Search for decks</h3>
+            					<form class="form-horizontal" id="share-download-form-search">
+					                <div class="form-group">
+					                    <label for="search-download-searchby" class="col-sm-3 col-xs-4 control-label">Search by</label>
+					                    <span class="col-sm-9 col-xs-8">
+					                        <select class="form-control" id="search-download-searchby">
+					                        	<option>Name</option>
+					                        	<option>Creator</option>
+					                        </select>
+					                    </span>
+					                </div> 
+					                <div class="form-group">
+					                    <label for="search-download-searchfor" class="col-sm-3 col-xs-4 control-label">Search for</label>
+					                    <span class="col-sm-9 col-xs-8">
+					                        <input type="text" id="search-download-searchfor" class="form-control" placeholder="Deck name or creator name">
+					                    </span>
+					                </div> 					                           						
+            					</form>
+      
+		                		<button class="btn btn-primary btn-block" id="share-download-button-search" type="button">
+		                            <span class="glyphicon glyphicon-search"></span> Search
+		                        </button>
+				                
+				                <hr>-->
+				                
+				                <h3>Choose decks to view</h3>
+				                <p>Use these buttons to look for decks you can download. Your internet connection must be enabled.</p>
+				                <div class="btn-group">
+					                <button class="btn btn-primary" id="share-download-all"> 
+					                	<span class="glyphicon glyphicon-list"></span> All</button>
+					                <button class="btn btn-default" id="share-download-most-downloaded">
+					                	<span class="glyphicon glyphicon-heart"></span> Most downloaded
+					                </button>  		
+					                <button class="btn btn-default" id="share-download-newest">
+					                	<span class="glyphicon glyphicon-time"></span> Newest
+					                </button>  			
+					                <button class="btn btn-default" id="share-download-random">
+					                	<span class="glyphicon glyphicon-random"></span> Random
+					                </button>  	
+				                </div>				                					                			
+            				</div>
+            				<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+            					<div id="share-download-deck-output">
+            						<div class="alert alert-info">
+            							Use the buttons (All, Most downloaded, etc.) to find decks to import!
+            						</div>
+            					</div>
+            				</div>
+            			</div>
+            		</div>
+            	</div>
             </section>
             <section class="tab-pane fade" id="options" data-name="Settings">
     			<div class="form-horizontal slight-padding">
@@ -727,6 +848,18 @@
 					      </div>
 					    </div>
 	                </div>-->
+	 
+	                <hr>
+	                
+	                <div class="form-group">
+					    <div class="col-lg-offset-2 col-lg-10">
+					      <div class="checkbox">
+					        <label>
+					          <input type="checkbox" id="option-collapse-groups"> Automatically collapse deck groups on the home page
+					        </label>
+					      </div>
+					    </div>
+	                </div>	 
 	                
 	                <hr>
 	                
@@ -811,6 +944,11 @@
 							<a href="http://firefox.com">Mozilla Firefox</a>, and
 							<a href="http://quizlet.com">Quizlet</a>.
 	        		</p>
+	        		
+	        		<hr>
+	        		
+	        		<p>Changes in this version:</p>
+	        		<p class="about-changes" style="margin-left:2em;"></p>
         		</div>
         		
         		<div class="btn-group btn-group-justified">
@@ -973,7 +1111,7 @@
         <!-- /container -->
         </div>
         <div id="main-drawers" class="snap-drawers">
-        	<div class="snap-drawer snap-drawer-left well" id="menu">
+        	<div class="snap-drawer snap-drawer-left well hidden-print" id="menu">
         		<h3 id="menu-header">Menu
         			<button type="button" class="close" aria-hidden="true">&times;</button>
         		</h3>
@@ -987,6 +1125,9 @@
                     <li>
                         <a href="#" data-href="sync" data-toggle="tab"><span class="glyphicon glyphicon-refresh"></span> Sync</a>
                     </li>
+                    <li>
+                        <a href="#" data-href="share" data-toggle="tab"><span class="glyphicon glyphicon-send"></span> Share Flashcards</a>
+                    </li>                    
                     <!--<li>
                         <a href="#" data-href="search" data-toggle="tab"><span class="glyphicon glyphicon-search"></span> Search</a>
                     </li>-->                          
@@ -1044,7 +1185,7 @@
 		      <div class="modal-content">
 		        <div class="modal-header">
 		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		          <h4 class="modal-title"><span class="deck-name"></h4>
+		          <h4 class="modal-title"><span class="deck-name"></span></h4>
 		        </div>
 		        <div class="modal-body">
 
@@ -1065,11 +1206,6 @@
 				                <div class="form-group">
 				                    <label for="deck-edit-merge-into" class="control-label">Deck to merge into:</label>
 			                        <select id="deck-edit-merge-into" class="form-control">
-				                       	<option value="SMALL">Small</option>
-				                        <option value="MEDIUM">Medium</option>
-				                        <option value="LARGE">Large</option>
-				                        <option value="XLARGE">Extra Large</option>
-				                        <option value="XXLARGE">Huge (Projector)</option>
 			                        </select>
 				                </div> 
 								
@@ -1089,6 +1225,10 @@
 		      </div><!-- /.modal-content -->
 		    </div><!-- /.modal-dialog -->
 		  </div><!-- /.modal --> 		  
+	
+		<!-- importing from shared -->
+		 <div class="modal fade" id="dialog-share-download" tabindex="-1" role="dialog" aria-hidden="true">
+		  </div><!-- /.modal --> 			
 		  
 		  <!-- feedback -->   
 		 <div class="modal fade" id="dialog-feedback" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1123,12 +1263,23 @@
         
         <!-- templates -->
         <!-- panel containing info about each project; on main page -->
+        <!-- Pass: {groupName: String, decks: Deck[], groupId: String, collapsed: boolean} -->
         <script id="template-project-panel" type="text/x-handlebars-template">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title stylized large-text">{{groupName}}</h3>
+            <div class="panel panel-default panel-collapse">
+                <div class="panel-heading" data-toggle="collapse" data-target="#{{groupId}}">
+                    <h3 class="panel-title stylized large-text">
+                    		{{groupName}}
+                    	
+                    	<button type="button" class="close project-list-item-edit" aria-hidden="true">
+                            	<span class="glyphicon"></span>
+                        </button>    
+                    </h3>
+                    
+                                            
                 </div>
-                <div class="list-group">
+                <div class="list-group collapse
+                	{{#unless collapsed}}in{{/unless}}
+                	" id="{{groupId}}">
                     {{#each decks}}
                         <a href="#" data-href="deck-home" class="list-group-item project-list-item" id="project-list-item-{{id}}" data-id="{{id}}">
                             {{name}}
@@ -1240,13 +1391,13 @@
 	   
 				                <p class="text-center lead study-text">
 				                	{{#ifFunction "isMultipleChoice"}}
-				                		{{question}}
+				                		{{{question}}}
 				                	{{else}}
 				                		{{! FREE RESPONSE }}
 					                	{{#compare ../../options.style "normal"}}
-					                		{{question}}
+					                		{{{question}}}
 					                	{{else}}
-					                		{{answer}}
+					                		{{{answer}}}
 					                	{{/compare}}	                	
 				                	{{/ifFunction}}
 				                </p>			            				
@@ -1258,9 +1409,9 @@
 	        		        <div id="study-main-card-answer" class="hidden">
 			                	<p class="text-center lead study-text text-info">
 				                	{{#compare ../../options.style "normal"}}
-				                		{{answer}}
+				                		{{{answer}}}
 				                	{{else}}
-				                		{{question}}
+				                		{{{question}}}
 				                	{{/compare}}	  
 			                	</p> 
 	        		        </div>
@@ -1274,7 +1425,7 @@
 			                <div class="btn-group btn-group-vertical btn-block">
 			                	{{#each answer.choices}}
 			                    	<button type="button" class="btn btn-default btn-choose-answer-mc">
-			                    		<span class="glyphicon"></span> {{this}}
+			                    		<span class="glyphicon"></span> {{{this}}}
 			                    	</button>
 			                    {{/each}}
 			                </div>
@@ -1318,10 +1469,9 @@
         </script>
         
         <!-- for card manager; renders all cards-->
-        <!-- Pass {cards:[Card,Card,Card...]} - that's right, ALL CARDS in project! (or at least as many as you want to show) -->
+        <!-- Pass {cards:[Card,Card,Card...]} - that's right, ALL CARDS you want to show! -->
         <script id="template-manage-cards" type="text/x-handlebars-template">
-        	
-        		<table class="table table-striped table-hover">
+
 		        	{{#each cards}}
 			            <tr>
 			            	<td>
@@ -1347,8 +1497,7 @@
 		            			No cards match your criteria. :(
 		            		</td>
 		            	</tr>
-		            {{/each}}         			
-        		</table>
+		            {{/each}}    
    	
         </script>
 
@@ -1436,7 +1585,7 @@
 	            </div>
 	        </div>       
 	        {{/each}} 
-        </script>
+        </script>     
         <!--for previewing sample cards-->
         <script id="template-quizlet-import-preview" type="text/x-handlebars-template">
         	{{#each cards}}
@@ -1449,6 +1598,80 @@
                 </li>
         	{{/each}}                	
         </script>
+        
+        <!-- for importing others' projects while sharing
+        	Pass: {projects: RAW PROJECT array from the PHP - don't convert into native project} -->
+        <script id="template-share-import-project" type="text/x-handlebars-template">
+        	<div class="table-responsive">
+	        	<table class="table table-striped table-bordered">
+	        		<tr>
+	        			<th>Deck Name</th>
+	        			<th>Description</th>
+	        			<th>Creator</th>
+	        			<th class="hidden-sm hidden-xs">Date</th>
+	        			<th>Downloads</th>
+	        			<th>Get it!</th>
+	        		</tr>
+	        	{{#each decks}}
+	        		<tr>
+	        			<td>{{name}}</td>
+	        			<td>{{description}}</td>
+	        			<td>{{creator}}</td>
+	        			<td class="hidden-sm hidden-xs">{{date}}</td>
+	        			<td>{{downloads}}</td>
+	        			<td>
+	        				<button class="btn btn-primary btn-download" data-download="{{id}}" data-locked="{{locked}}" data-name="{{name}}">
+	        					{{#if locked}}
+	        						<span class="glyphicon glyphicon-lock"></span>
+	        					{{else}}
+	        						<span class="glyphicon glyphicon-download-alt"></span>
+	        					{{/if}}
+	        					Download
+	        				</button></td>
+	        		</tr>
+		        {{else}}
+		        	<tr class="warning">
+		        		<td colspan="5">No decks fit your search! :(</td>
+		        	</tr>    
+		        {{/each}}
+		        
+		        </table>
+	        </div>
+        </script>        
+        
+        <!-- For when you're about to download a project from the flashcard sharer
+        	Pass {a raw deck from server} (just one obj) -->
+        <script id="template-share-download-confirm" type="text/x-handlebars-template">
+		    <div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		          <h4 class="modal-title">Downloading {{name}}</h4>
+		        </div>
+		        <div class="modal-body">
+		        	<p class="lead">You are about to download {{name}} by {{creator}}.</p>
+		        	<ul>
+		        		<li>Description: <em>{{description}}</em></li>
+		        		<li>Created on {{date}}</li>
+		        		<li>{{downloads}} downloads</li>
+		        	</ul>
+		        	
+		        	{{#if locked}}
+	        		  <div class="form-group password-form">
+					    <label for="share-download-confirm-password" class="control-label label-normal">This deck is password-protected! Enter the password below in order to download it:</label>
+					    <label for="share-download-confirm-password" class="control-label label-error">That password was incorrect! Please try again:</label>
+					    <input type="email" class="form-control" id="share-download-confirm-password" placeholder="Password">
+					  </div>
+		        	{{/if}}
+		        </div>
+		        <div class="modal-footer">
+		        	<button class="btn btn-default" data-dismiss="modal">No thanks</button>
+		        	<button class="btn btn-primary btn-download" data-loading-text="Checking password..." data-downloading-text="Downloading your deck...">Download this deck</button>
+		        </div>
+		      </div><!-- /.modal-content -->
+		    </div><!-- /.modal-dialog -->        	
+        </script>
+        
         <!-- updated new features -->
         <!-- Pass: {items: String[]} - each item is a change -->
         <script id="template-updated-changes" type="text/x-handlebars-template">
@@ -1550,7 +1773,7 @@
 				<span class="glyphicon glyphicon-star"></span>        	
 	        </div> 
 	        <span id="template-checkmark" class="glyphicon glyphicon-check">&nbsp;</span>
-	        <div id="template-toast" class="alert alert-danger toast fade in">
+	        <div id="template-toast" class="alert alert-danger toast fade in hidden-print">
 	        	<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>  
 	        	<span class="toast-text"></span>
 	        	  	
@@ -1654,7 +1877,7 @@
         <script src="js/editor.js"></script>
         
         <script src="js/options.js"></script>
-        <!--<script src="js/drive.js"></script>-->
+        <script src="js/sharing.js"></script>
         <!-- end scripts -->
 
         <!--<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>-->

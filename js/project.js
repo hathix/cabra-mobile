@@ -12,8 +12,8 @@ __init__: function(self, name, description, id, group){
     self.isEditing = false;
     //self.lastStudied = null;
     if(!id){
-         //get unix time as unique code. let's hope there's no duplicates of that!
-         id = "p" + Date.now();
+         //get unix time + something random (just in case two projects are made at the EXACT same time.)
+         id = "p" + Date.now() + (Math.floor(Math.random()*1000)+"").padLeft(3);
     }
     self.id = id;
     //self.id = Math.floor(Math.random() * 1000);
@@ -205,6 +205,9 @@ updateManager: function(self){
     //show the spinny thingy
     //$.mobile.showPageLoadingMsg();
     
+    //update UI
+    $('#manage-input-filter').val('');
+    
     /**
      * Enters either edit or delete mode, which changes what you can do to your cards.
      * @param {String} mode		a mode; get it from the ManageMode enum. 
@@ -240,11 +243,14 @@ updateManager: function(self){
     }    
     
     //empty card manager and refill
-    var list = $('#manage-card-list');
+    var list = $('#manage-card-table');
     list.empty();
     
     //but first put in a loading text while we wait!
-    list.append(getClonedTemplate('template-flashcard-loading'));
+    //list.append(getClonedTemplate('template-flashcard-loading'));
+    
+    //USED BY LOADING CARDS
+	var renderGroup = $.noop; //for storing the card rendering function
     
     /**
      * Loads the given Card[] into the card list. 
@@ -252,24 +258,49 @@ updateManager: function(self){
      * @param {String}	highlightText	[optional] if given, all instances of that text in the card are highlighted. Good for filtering.
      */
     function loadCards(cards, highlightText){
+    	//if something else is loading, cancel that immediately!
+    	renderGroup.cancel();
     	//Timer.begin();
     	//var timeString = "";
     	
-    	template('template-manage-cards', list, {cards: cards});
+    	list.empty();
     	
-    	//timeString += Timer.getDiff() + " "; Timer.begin();
+    	//preload click fns
+    	//button for editing card
+    	var editFn = function(){
+	    	//get the hash, match it up, and edit that card
+	    	var hash = $(this).data('hash');
+	    	var card = self.getCardByHash(hash);
+	    	card.edit(function(){
+	    		//has the card been changed?
+	    		if(card.getHash() != hash){
+		    		//the card's been saved; reload
+		    		loadCards(cards, highlightText);	
+	    		}
+	    	});    		
+    	};
+    	//for deleting
+    	var deleteFn = function(){
+	    	//get the hash, match it up, and edit that card
+	    	var hash = $(this).data('hash');
+	    	var card = self.getCardByHash(hash);
+	    	
+	      	//update view
+	      	$(this).closest('tr').remove();
+	      	//update model
+	      	self.cards = self.cards.subtract(card);
+	      	self.save();       		
+    	};
     	
-    	//by default, enter edit mode
-    	//enterMode(ManageMode.EDIT); //NEW this is already on by default
-    	
-    	//timeString += Timer.getDiff() + " "; Timer.begin();
-    	
-    	//highlight any instances of given text
-    	if(highlightText){
+    	/**
+    	 * Highlights the passed highlightText in all items in the given element.
+    	 * @param {jQuery} elem	usually a list of paragraphs. 
+    	 */
+    	var highlightFn = function(elem){
 	    	//q and a are in <p>'s; replace any instances of text with bolded version
-	    	list.find('p').each(function(){
+	    	elem.find('p').each(function(){
 	    		var html = $(this).html(); //ONE question or answer text
-	    		var matches = html.match(new RegExp(highlightText, "ig")); //ignore case; global search
+	    		var matches = html.match(new RegExp(regexEscape(highlightText), "ig")); //ignore case; global search
 	    		//matches is usually 1 item long, but can be more if the text is found more than once (eg "Ph" in "Philadelphia")
 	    		if(matches){
 	    			//We need to bold every matching text but not re-bold something we already looked at... therefore, we need to break stuff up and do a recursive method to bold each successive piece
@@ -304,6 +335,36 @@ updateManager: function(self){
 		    		$(this).html(html);
 	    		}
 	    	});
+    	};    	
+    	
+    	//put in a few at a time
+    	var cardGroups = cards.inGroupsOf(20);
+    	//and put them in with a break after each
+		renderGroup = function(group){
+			group = group.compact(); //inGroupsOf puts null's at the end, which is bad
+			var newItems = template('template-manage-cards', list, {cards: group}, true);	
+			//add handlers to the new items
+			$(newItems).find('.manage-edit-card').oneClick(editFn);
+			$(newItems).find('.manage-delete-card').oneClick(deleteFn);
+			if(highlightText){
+				highlightFn($(newItems));
+			}
+	    }.lazy(100); 
+    	cardGroups.forEach(function(group){
+    		renderGroup(group);
+    	});
+
+    	
+    	//timeString += Timer.getDiff() + " "; Timer.begin();
+    	
+    	//by default, enter edit mode
+    	//enterMode(ManageMode.EDIT); //NEW this is already on by default
+    	
+    	//timeString += Timer.getDiff() + " "; Timer.begin();
+    	
+    	//highlight any instances of given text
+    	if(highlightText){
+
     	}
     	
     	//timeString += Timer.getDiff() + " "; Timer.begin();
@@ -311,30 +372,13 @@ updateManager: function(self){
     	//handle card clicks and all since these must be regenerated whenever you reload cards
 	    //edit button
 	    $('.manage-edit-card').oneClick(function(){
-	    	//get the hash, match it up, and edit that card
-	    	var hash = $(this).data('hash');
-	    	var card = self.getCardByHash(hash);
-	    	card.edit(function(){
-	    		//has the card been changed?
-	    		if(card.getHash() != hash){
-		    		//the card's been saved; reload
-		    		loadCards(cards, highlightText);	
-	    		}
-	    	});
+
 	    });
 	    
 	    //timeString += Timer.getDiff() + " "; Timer.begin();
 	    
 	    $('.manage-delete-card').oneClick(function(){
-	    	//get the hash, match it up, and edit that card
-	    	var hash = $(this).data('hash');
-	    	var card = self.getCardByHash(hash);
-	    	
-	      	//update view
-	      	$(this).closest('tr').remove();
-	      	//update model
-	      	self.cards = self.cards.subtract(card);
-	      	self.save();         	
+     	
 	    });     
 	    
 	    //timeString += Timer.getDiff() + " "; Timer.begin();
@@ -363,7 +407,9 @@ updateManager: function(self){
 	    
 	    //$('#manage-button-filter').oneClick(function(){
 	    //change waits till they hit enter, keyup does it as soon as they hit a key... which is better? keyup is slicker but takes more resources since it reloads a lot
+	    Timer.begin();
 	    $('#manage-input-filter').oneBind('change keyup', function(){
+	    	Timer.lap();
 	    	var filterText = $('#manage-input-filter').val();
 	    	if(filterText){
 	    		var filterLower = filterText.toLowerCase();
@@ -379,7 +425,8 @@ updateManager: function(self){
 	    	else{
 	    		loadCards(self.cards);
 	    	}
-	    });
+	    }.debounce(400) //give the field some time to settle down - if they're busy typing, don't reload after every single letter; wait until we're sure they're done. Average typing text ~= 300ms, but here's some leeway
+	    );
 	    $('#manage-button-filter-clear').oneClick(function(){
 	    	$('#manage-input-filter').val('').trigger('change').trigger('keyup').focus();
 	    });
@@ -387,7 +434,7 @@ updateManager: function(self){
 	    //now we have some time. The first click of the mode buttons takes a LONG time (subsequent ones are faster), so get it out of the way now
 	    //enterMode(ManageMode.DELETE);
 	    enterMode(ManageMode.EDIT);
-    }).delay(500);
+    }).delay(100);
 },
 
 loadCardChart: function(self){
@@ -452,6 +499,7 @@ loadCardChart: function(self){
  */
 batchCreate: function(self){
     //grab delimiter - from select
+    //Timer.begin();
     var delimiter = $('#batch-input-style').val();
     
     //multiple choice. TODO add selects for this
@@ -462,11 +510,13 @@ batchCreate: function(self){
     var rawText = $('#batch-textarea').val(); //contains "Q-A \n Q-A \n Q-A ..."
     //Tara's Word problems; replace any long MS Word dashes (–) with normal ones (-) (side by side – -)
     rawText = rawText.replaceAll("–","-");
+    //Timer.lap();
     
     //break into individual cards
     var rawCards = rawText.split('\n'); //now ["Q-A", "Q-A", ...]
     var malformedCards = []; //raw strings that don't work will be stored in this
     var numCardsCreated = 0;
+    //Timer.lap();
     rawCards.each(function(rawCard){
          //TODO put this in the Card class
         //Q and A are separated by some delimiter; what they told us should be delimiter
@@ -518,11 +568,13 @@ batchCreate: function(self){
             numCardsCreated++;
         }            
     });
+    //Timer.lap();
     
     //cleanup 
     self.save();
     //empty the text area and put in any malformed ones - so they can fix it and re-try
     var textarea = $('#batch-textarea');
+    //Timer.lap();
     
     //was there malformed stuff?
     if(malformedCards.length > 0){
@@ -537,10 +589,11 @@ batchCreate: function(self){
          //textarea.val('').css('height',0).change();
          textarea.val('');
          
-         toast(sprintf("Successfully created %d card%s!", numCardsCreated, numCardsCreated == 1 ? '' : 's'), 
-         	{type: ToastTypes.SUCCESS});
+         toast(sprintf("Successfully created %d card%s!", numCardsCreated, numCardsCreated == 1 ? '' : 's'), {type: ToastTypes.SUCCESS});
     }
     
+    //toast(Timer.getLapText());
+	//alert(Timer.getLapText());    
 
  /*(function show(){
       textarea.change(); //in case it got stuck @ 0 height... that tends to happen
@@ -605,6 +658,22 @@ save: function(self){
 },
 
 getCompressed: function(self){
+	var comp = {};
+	comp.name = self.name;
+	comp.description = self.description;
+	comp.id = self.id;
+	comp.group = self.group;
+	comp.cards = self.cards.map(function(rawCard){
+		var card = {};
+		card.question = rawCard.question;
+		card.answer = rawCard.answer;
+		card.imageURL = rawCard.imageURL;
+		card.repsLeft = rawCard.repsLeft;
+		card.rank = rawCard.rank.name;
+		return card;
+	});
+	return comp;
+    /*   
         return compress(self, [
             'name',
             'description',
@@ -625,7 +694,8 @@ getCompressed: function(self){
                     ]);  
                 });   
             }}  
-        ]);     
+        ]);
+        */
 }
 
 });

@@ -129,4 +129,16 @@ $(document).ready(function(){
      
     initUI();
     chevre.start();
+    
+    //handle query string in URL - this is a project to download
+    var queryText = window.location.search.substring(1);
+    if(queryText && queryText !== ""){
+    	//there IS something in the text
+    	var queryObj = Object.fromQueryString(queryText);
+    	var projectID = queryObj.share; //the ID of the thing to get
+    	share.getProjectInfo(projectID, function(rawDeck){
+    		//called back on success
+    		share.openDeckConfirmDialog(projectID, rawDeck);
+    	});
+    }
 });

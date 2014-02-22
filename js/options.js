@@ -33,6 +33,7 @@ function loadOptions(){
 	//checkboxes
 	$('#option-swipe-skip').attr('checked', options.swipeToSkip);
 	$('#option-ask-feedback').attr('checked', options.askFeedback);
+	$('#option-collapse-groups').attr('checked', options.collapseGroups);
 	
 	//selects
 	//we only store the # for fontSize; work backwards to get correct label
@@ -63,7 +64,9 @@ function saveOptions(){
     options.maxCardsPerSession = $('#option-max-cards').val().toNumber();
     options.fontSize = FontSize[$('#option-font-size').val()]; //looking up in the enum
     options.swipeToSkip = $('#option-swipe-skip').is(':checked');
+    options.collapseGroups = $('#option-collapse-groups').is(':checked');   
     options.askFeedback = $('#option-ask-feedback').is(':checked');
+    
     
     console.log(options);
     $.store.set(SL_KEYS.OPTIONS, options);

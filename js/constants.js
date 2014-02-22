@@ -1,18 +1,15 @@
 
 var ABOUT = {
 	appName: "Cabra",
-    version: "1.0.0",
-    codename: "Postseason",
-    date: Date.create("January 11, 2014"),
+    version: "1.1.0 alpha 1",
+    codename: "Wheelhouse",
+    date: Date.create("February 3, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
-        "Refreshed interface with a brand-new theme",
-        "Printing flashcards added",
-        "Significantly faster and leaner",
-        "New slide-out menu on the left",
-        "You can now edit a flashcard while studying it",
-        "Massively improved flashcard importer",
-        "You can now sort and delete flashcards easily in the manager",        
-        "New icon!"
+    	"<strong>You can now share your decks with other Cabra users</strong>",
+    	"Collapsing deck groups on the home page added",
+    	"Dramatically reduced time to save and sync (approx. 7 times faster!)",
+    	"Fixed card rendering bugs",
+    	"Sharply reduced lag when searching in the Card Manager"
     ],
     
     //TODO: show some warning if it's a beta build (not tested and ready)
@@ -42,9 +39,17 @@ var CARD_EDIT = "card_edit";
 var ajaxTestURL = "http://cabra.hathix.com/chevre/test.txt";
 var syncBaseURL = "http://cabra.hathix.com/chevre/"; //add sync-something.php to it
 var feedbackURL = syncBaseURL + "send-feedback.php";
+var shareURL = "http://cabra.hathix.com/chevre/index.html?share="; //tack on an id to it, so that the guy who visits that gets to download that page
 
 //importer
 var NUM_SAMPLE_CARDS = 3; //# sample cards to show when importing
+//for importing others' cards through share
+var RETRIEVE_TYPES = {
+	ALL: 'all',
+	MOST_DOWNLOADED: 'most_downloaded',
+	NEWEST: 'newest',
+	RANDOM: 'random'
+};
 
 //feedback
 /**
@@ -174,6 +179,7 @@ var SL_KEYS = {
     OPTIONS: "chevre-options",
     LAST_VERSION: "chevre-last-version",
     SYNC_KEY: "chevre-sync-key",
+    USER_INFO: "chevre-user-info",
     
     //FIRST_USED: "chevre-first-used",
     //NUM_USES: "chevre-num-uses",

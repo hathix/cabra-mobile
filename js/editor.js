@@ -311,6 +311,9 @@ createCard: function(self, e){
         }
         
         
+        
+        //RESET!
+       
         //clear the fields
         self.questionField.val('');
         self.answerField.val('');
@@ -321,7 +324,9 @@ createCard: function(self, e){
            self.resetMCAnswers();
         
         //give page focus to question field
-        self.questionField.focus();            
+        self.questionField.focus();     
+        
+        self.loadForCreation(); //so we get to a new card   
     }
     else{
         //they omitted one or both

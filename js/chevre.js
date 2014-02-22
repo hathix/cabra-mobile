@@ -13,10 +13,13 @@ __init__: function(self){
     self.activeProject = self.p = null;
     
     self.defaultOptions = {
-        maxCardsPerSession: 50,     //int
+        maxCardsPerSession: 25,     //int
         fontSize: FontSize.MEDIUM, //FontSize: int
         shuffleBeforeStudying: true, //boolean
         swipeToSkip: true, //boolean
+        
+        collapseGroups: false,
+        
         askFeedback: true,
         theme: Theme.BLUE
     };
@@ -47,6 +50,8 @@ start: function(self){
     //check version
     var oldVersion = $.store.get(SL_KEYS.LAST_VERSION);
     var updated = false;
+    var updatedFrom0X = false;
+    if(oldVersion) updatedFrom0X = oldVersion.startsWith("0"); //a pre-1.0 version
     var newUser = false;
     if(oldVersion && oldVersion != ABOUT.version){
         //they loaded a new version.
@@ -66,12 +71,13 @@ start: function(self){
     $.store.set(SL_KEYS.LAST_VERSION, ABOUT.version);
     
     //show another welcome message if it's their first time here, this time showing them the controls
-    if(updated || newUser){
+    //OR if they updated from an old, old version
+    if(updatedFrom0X || newUser){
     	var welcome = getClonedTemplate('template-welcome');
     	$('#welcome-message').html(welcome);
     	//show diff things to diff people
     	welcome.find('.guide-new').toggle(newUser);
-    	welcome.find('.guide-returning').toggle(updated);
+    	welcome.find('.guide-returning').toggle(updatedFrom0X);
     }
     
     //feedback tracking
@@ -84,6 +90,9 @@ start: function(self){
     var numUses = orDefault($.store.get(SL_KEYS.FB_USES_SINCE_ASKED), 0);
     numUses++;
     $.store.set(SL_KEYS.FB_USES_SINCE_ASKED, numUses);
+    
+    //who are they?
+    //if(!$.store.get(SL_KEYS.USER_INFO)){}
     
     (function(){
          feedback.ask(); //try to get feedback
@@ -109,6 +118,8 @@ addProject: function(self, project, dontSave){
    
     if(!dontSave)
         self.save(project); 
+        
+    return project;
 },
 
 refreshProjectList: function(self){
@@ -117,12 +128,33 @@ refreshProjectList: function(self){
      var groupedProjects = self.projects.groupBy('group'); //object { groupName: [proj1, proj2, proj3], ... }
     Object.keys(groupedProjects, function(groupName, projects){
          var data = {
-              groupName: groupName,
-              decks: projects
+              groupName: 	groupName,
+              groupId:		'group-panel-' + Number.random(0, 100000), //it's just temporary; used for elements' ids
+              collapsed:	self.options.collapseGroups,
+              decks: 		projects
          };
          
           //make panel containing each
           var panel = template("template-project-panel", $('#project-list'), data, true);    
+          
+          //toggle states
+          //only show a "open" button if it's closed; don't clutter UI if it's open
+          var hidden = function(){
+          	panel.find('.panel-title').find('.glyphicon').addClass('glyphicon-chevron-down');
+          };
+          var shown = function(){
+          	panel.find('.panel-title').find('.glyphicon').removeClass('glyphicon-chevron-down');
+          };
+			panel.find('.list-group').on('hide.bs.collapse', hidden); 
+			panel.find('.list-group').on('show.bs.collapse', shown); 
+		if(self.options.collapseGroups){
+			//it's collapsed
+			hidden();
+		}
+		else{
+			//do nothing; by default it shows open
+		}
+
     });
     
     //reload all clicks
@@ -276,8 +308,11 @@ save: function(self, project, dontSync){
     
     //they may have sent us a project to save - in that case, save ONLY that
     if(project && $.store.get(SL_KEYS.PROJECTS)){
+    	
+    //Timer.begin();
         //find that project out of storage, re-compress it, and re-save
         var storedProjects = $.store.get(SL_KEYS.PROJECTS);
+        //Timer.lap();
         var didResave = false; //will be set to true if we re-saved any project (will stay false if it wasn't found')
         for(var i=0; i<storedProjects.length; i++){
             if(project.equals(storedProjects[i])){
@@ -289,6 +324,7 @@ save: function(self, project, dontSync){
                 break;
             }
         }
+        //Timer.lap();
         
         if(!didResave){
             //they haven't reached it so far, which means that there's no matching project. so add a new one
@@ -296,25 +332,20 @@ save: function(self, project, dontSync){
             //re-save & upload
             $.store.set(SL_KEYS.PROJECTS, storedProjects);
         }
+        //Timer.lap();
         
         if(!dontSync)
             self.syncUpload();
+        //Timer.lap();
+        //alert(Timer.getLapText());
         return storedProjects;     
     }
     
     //otherwise, just save it all
-    
-    //UGLY CODE AHEAD
-    var compressed = compress(self, [
-        {
-            'projects': function(compressed, val){ //compressed is chevre
-                //val = array of raw projects
-                //go through each project in array
-                return val.map(function(project){ return project.getCompressed(); });
-                //return val.map(compressProject); //see above func
-            }
-        }
-    ]);
+   var compressed = {};
+   compressed.projects = self.projects.map(function(project){
+   	return project.getCompressed();
+   });
     
     //store it
     $.store.set(SL_KEYS.PROJECTS, compressed.projects);
@@ -369,23 +400,29 @@ loadLocally: function(self){
 },
 
 /**
- * Takes the projects from straight stored form and converts to raw form. They will be fully converted to normal form when loaded.
+ * Takes the projects from straight stored form and converts to fully inflated forms.
  */
 unpackProjects: function(self){
     var rawProjects = $.store.get(SL_KEYS.PROJECTS);
-    //UGLY CODE AHEAD
     rawProjects.forEach(function(rawProj){
-    	var project = new Project(rawProj.name, rawProj.description, rawProj.id, rawProj.group);
-    	//add in cards
-    	project.cards = rawProj.cards.map(function(rawCard){
-    		var card = new Card(rawCard.question, rawCard.answer, rawCard.imageURL);
-    		card.repsLeft = rawCard.repsLeft;
-    		card.rank = Rank[rawCard.rank];	
-    		return card;
-    	});
-    	
+		var project = self.decompressProject(rawProj);
     	self.addProject(project, true);
     });
+},
+
+/*
+ * Given a stored project, returns a fully inflated project.
+ */
+decompressProject: function(self, rawProj){
+	var project = new Project(rawProj.name, rawProj.description, rawProj.id, rawProj.group);
+	//add in cards
+	project.cards = rawProj.cards.map(function(rawCard){
+		var card = new Card(rawCard.question, rawCard.answer, rawCard.imageURL);
+		card.repsLeft = rawCard.repsLeft;
+		card.rank = Rank[rawCard.rank];	
+		return card;
+	});	
+	return project;
 },
 
 /**
@@ -497,23 +534,25 @@ syncUpload: function(self, success, failure){
     console.log("Uploading...");
     //pass the passcode & projects (strings, stored in browser) to php, which will store in table
     //TODO: instead of storing pure form, store it compressed
-    $.post(
-        syncBaseURL + 'sync-upload-2.php',
-        {
-            'passcode': $.store.get(SL_KEYS.SYNC_KEY),
-            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)), //what's nice is that this won't store undefined values
-            'pw': 'o9fxxyouwT6N'            
-        },
-        function(data){
-             //it's just 1 (literally just that number)
-             //only called if it succeeds so...
-             if(success) success();
-        }
-    ).fail(function(){
-     //boo! failed!
-     if(failure) failure(); 
-    });
-    
+    //Put this off till later, since it takes a LONG time to execute
+    (function(){
+	    $.post(
+	        syncBaseURL + 'sync-upload-2.php',
+	        {
+	            'passcode': $.store.get(SL_KEYS.SYNC_KEY),
+	            'projects': JSON.stringify($.store.get(SL_KEYS.PROJECTS)), //what's nice is that this won't store undefined values
+	            'pw': 'o9fxxyouwT6N'            
+	        },
+	        function(data){
+	             //it's just 1 (literally just that number)
+	             //only called if it succeeds so...
+	             if(success) success();
+	        }
+	    ).fail(function(){
+	     //boo! failed!
+	     if(failure) failure(); 
+	    });
+    }).delay(100);
 },
 
 /**

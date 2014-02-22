@@ -82,6 +82,10 @@ a[data-href]{
 
 /****** HOME ****/
 
+#project-list .panel-heading{
+	cursor: pointer;
+}
+
 .project-list-item .project-list-item-edit{
 	position: absolute;
 	right: 7px;

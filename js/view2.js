@@ -142,6 +142,9 @@ function initPages(){
     PageDB.getJQuery('organize').oneBind('load', function(){
     	organizer.load();
     });	    
+    PageDB.getJQuery('share').oneBind('load', function(){
+		share.initUI();
+    });
     PageDB.getJQuery('options').oneBind('load', function(){
 		loadOptions();
     });

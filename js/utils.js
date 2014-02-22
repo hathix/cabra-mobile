@@ -38,7 +38,7 @@ function getClonedTemplate(id){
 /**
  * Creates a toast (a small popup) temporarily. Good for showing messages (like confirmation/success) that require no input from user and aren't critical to their use of the app.
  * @param {String}  text the text to show in the toast. Can include HTML.
- * @param {Object}     options  [optional] contents: duration (int), error (boolean) /
+ * @param {Object}     options  [optional] contents: duration (int), type (ToastTypes) /
  *   duration: how long to show the text. Default TOAST_DURATION_DEFAULT. Use TOAST_DURATION_[X] for lengths.
  *   type:		the classification of the toast; 'success', 'info', 'warning', 'danger' (or something from enum ToastTypes.) Default ToastTypes.INFO.
  */
@@ -175,6 +175,13 @@ function cleanInput(raw){
 function deprettify(pretty){
     var raw = pretty.replace(/\<br\>/g,"\n"); //br's turn to newlines
     return raw;
+}
+
+/**
+ * Escapes any regex-incompatible chars in the given string, making it safe to use in a regex. 
+ */
+function regexEscape(string){
+	return String(string).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').replace(/\x08/g, '\\x08');
 }
 
 /**

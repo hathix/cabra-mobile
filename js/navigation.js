@@ -27,7 +27,6 @@ __init__: function(self){
  * @param {String}	href	the page's slug, like 'create'.
  */
 openPage: function(self, href){
-
      //there are certain special cases. NAV_BACK, NAV_HOME, NAV_FORWARD
      if(href == NAV_HOME){
           self.home();
