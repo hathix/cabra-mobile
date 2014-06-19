@@ -8,7 +8,7 @@
  * 6. jQuery Touch Punch
  * 7. jQuery alterClass
  * 8. Bootbox - Bootstrap notifications
- * 9. Handlebars #if conditional 
+ * 9. Handlebars #if conditional
  * 10. FastClick
  * 11. Sugar JS
  */
@@ -334,7 +334,7 @@ var Cobra = typeof window === 'undefined' ? exports : {};
 * Note: Read the README!
 * ---
 * @info http://james.padolsey.com/javascript/cross-domain-requests-with-jquery/
-* 
+*
 * With this, you can use $.ajax just like normal - but it'll work just fine with cross-domain requests!
 * So stuff like this works. Seriously:
 *   $.ajax({
@@ -348,28 +348,28 @@ var Cobra = typeof window === 'undefined' ? exports : {};
 */
 
 jQuery.ajax = (function(_ajax){
-    
+
     var protocol = location.protocol,
         hostname = location.hostname,
         exRegex = RegExp(protocol + '//' + hostname),
         YQL = 'http' + (/^https/.test(protocol)?'s':'') + '://query.yahooapis.com/v1/public/yql?callback=?',
         query = 'select * from html where url="{URL}" and xpath="*"';
-    
+
     function isExternal(url) {
         return !exRegex.test(url) && /:\/\//.test(url);
     }
-    
+
     return function(o) {
-        
+
         var url = o.url;
-        
+
         if ( /get/i.test(o.type) && !/json/i.test(o.dataType) && isExternal(url) ) {
-            
+
             // Manipulate options so that JSONP-x request is made to YQL
-            
+
             o.url = YQL;
             o.dataType = 'json';
-            
+
             o.data = {
                 q: query.replace(
                     '{URL}',
@@ -379,17 +379,17 @@ jQuery.ajax = (function(_ajax){
                 ),
                 format: 'xml'
             };
-            
+
             // Since it's a JSONP request
             // complete === success
             if (!o.success && o.complete) {
                 o.success = o.complete;
                 delete o.complete;
             }
-            
+
             o.success = (function(_success){
                 return function(data) {
-                    
+
                     if (_success) {
                         // Fake XHR callback.
                         _success.call(this, {
@@ -399,15 +399,15 @@ jQuery.ajax = (function(_ajax){
                                 .replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi, '')
                         }, 'success');
                     }
-                    
+
                 };
             })(o.success);
-            
+
         }
-        
+
         return _ajax.apply(this, arguments);
     };
-    
+
 })(jQuery.ajax);
 
 
@@ -419,9 +419,9 @@ jQuery.ajax = (function(_ajax){
 /* Copyright (c) 2010 Marcus Westin
  *
  */
- 
+
  /**
- 
+
 // Store 'marcus' at 'username'
 $.store.set('username', 'marcus');
 
@@ -447,7 +447,7 @@ $.store.transact('user', function(user) {
 });
 user = $.store.get('user');
 alert(user.name + ' was changed from marcus to fred');
- 
+
  */
 
 jQuery.store = (function(){
@@ -478,18 +478,18 @@ jQuery.store = (function(){
         return JSON.parse(value)
     }
 
-    // Functions to encapsulate questionable FireFox 3.6.13 behavior 
+    // Functions to encapsulate questionable FireFox 3.6.13 behavior
     // when about.config::dom.storage.enabled === false
     // See https://github.com/marcuswestin/store.js/issues#issue/13
     function isLocalStorageNameSupported() {
         try { return (localStorageName in win && win[localStorageName]) }
         catch(err) { return false }
     }
-    
+
     function isGlobalStorageNameSupported() {
         try { return (globalStorageName in win && win[globalStorageName] && win[globalStorageName][win.location.hostname]) }
         catch(err) { return false }
-    }   
+    }
 
     if (isLocalStorageNameSupported()) {
         storage = win[localStorageName]
@@ -618,7 +618,7 @@ jQuery.sub = function() {
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
  * http://touchpunch.furf.com/
- * 
+ *
  * Depends:
  *  jquery.ui.widget.js
  *  jquery.ui.mouse.js
@@ -660,7 +660,7 @@ jQuery.sub = function() {
 			return !additions ? self : self.addClass(additions);
 		};
 
-	})(jQuery); 
+	})(jQuery);
 
 /**
  * bootbox.js v4.1.0
@@ -677,17 +677,17 @@ window.bootbox=window.bootbox||function a(b,c){"use strict";function d(a){var b=
 Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
 
     var operators, result;
-    
+
     if (arguments.length < 3) {
         throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
     }
-    
+
     if (options === undefined) {
         options = rvalue;
         rvalue = operator;
         operator = "===";
     }
-    
+
     operators = {
         '==': function (l, r) { return l == r; },
         '===': function (l, r) { return l === r; },
@@ -699,13 +699,13 @@ Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options
         '>=': function (l, r) { return l >= r; },
         'typeof': function (l, r) { return typeof l == r; }
     };
-    
+
     if (!operators[operator]) {
         throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
     }
-    
+
     result = operators[operator](lvalue, rvalue);
-    
+
     if (result) {
         return options.fn(this);
     } else {
@@ -732,7 +732,7 @@ function FastClick(e){"use strict";var t,n=this;this.trackingClick=false;this.tr
  *  Freely distributable and licensed under the MIT-style license.
  *  Copyright (c) 2013 Andrew Plummer
  *  http://sugarjs.com/
- * 
+ *
  * Packages:
  * Core
  * ES5

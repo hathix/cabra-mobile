@@ -1,5 +1,5 @@
 var PageDB = new Singleton({
-	
+
 __init__: function(self){
 	self.pages = [
 		//new Page("home", "Home", "Home sweet home", "home"),
@@ -36,7 +36,7 @@ get: function(self, slugObj){
  * @param {String} slug	a string identifying the page.
  */
 getJQuery: function(self, slug){
-	return $(self.get(slug));	
+	return $(self.get(slug));
 },
 
 /**

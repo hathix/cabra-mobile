@@ -9,7 +9,7 @@ Cobra.install();
  */
 $(document).ready(function(){
 	FastClick.attach(document.body);
-	
+
 	//see if we can get Cordova (for Android)
 	require('cordova.js', function(){
 		//Handle back button. Go back in history, dialogs, etc.
@@ -21,7 +21,7 @@ $(document).ready(function(){
 			else if(View.snapper.state().state == "left"){
 				//slideout menu is open; close it
 				View.snapper.close();
-			}			
+			}
 			else if(nav.index > 0 || nav.modalOpen){
 				nav.openPage(NAV_BACK); //go back a page or close the modal (special case), it'll handle it
 			}
@@ -31,7 +31,7 @@ $(document).ready(function(){
 				navigator.app.exitApp();
 			}
 		}, false);
-		
+
 		//Handle menu button. Just show/hide the slideout menu.
 		document.addEventListener("menubutton", function(){
 			//Open/close the slideout (snapper) menu, as appropriate
@@ -45,14 +45,14 @@ $(document).ready(function(){
 			}
 		}, false);
 	});
-	
+
      $('body').on('click','a[data-href]',function(){
           //open whatever had that trigger
           var href = $(this).data('href'); //like 'home' or something
           //trigger invisible tab
           nav.openPage(href);
      });
-     
+
      //trawl all the pages for page metadata
      $('section').each(function(){
      	if(!$(this).data('name')) return;
@@ -61,7 +61,7 @@ $(document).ready(function(){
      	PageDB.add(page);
      });
 
-     
+
      //register helper
      /**
       * Renders if the given conditional function evaluates to true.
@@ -93,12 +93,12 @@ $(document).ready(function(){
 		  	return options.inverse(this);
 		  }
 	});
-	
+
 	/**
 	 * Calls and displays the result of a certain function. Any HTML inside it will be passed as a jQuery object.
 	 * IF YOU PUT SOMETHING INSIDE, WRAP IT ALL IN A TAG!
 	 * Usage:
-	 * 	{{#call "getText"}}{{/call}} 
+	 * 	{{#call "getText"}}{{/call}}
 	 *  {{#call "capitalize"}}<div>Hi</div>{{/call}}
 	 */
      Handlebars.registerHelper('call', function(fnName, options) {
@@ -108,8 +108,8 @@ $(document).ready(function(){
      		return fn(arg);
      	else
      		return arg;
-	});	
-	
+	});
+
 	/**
 	 * Evaluates any bit of code and returns it. "this" is the current context. Nothing goes inside it.
 	 * code should be a string.
@@ -119,17 +119,17 @@ $(document).ready(function(){
      Handlebars.registerHelper('eval', function(code, options) {
      	var returnValue = eval(code);
      	return returnValue;
-	});		
+	});
 	/*
 	Handlebars.registerHelper('with', function(contextFunction, options) {
 		var fn = this[contextFunction];
 	  	return options.fn(fn());
 	});
 	*/
-     
+
     initUI();
     chevre.start();
-    
+
     //handle query string in URL - this is a project to download
     var queryText = window.location.search.substring(1);
     if(queryText && queryText !== ""){

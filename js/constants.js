@@ -1,9 +1,9 @@
 
 var ABOUT = {
 	appName: "Cabra",
-    version: "1.1.0 alpha 1",
-    codename: "Wheelhouse",
-    date: Date.create("February 3, 2014"),
+    version: "1.2.0",
+    codename: "The Show",
+    date: Date.create("June 8, 2014"),
     changes: [ //list of noteworthy changes to alert users about, mostly new features
     	"<strong>You can now share your decks with other Cabra users</strong>",
     	"Collapsing deck groups on the home page added",
@@ -11,7 +11,7 @@ var ABOUT = {
     	"Fixed card rendering bugs",
     	"Sharply reduced lag when searching in the Card Manager"
     ],
-    
+
     //TODO: show some warning if it's a beta build (not tested and ready)
 }
 
@@ -26,7 +26,7 @@ var NAV_BASE = 'home'; //page to start on
 //PageEvents: listen for these things to happen to pages
 var PageEvents = {
 	LOAD: "load",
-	HIDE: "hide"	
+	HIDE: "hide"
 };
 
 //cards
@@ -66,7 +66,7 @@ var FB_MIN_USES = 7;
 //groups
 /**
  * @type String
- * Newly-created projects are, by default, given this name 
+ * Newly-created projects are, by default, given this name
  */
 var GROUP_DEFAULT = "Unorganized";
 
@@ -91,7 +91,7 @@ var ToastTypes = {
 	SUCCESS:	'success',
 	INFO:		'info',
 	WARNING:	'warning',
-	DANGER:		'danger'	
+	DANGER:		'danger'
 };
 
 /* API */
@@ -99,10 +99,10 @@ var ToastTypes = {
 var QUIZLET = {
     //appName: "Cabra",
     clientID: "pYEkSEHmkf",
-    //secretKey: "Y.WXND-z4OAymqBI1K2BFA",   
-    
+    //secretKey: "Y.WXND-z4OAymqBI1K2BFA",
+
     //loadPerPage: 20, //most projects to show per page
-    
+
     maxToLoad: 20 //most projects to show user to choose from when searching; Quizlet only allows us to do 50
 }
 //standard starting bits for URLS to make api requests
@@ -110,7 +110,7 @@ QUIZLET.api = {
     //Search for a set of cards. Tack on the search term (url encode if you want). EG http://is.gd/x3fWZR
     //Grab the ID of the set from RESPONSE.sets[0].id; get specifics with getSet
     searchSets: "https://api.quizlet.com/2.0/search/sets?client_id=" + QUIZLET.clientID + "&whitespace=1&per_page=" + QUIZLET.maxToLoad +"&q=",
-    
+
     //If you know the ID of a set (got from searchSets), get the actual cards here. EG http://is.gd/8egN0i
     //tack id on to end
     //Grab cards with RESPONSE.terms (array of objects with .term and .definition)
@@ -128,7 +128,8 @@ var StudyResult = {
 var StudyMode = {
     NORMAL: "normal",
     CRAM: "cram",
-    PERFECTION: "perfection"
+    PERFECTION: "perfection",
+    CUSTOMIZE: "customize"
 };
 var StudyStyle = {
      NORMAL: "normal",
@@ -161,14 +162,14 @@ var ManageMode = {
 var SortType = {
 	QUESTION: "question",
 	ANSWER: "answer",
-	STARS: "stars"	
+	STARS: "stars"
 };
 
 /*function getStudyMode(stringMode){
     var mode = StudyMode.NORMAL; //default
     Object.keys(StudyMode, function(key, value){
         if(value == stringMode)
-            mode = key;    
+            mode = key;
     });
     return mode;
 }*/
@@ -180,20 +181,22 @@ var SL_KEYS = {
     LAST_VERSION: "chevre-last-version",
     SYNC_KEY: "chevre-sync-key",
     USER_INFO: "chevre-user-info",
-    
+
+    LAST_SYNCED: "chevre-last-synced",
+
     //FIRST_USED: "chevre-first-used",
     //NUM_USES: "chevre-num-uses",
-    
+
     FB_LAST_ASKED: "chevre-fb-last-asked",
     FB_USES_SINCE_ASKED: "chevre-fb-uses-since-asked"
 };
 
 var Rank = {
-    A: { name: "A", baseReps: 0,  color: "#FF0000" },
-    B: { name: "B", baseReps: 2,  color: "#FF7F00" },
-    C: { name: "C", baseReps: 6,  color: "#FFC800" },
-    D: { name: "D", baseReps: 12, color: "#0094FF" },
-    E: { name: "E", baseReps: 16, color: "#00E500" },
+    A: { name: "A", baseReps: 0,  color: "#FF0000", score: 0.00 },
+    B: { name: "B", baseReps: 2,  color: "#FF7F00", score: 0.25 },
+    C: { name: "C", baseReps: 6,  color: "#FFC800", score: 0.50 },
+    D: { name: "D", baseReps: 12, color: "#0094FF", score: 0.80 },
+    E: { name: "E", baseReps: 16, color: "#00E500", score: 1.00 },
 };
 
 function nextRank(rank){

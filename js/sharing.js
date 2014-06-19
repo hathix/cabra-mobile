@@ -1,9 +1,9 @@
 var share = new Singleton({
  __init__: function(self){
-      
+
  },
- 
- 
+
+
  /**
   * Loads the UI for uploading one of your projects to the database, or downloading one.
   */
@@ -16,8 +16,8 @@ var share = new Singleton({
 	    var option = $('<option></option>');
 	    option.html(deck.name);
 	    option.val(deck.id);
-	    select.append(option); 
-	}); 	
+	    select.append(option);
+	});
  	//manage the passcode - there's a checkbox to activate it in the first place
  	$('#share-upload-password-checkbox').oneBind('change ready', function(){
  		 if($(this).is(':checked')){
@@ -29,9 +29,9 @@ var share = new Singleton({
  		 }
  	});
  	$('#share-upload-password-checkbox').attr('checked',false).trigger('change'); //just to be sure!
- 	
+
  	$('#share-upload-result').hide();
- 	
+
  	$('#share-upload-button-send').oneClick(function(){
  		var formOK = true;
  		var warningText = null;
@@ -55,7 +55,7 @@ var share = new Singleton({
  		}
  		var deckID = $('#share-upload-deck-select').val();
  		var deck = chevre.getProjectByID(deckID);
- 		
+
  		if(!formOK){
  			//problem - show warning text
  			toast(warningText, { type: ToastTypes.WARNING });
@@ -73,37 +73,42 @@ var share = new Singleton({
  					$('.share-if-password').hide();
  				}
  				$('#share-upload-result').show();
+
+ 				//update deck's sharedInfo
+ 				deck.shareInfo.url = shareURL + id;
+ 				deck.shareInfo.password = password;
+ 				deck.save();
  			});
  		}
  	});
- 	
- 	
+
+
  	//DOWNLOAD STUFF
  	$('#share-download-all').oneClick(function(){
  		self.retrieveDecks(RETRIEVE_TYPES.ALL, self.loadDecks);
  	});
  	$('#share-download-most-downloaded').oneClick(function(){
  		self.retrieveDecks(RETRIEVE_TYPES.MOST_DOWNLOADED, self.loadDecks);
- 	}); 	
+ 	});
  	$('#share-download-newest').oneClick(function(){
  		self.retrieveDecks(RETRIEVE_TYPES.NEWEST, self.loadDecks);
- 	}); 
+ 	});
  	$('#share-download-random').oneClick(function(){
  		self.retrieveDecks(RETRIEVE_TYPES.RANDOM, self.loadDecks);
- 	});  	 	
+ 	});
  },
- 
+
  /**
-  * Given an array of raw decks, renders them in the deck download view. 
+  * Given an array of raw decks, renders them in the deck download view.
   */
  loadDecks: function(self, rawDecks){
  	//edits the decks you just got to fix some formatting stuff
  	rawDecks.forEach(function(deck){
  		self.sanitizeDeck(deck);
  	});
- 	
+
  	template('template-share-import-project', $('#share-download-deck-output'), {decks: rawDecks});
- 	
+
  	//handle clicks of the download button
  	$('#share-download-deck-output').find('.btn-download').oneClick(function(){
  		var id = $(this).data('download');
@@ -111,9 +116,9 @@ var share = new Singleton({
  		self.openDeckConfirmDialog(id, rawDeck);
  	});
  },
- 
+
  /**
-  * Opens the dialog to confirm that the user really does want to download this deck. This should be the LAST user-facing UI element before the deck is downloaded; in other words, you should only call downloadProject() from here. 
+  * Opens the dialog to confirm that the user really does want to download this deck. This should be the LAST user-facing UI element before the deck is downloaded; in other words, you should only call downloadProject() from here.
   * @param {int} id		the ID of the deck to download.
   * @param {Object} rawDeck	the raw deck object you got from the server - contains name, creator, etc.
   */
@@ -121,14 +126,14 @@ var share = new Singleton({
  	var modal = $('#dialog-share-download');
 	template('template-share-download-confirm', modal, rawDeck);
 	modal.modal('show');
-	
+
 	modal.find('.label-error').hide();
 	modal.find('.btn-download').oneClick(function(){
 		var $this = $(this);
 		if(rawDeck.locked){
 			//we need to check the password
 			$(this).button('loading');
-			
+
 			//try the password
 			var password = $('#share-download-confirm-password').val().trim();
 			self.downloadProject(id, password, function success(){
@@ -141,9 +146,9 @@ var share = new Singleton({
 				modal.find('.label-normal').hide();
 				modal.find('.label-error').show();
 				$('#share-download-confirm-password').focus();
-				$this.button('reset');		
+				$this.button('reset');
 			})
-			
+
 			//TODO if good pw show the downloading text
 		}
 		else{
@@ -154,17 +159,17 @@ var share = new Singleton({
 		}
 	});
  },
- 
+
  /**
-  * CALL ME WHENEVER YOU DOWNLOADED A DECK. This fixes important formatting stuff for the raw deck array. 
+  * CALL ME WHENEVER YOU DOWNLOADED A DECK. This fixes important formatting stuff for the raw deck array.
   */
  sanitizeDeck: function(self, deck){
  	deck.date = Date.create(deck.date).format("{Month} {ord}, {year}"); //"2014-01-25 17:06:27" becomes "January 25th, 2014"
  	return deck;
  },
- 
+
  // PRIVATE - backend functions
-     
+
 
 /**
  * Sends the given project to the server.
@@ -181,6 +186,8 @@ uploadProject: function(self, project, creator, password, callback){
 		card.rank = Rank.A.name;
 		card.repsLeft = Rank.A.baseReps;
 	});
+	//delete private share info
+	delete cloned.shareInfo;
     $.post(
         syncBaseURL + 'share-upload.php',
         {
@@ -190,8 +197,8 @@ uploadProject: function(self, project, creator, password, callback){
         	'project': 		JSON.stringify(cloned),
         	'creator': 		creator,
         	'password': 	password,
-        	
-        	'pw': 			'uU3yhE7Q63n9'    
+
+        	'pw': 			'uU3yhE7Q63n9'
         },
         function(data){
              //data should include an int with the ID of the project (where they can access it)
@@ -205,7 +212,7 @@ uploadProject: function(self, project, creator, password, callback){
     ).fail(function(){
      //boo! failed!
      toast('Uploading failed! Check your internet connection and try again.');
-    });	
+    });
 },
 
 /**
@@ -220,8 +227,8 @@ getProjectInfo: function(self, projectID, callback){
         {
         	'id': 	projectID,
         	'mode': 'check',
-        	
-        	'pw': 	'uU3yhE7Q63n9'    
+
+        	'pw': 	'uU3yhE7Q63n9'
         },
         function(data){
         	console.log(data);
@@ -240,7 +247,7 @@ getProjectInfo: function(self, projectID, callback){
     ).fail(function(){
      //boo! failed!
      console.log('FAILED');
-    });	
+    });
 },
 
 /**
@@ -257,8 +264,8 @@ downloadProject: function(self, projectID, password, onSucceed, onFail){
         	'id': 		projectID,
         	'mode': 	'get',
         	'password': password,
-        	
-        	'pw': 		'uU3yhE7Q63n9'    
+
+        	'pw': 		'uU3yhE7Q63n9'
         },
         function(data){
         	console.log(data);
@@ -270,7 +277,7 @@ downloadProject: function(self, projectID, password, onSucceed, onFail){
              else{
              	//worked!
              	if(onSucceed) onSucceed();
-             	
+
              	//they gave the raw project; interpret it
              	var object = JSON.parse(data);
              	console.log(object);
@@ -282,13 +289,13 @@ downloadProject: function(self, projectID, password, onSucceed, onFail){
     ).fail(function(){
      //boo! failed!
      console.log('FAILED');
-    });		
+    });
 },
 
 /**
  * Looks up a subset of decks from the server based on various criteria. Calls callback with this information.
  * @param {Object} retrieveType		determines which decks will be downloaded (the most popular ones, the most recent ones, etc.) Use something from the RETRIEVE_TYPES enum.
- * @param {Function} callback	will be called with an array of raw project objects - each includes stuff like name, description, creator, etc.	
+ * @param {Function} callback	will be called with an array of raw project objects - each includes stuff like name, description, creator, etc.
  */
 retrieveDecks: function(self, retrieveType, callback){
     $.post(
@@ -296,20 +303,20 @@ retrieveDecks: function(self, retrieveType, callback){
         {
         	'mode': 	'check_bulk',
         	'type': 	retrieveType,
-        	
-        	'pw': 		'uU3yhE7Q63n9'    
+
+        	'pw': 		'uU3yhE7Q63n9'
         },
         function(data){
         	if(data){
         		var projectInfo = JSON.parse(data); //array of projects, each giving some information about it
         		callback(projectInfo);
         	}
-        	
+
         }
     ).fail(function(){
      //boo! failed!
      console.log('FAILED');
-    });		
+    });
 }
 
 });

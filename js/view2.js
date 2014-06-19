@@ -5,31 +5,35 @@ var View = {
 function initUI(){
 	initPages();
 	initDialogs();
-	
+
 	//setup code
 	organizer.setup();
-	
+
+	//init bootstrap plugins
+	$('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="popover"]').popover();
+
 	//options
 	/*
 	$(window).resize(function(){
 		var mainHeight = $('#main-container').height();
-		$('.study-main-card').css('height', mainHeight - 150); //reserve space for other buttons etc	
+		$('.study-main-card').css('height', mainHeight - 150); //reserve space for other buttons etc
 	});
 	*/
 	//about
     //just give a span any of these classes and the appropriate stuff will be entered
     $('.about-version').html(ABOUT.version);
     $('.about-codename').html(ABOUT.codename);
-    $('.about-released').html(ABOUT.date.short()); 
+    $('.about-released').html(ABOUT.date.short());
     $('.about-copyright-year').html(Date.create().format("{yyyy}")); //current year for copyright stuff
-    
+
     //this one requires a UL or OL
     //grab the array of changes, and convert to a bunch of LI's
     var changesLIs = ABOUT.changes.map(function(string){
         return "<li>" + string + "</li>";
     }).join("");
-    $('.about-changes').html(changesLIs); //must be ul or ol for this!	
-	
+    $('.about-changes').html(changesLIs); //must be ul or ol for this!
+
 	//init snapper!
 	var snapper = new Snap({
 		element: document.getElementById("main-container"),
@@ -53,6 +57,12 @@ function initUI(){
 	$('#menu').find('.close').oneClick(function(){
 		snapper.close();
 	});
+
+	//manage swiping to open/close snapper
+	$("body").hammer().on("swiperight", function(ev) {
+		snapper.open('left');
+	});
+
 	/*
 	//manage snapper classes - close button if opened, open button if closed
 	var closedClass = "glyphicon-th";
@@ -64,24 +74,24 @@ function initUI(){
 	snapper.on('close', function(){
 		//change arrow to closed state
 		$('#navbar-menu-button').find('.glyphicon').addClass(closedClass).removeClass(openedClass);
-	});	
+	});
 	snapper.on('drag', function(){
 		$('#navbar-menu-button').find('.glyphicon').toggleClass(closedClass).toggleClass(openedClass);
 	});
 	*/
-	
+
 	/* MISCELLANEOUS STUFF */
 	//menu
 
 	$('#menu-links').find('a').oneClick(function(){
-		snapper.close();	
+		snapper.close();
 		(function(){$('#menu-links').find('li').removeClass('active')}).delay(500); //prevents .active from 'sticking' to the pills; delay to avoid interfering with animation (not really sure why)
 	});
 	$('#menu-link-feedback').click(function(){
 		//console.log(3);
 		feedback.ask(true); //force to show it
 	});
-	
+
 	/*
 	 * TOO MANY PROBLEMS TO WORK EFFECTIVELY NOW - TODO IMPLEMENT LATER (1/3/14)
 	 * http://jasonbutz.info/bootstrap-lightbox/
@@ -101,17 +111,17 @@ function initPages(){
 		//refresh view
 		chevre.refreshProjectList();
 	});
-	
+
 	//deck home
 	PageDB.getJQuery('deck-home').oneBind('load', function(){
 		//un-set active projects
 		chevre.p.load();
 	});
-	
+
 	PageDB.getJQuery('create').oneBind('load', function(){
 		//chevre.p.prepareCreateCardPage();
 		Editor.loadPage();
-	});	
+	});
 	PageDB.getJQuery('manage').oneBind('load', function(){
 		chevre.p.updateManager();
 	});
@@ -121,27 +131,40 @@ function initPages(){
 	PageDB.getJQuery('export').oneBind('load', function(){
 		backup.loadPage();
 	});
-			
+
     PageDB.getJQuery('study').oneBind('load', function(){
     	var self = chevre.p;
     	self.session = new Session(self);
+
+    	$('#study-input-mode').oneBind('now change', function(){
+    		//if the Customize is shown, open the options
+    		var customizeOn = $(this).val() == StudyMode.CUSTOMIZE; //bool
+    		//console.log(customizeOn);
+    		if(customizeOn === true){
+    			$('#study-input-customize-options').collapse('show');
+    		}
+    		else{
+    			$('#study-input-customize-options.in').collapse('hide');
+    		}
+    	});
+    	$('#study-input-mode').trigger('now'); //make it run this now and whenever changed
     });
     PageDB.getJQuery('study-main').oneBind('load', function(){
     	var self = chevre.p;
     	self.session.start();
-    });	
+    });
     PageDB.getJQuery('study-end').oneBind('load', function(){
     	var self = chevre.p;
     	self.session.loadResultsChart();
-    });	
-    
-    
+    });
+
+
     PageDB.getJQuery('deck-import').oneBind('load', function(){
     	importer.quizlet();
-    });	
+    });
     PageDB.getJQuery('organize').oneBind('load', function(){
     	organizer.load();
-    });	    
+    });
     PageDB.getJQuery('share').oneBind('load', function(){
 		share.initUI();
     });
@@ -159,18 +182,18 @@ function initPages(){
     	var setup = chevre.syncActivated();
     	$('#sync-show-setup').toggle(setup); //show if setup
     	$('#sync-show-new').toggle(!setup); //show if not setup
-    	
+
     	if(setup){
     		$('#sync-passcode-reminder').html($.store.get(SL_KEYS.SYNC_KEY));
     		$('#sync-button-upload').oneClick(function(){
     			var self = $(this);
     			self.button('loading');
-			    chevre.syncUpload(
-			         function success(){ 
+			    Sync.sync(
+			         function success(){
 			         	toast('Your cards were successfully uploaded!', { type: ToastTypes.SUCCESS, duration: TOAST_DURATION_SHORT });
 			         	self.button('reset');
 			         },
-			         function failure(){ 
+			         function failure(){
 			         	toast('Uploading your cards failed. Enable your internet connection and try again.', { type: ToastTypes.DANGER });
 			         	self.button('reset');
 			         	}
@@ -179,7 +202,7 @@ function initPages(){
     		$('#sync-button-download').oneClick(function(){
     			var self = $(this);
     			self.button('loading');
-    			chevre.syncDownload(false);
+    			Sync.sync();
     			self.button('reset');
     			bootbox.dialog({
     				message: "Your cards have been successfully downloaded! <strong>You'll now need to refresh the page.</strong>",
@@ -192,13 +215,13 @@ function initPages(){
     							reloadPage();
     						}
     					}
-    				}	
+    				}
     			});
     		});
     		$('#sync-button-stop').oneClick(function(){
 			    //cancel sync - destroy key
 			    $.store.remove(SL_KEYS.SYNC_KEY);
-			    reloadPage();		
+			    reloadPage();
     		});
     	}
     	else{
@@ -207,12 +230,12 @@ function initPages(){
     			var passcode = $('#sync-input-passcode').val().trim();
     			if(passcode && passcode != ""){
     				$.store.set(SL_KEYS.SYNC_KEY, passcode);
-    				chevre.syncDownload();
+    				Sync.sync();
     				reloadPage();
     			}
     		})
     	}
-    });	    
+    });
 }
 
 function initDialogs(){
@@ -221,7 +244,7 @@ function initDialogs(){
 		//add a deck w/ that name
 		var name = $('#input-deck-create-name').val();
 		if(name && name.trim()){
-			var deck = new Project(name);
+			var deck = new Project(name, {});
 			chevre.addProject(deck);
 			$('#input-deck-create-name').val('').focus();
 		}

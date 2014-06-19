@@ -29,28 +29,28 @@ function loadOptions(){
 			$('#option-max-cards').val(100);
 		}
 	});
-	
+
 	//checkboxes
 	$('#option-swipe-skip').attr('checked', options.swipeToSkip);
 	$('#option-ask-feedback').attr('checked', options.askFeedback);
 	$('#option-collapse-groups').attr('checked', options.collapseGroups);
-	
+
 	//selects
 	//we only store the # for fontSize; work backwards to get correct label
     var size = options.fontSize;
     var fontName = "MEDIUM"; //default
     Object.keys(FontSize,function(key, value){
-      if(value == size) fontName = key;      
-    });	
+      if(value == size) fontName = key;
+    });
 	$('#option-font-size').val(fontName);
-	
-	
+
+
 	//and bind click handlers
 	$('#option-delete-all').oneClick(function(){
 		bootbox.confirm("Are you sure you want to delete all of your data forever, including your flashcards and settings? (If you've set up sync, your data is safe in the cloud but will be removed from this device.)", function(confirmed){
 			if(confirmed){
 				$.store.clear();
-				reloadPage();				
+				reloadPage();
 			}
 		});
 	});
@@ -64,12 +64,12 @@ function saveOptions(){
     options.maxCardsPerSession = $('#option-max-cards').val().toNumber();
     options.fontSize = FontSize[$('#option-font-size').val()]; //looking up in the enum
     options.swipeToSkip = $('#option-swipe-skip').is(':checked');
-    options.collapseGroups = $('#option-collapse-groups').is(':checked');   
+    options.collapseGroups = $('#option-collapse-groups').is(':checked');
     options.askFeedback = $('#option-ask-feedback').is(':checked');
-    
-    
+
+
     console.log(options);
     $.store.set(SL_KEYS.OPTIONS, options);
-    
+
     toast("Options saved!", {type: ToastTypes.SUCCESS});
 }

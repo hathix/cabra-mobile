@@ -1,10 +1,10 @@
 var Card = new Class({
-   
+
    /**
     * Creates a flashcard.
     * @param {String} question     the question.
     * @param {String/{choices: String[], right: int}} answer       the answer. If it's MC, pass the object. Pass an array of strings in the choice field (one per answer), and pass the index of the right answer in the array as right.
-    * @param {String} imageURL     [optional, default null] the link to the image (must be exact... like http://imgur.com/a.png) 
+    * @param {String} imageURL     [optional, default null] the link to the image (must be exact... like http://imgur.com/a.png)
     */
 __init__: function(self, question, answer, imageURL){
      self.setQuestion(question);
@@ -32,8 +32,8 @@ hasImage: function(self){
 },
 
 isMultipleChoice: function(self){
-     //return self.answer.indexOf(CARD_MC_SEPARATOR) != -1; 
-     return self.answer.hasOwnProperty('choices');   
+     //return self.answer.indexOf(CARD_MC_SEPARATOR) != -1;
+     return self.answer.hasOwnProperty('choices');
 },
 
 isFreeResponse: function(self){
@@ -41,7 +41,7 @@ isFreeResponse: function(self){
 },
 
 /**
- * Returns a String[] where each String is an MC choice. 
+ * Returns a String[] where each String is an MC choice.
  * Ensure that this isMultipleChoice() before calling this.
  */
 getMCAnswers: function(self){
@@ -49,7 +49,7 @@ getMCAnswers: function(self){
 },
 
 /**
- * Returns the index of the right answer in the answer.choices array. 
+ * Returns the index of the right answer in the answer.choices array.
  */
 getMCRightAnswerIndex: function(self){
      return self.answer.right;
@@ -73,7 +73,7 @@ getAnswerText: function(self){
      if(self.isMultipleChoice()){
           //only give correct answer
           return self.answer.choices[self.answer.right];
-     }     
+     }
      else{
           return self.answer;
      }
@@ -91,7 +91,7 @@ setRank: function(self, rank){
 /**
  * Returns the card's rank in a more friendly manner... stars instead of ranks.
  * Rank A -> 1 star, Rank E -> 5 stars
- * @return {int}	the number of stars 
+ * @return {int}	the number of stars
  */
 getStars: function(self){
 	switch(self.rank){
@@ -123,14 +123,14 @@ studied: function(self, result){
 
 /**
  * Opens a dialog (anywhere, anytime) where the user can edit the card.
- * @param {Function} callback	[optional] will be called when the dialog is closed. 
+ * @param {Function} callback	[optional] will be called when the dialog is closed.
  */
-edit: function(self, callback){	
+edit: function(self, callback){
 	Editor.prepareCard(self);
-	nav.openPageInModal('create', callback);	
-	
+	nav.openPageInModal('create', callback);
+
 	//kludgy solution to dynamically changing page title. TODO figure out some way we can change the page title temporarily. This is bad for i18n too.
-	$('#modal-shell').find('.page-name').html('Editing flashcard');	
+	$('#modal-shell').find('.page-name').html('Editing flashcard');
 },
 
 /**
@@ -141,15 +141,15 @@ edit: function(self, callback){
  *  </div>
  */
 getStarElement: function(self){
-	
+
 	var stars = self.getStars(); //1-5
-	
+
 	//is there a cached one already?
 	if(chevre.cache.cardStars && chevre.cache.cardStars[stars]){
 		//yup! use that one instead
 		return chevre.cache.cardStars[stars].clone();
 	}
-	
+
 	var starArea = getClonedTemplate('#template-pure-stars');
  	//color text
  	var cssClass = "text-default";
@@ -172,14 +172,14 @@ getStarElement: function(self){
  			//$(this).addClass("glyphicon-star-empty");
  			$(this).remove(); //NEW: get rid of stars instead of leaving them empty
  		}
- 	});	
- 	
+ 	});
+
  	//cache it, since this operation is really expensive
  	if(!chevre.cache.cardStars){
  		chevre.cache.cardStars = new Array();
  	}
  	chevre.cache.cardStars[stars] = starArea.clone();
- 	
+
  	return starArea;
 },
 
@@ -193,13 +193,13 @@ getStarHTML: function(self){
 },
 
 /**
- * Returns a unique (but mutable) value for this card. 
+ * Returns a unique (but mutable) value for this card.
  * @param {Object} self
  * @return {int}	a hash
  */
 getHash: function(self){
 	var str = JSON.stringify(self);
-	
+
 	//SDBM algorithm - http://erlycoder.com/49/javascript-hash-functions-to-convert-string-into-integer-hash-
 	var hash = 0;
     for (i = 0; i < str.length; i++) {
@@ -212,5 +212,5 @@ getHash: function(self){
 equals: function(self, other){
 	return self.getHash() == other.getHash();
 }
-    
+
 });

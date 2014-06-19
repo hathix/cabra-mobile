@@ -21,26 +21,26 @@ __init__: function(self){
 ask: function(self, force){
      //hold on! do they even want us to?
      if (!chevre.options.askFeedback && !force) return false;
-     
+
      var daysSinceAsked = Date.create().daysSince(Date.create($.store.get(SL_KEYS.FB_LAST_ASKED)));
      var usesSinceAsked = $.store.get(SL_KEYS.FB_USES_SINCE_ASKED);
-     
+
      if(force || (daysSinceAsked >= FB_MIN_DAYS && usesSinceAsked >= FB_MIN_USES)){
           //yes, show the dialog
          //$('#feedback-why').show(); //explain WHY we're asking for feedback
           template('template-feedback', $('#dialog-feedback'), { items: self.featureChoices });
           $('#feedback-dont-show').attr('checked', options.askFeedback);
           $('#dialog-feedback').modal('show');
-          
+
           //hook up buttons
           $('#dialog-feedback').find('.btn-submit').oneClick(function(){
           	self.submit();
           });
           $('#dialog-feedback').off('hidden.bs.modal').on('hidden.bs.modal', function(){
           	//see if they want to give feedback again
-          		
+
           });
-          
+
           //reset so we ask them again later
           self.resetUsageStats();
           return true;
@@ -60,7 +60,7 @@ resetUsageStats: function(self){
 /*
 loadDialog: function(self){
   //specifically load the feature choices
-  var holder = $('#feedback-choices');  
+  var holder = $('#feedback-choices');
   var i = 0;
   self.featureChoices.forEach(function(choice){
        var span = getClonedTemplate('#template-feedback');
@@ -68,23 +68,23 @@ loadDialog: function(self){
        span.find('input').attr('name','feedback-choices-choices').attr('id',id);
        span.find('input').val(choice); //that's what we'll actually read
        span.find('label').attr('for',id).html(choice);
-       
+
        holder.append(span.html());
        i++;
   });
-  
+
   holder.trigger('create').controlgroup();
 },
 */
 
 /**
- * Sends the feedback. Call this when the submit button's pushed. 
+ * Sends the feedback. Call this when the submit button's pushed.
  */
 submit: function(self){
      //get their actual feedback
      var results = self.grabFeedback();
      console.log(results);
-     
+
      console.log('Sending feedback...');
     $.post(
          feedbackURL,
@@ -94,9 +94,9 @@ submit: function(self){
               console.log(data);
          }
     );
-    
+
     self.resetUsageStats(); //they gave it to us now so let's not ask them soon
-    
+
 },
 
 /**
@@ -106,23 +106,23 @@ submit: function(self){
 grabFeedback: function(self){
      //get from choices list
      //TODO find some way to make these things required so they HAVE to fill it out (put in form?)
-     
+
      var choices = $('input:radio[name="feedback-choices"]:checked').val();
      var comments = $('#feedback-comments').val(); //comments
      var email = $('#feedback-email').val();
-     
+
      return {
           'choices': orDefault(choices, ""),
           'comments': orDefault(comments, ""),
           'email': orDefault(email, ""),
           'version': ABOUT.version,
-          
+
           '_pw': "3*%2EOHitrY^" //securing w/ password
      }
 },
 
 /**
- * Looks at what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly 
+ * Looks at what the user checked in the "Don't show feedback dialog again" box and updates prefs accordingly
  * @param {Object} self
  */
 checkDontShow: function(self){

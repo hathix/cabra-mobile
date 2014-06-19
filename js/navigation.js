@@ -1,6 +1,6 @@
 
 /**
- * Handles all navigation. 
+ * Handles all navigation.
  */
 var nav = new Singleton({
 
@@ -8,7 +8,7 @@ __init__: function(self){
      //start at home since that's where app opens
      self.history = [PageDB.get("home")];  //stores past Pages
      self.index = 0; //where we are in history
-     
+
      self.modalOpen = false; //true if the page we have open is in a modal
 },
 
@@ -17,7 +17,7 @@ __init__: function(self){
  * When you go to a new page, a new item is added to history, and the pointer is at the last item.
  * When you go back, the index goes backward. You can do this till you get to the base of the history stack.
  * If you've gone back and index != history.length-1 (you're behind the tip of the stack), you can go forward (increase index)
- * BUT, as soon as you add something new to history, all future items (items ahead of pointer) are deleted. 
+ * BUT, as soon as you add something new to history, all future items (items ahead of pointer) are deleted.
  */
 
 /**
@@ -41,7 +41,7 @@ openPage: function(self, href){
      		//do it normally
      		self.back();
      	}
-          
+
      }
      else if(href == NAV_FORWARD){
           self.forward();
@@ -55,7 +55,7 @@ openPage: function(self, href){
 			//TODO check that current page is parent/sibling of new page
 			//load it, but don't log in history
 			self.loadPage(page);
-		} 
+		}
 		else {
 			//normal full page
 
@@ -80,7 +80,7 @@ openPageInModal: function(self, href, callback){
  * Reloads the current page. Not the browser reloading, but the "page" we're using.
  */
 refreshPage: function(self){
-	self.loadCurrentPage();	
+	self.loadCurrentPage();
 },
 
 /**
@@ -93,7 +93,7 @@ loadCurrentPage: function(self){
 },
 
 /**
- * Very low level - this opens a page, any page. Use loadCurrentPage() for most things; only use this directly for child pages or other pages that exist outside the normal history hierarchy. 
+ * Very low level - this opens a page, any page. Use loadCurrentPage() for most things; only use this directly for child pages or other pages that exist outside the normal history hierarchy.
  */
 loadPage: function(self, page){
 	if(!(page instanceof Page)){
@@ -101,17 +101,17 @@ loadPage: function(self, page){
 		console.log("Hey! You meant openPage!");
 		x = null; x.makeError;
 	}
-	
+
      //we want to open the trigger; if it doesn't exist, make it
      if(!self.hasTrigger(page)){
           self.makeTrigger(page);
      }
-     
-     //open that tab	
+
+     //open that tab
      $('#trigger-' + page.slug).tab('show');
      $(page).trigger('load'); //TODO maybe move above the line that actually shows it?
-     
-     self.buildBreadcrumbs();	
+
+     self.buildBreadcrumbs();
      self.updateNavButtons();
 },
 
@@ -125,18 +125,18 @@ loadInModal: function(self, page, callback){
      var modal = $('#modal-shell');
      page.getElement().detach().appendTo(modal.find('.modal-body')); //move it to the modal body
      modal.find('.page-name').html(page.name); //load page name
-     
+
      //show it!
      modal.modal('show');
      page.getElement().removeClass('fade');
      $(page).trigger('load'); //run page's startup code
-     
+
      self.modalOpen = true;
-     
+
      modal.off('hidden.bs.modal').on('hidden.bs.modal', function(){
      	//put that thing [the page] back where it came from
      	page.getElement().detach().appendTo($('#main-tab-content'))
-     		.addClass('fade');	
+     		.addClass('fade');
      	self.modalOpen = false;
      	if(callback) callback();
      });
@@ -144,7 +144,7 @@ loadInModal: function(self, page, callback){
 
 addHistoryItem: function(self, href){
 	var page = PageDB.get(href);
-	
+
 	var slugs = self.getSlugs();
 	var navIndex = slugs.indexOf(href); //-1 if this is a new page, >-1 if it's already in the hierarchy
 	if(navIndex == -1){
@@ -154,14 +154,14 @@ addHistoryItem: function(self, href){
 	          self.history.length = self.index+1;
 	     }
 	     self.history.add(page);
-	     self.index = self.history.length-1;		
+	     self.index = self.history.length-1;
 	}
 	else{
 		//the page to move to exists at position navIndex; either forward or back
 		//maintain the hierarchy as it is
 		self.index = navIndex;
 	}
-	
+
 
 },
 
@@ -177,31 +177,31 @@ back: function(self){
      //if there's nowhere to go back, stop!
      if(self.index == 0) return;
      self.index -= 1;
-     self.loadCurrentPage();    
+     self.loadCurrentPage();
 },
 
 forward: function(self){
      //if there's nowhere to go forward, stop!
      if(self.index == self.history.length-1) return;
      self.index += 1;
-     self.loadCurrentPage();     
+     self.loadCurrentPage();
 },
 
 /**
- * Returns true if the trigger (hidden tab for nav purposes) for the given href exists. 
+ * Returns true if the trigger (hidden tab for nav purposes) for the given href exists.
  * @param {Page} href  the object for the page in question. Exclude the hashtag.
  */
 hasTrigger: function(self,  page){
      return ($('#triggers').has(sprintf('a[href="#%s"]',page.slug)).length != 0);
 },
 
-/** 
+/**
  * Makes a trigger (fake tab for nav purposes) for the given href.
  * @param {Page} page  the page to open.
  */
 makeTrigger: function(self, page){
      var tab = $(sprintf('<a href="#%s" data-toggle="tab" id="trigger-%s"></a>', page.slug, page.slug));
-     $('#triggers').append(tab);     
+     $('#triggers').append(tab);
 },
 
 buildBreadcrumbs: function(self){
@@ -217,16 +217,16 @@ buildBreadcrumbs: function(self){
                     page.name
                ));
           }
-          
-          container.append(li);     
-     });     
+
+          container.append(li);
+     });
      $('#breadcrumbs').empty().append(container);
-     
+
      //TODO handle what happens when you click the a's... it should take you to PRECISELY that spot in the history and clear out anything else;resurrect #breadcrumbs
 },
 
 /**
- * Based on where you are in the hierarchy, dims out unusable buttons. 
+ * Based on where you are in the hierarchy, dims out unusable buttons.
  */
 updateNavButtons: function(self){
 	//TODO decide: do we hide button entirely or just disable it?

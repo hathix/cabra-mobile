@@ -7,32 +7,32 @@ __init__: function(self){
           commaSep: "commaSep", //q/a sep'd by a comma
           slashSep: "slashSep", //sep'd by /
           enterSep: "enterSep" //enter between q&a, two enters between cards
-     }     
+     }
 },
 
 loadPage: function(self){
-     $('#export-output').hide(); //that contains stuff only to be seen AFTER running export  
+     $('#export-output').hide(); //that contains stuff only to be seen AFTER running export
      //$('#export-text').css('height',0); //do it now... we'll prob need to do it later so do it while the user isn't watching
-    // $('#export-preview-holder').hide();  
+    // $('#export-preview-holder').hide();
      //$('#export-live-preview').html('');
 
 	$('#export-input-format').bind('change',function(){
 	     //update live preview
 	     var format = $('#export-input-format').val();
 	     self.livePreview(format);
-	     
+
 	     //hide results area
 	     $('#export-output').hide();
-	     $('#export-output-text').html('');	     
+	     $('#export-output-text').html('');
 	});
 	$('#export-button-run').oneClick(function(){
 	     var format = $('#export-input-format').val();
 	     self.runBackup(format);
-	});      
-	
+	});
+
 	//by default let's preview the first thing
 	     var format = $('#export-input-format').val();
-	     self.livePreview(format);	
+	     self.livePreview(format);
 },
 
 livePreview: function(self, format){
@@ -55,16 +55,16 @@ livePreview: function(self, format){
 },
 
 /**
- * Exports the current project's cards to the text area. 
+ * Exports the current project's cards to the text area.
  */
 runBackup: function(self, format){
      //ensure it's a valid format
      //if(Object.values(self.formats).indexOf(format) == -1) return false;
-     
+
      var text = self.formatCards(format, chevre.p.cards, false); //in textarea not html
      $('#export-output-text').val(text);
      //.css('height',0).change(); //triggers autogrow to make it just fit; see http://is.gd/Nwssxa
-     
+
      //update filename extension to save to
      var extension = 'txt';
      switch(format){
@@ -75,7 +75,7 @@ runBackup: function(self, format){
           case self.formats.enterSep:   extension = 'txt';
      }
      $('#export-output-extension').html(extension);
-     
+
      $('#export-output').show();
      $('#export-output-text').focus().select();
 },
@@ -97,9 +97,9 @@ formatCards: function(self, format, cards, html){
           cards.forEach(function(card){
                var item = "\n<card>";
                item += sprintf("\n\t<question>%s</question>", card.getQuestionText());
-               item += sprintf("\n\t<answer>%s</answer>", card.getAnswerText());    
+               item += sprintf("\n\t<answer>%s</answer>", card.getAnswerText());
                if(card.hasImage()){
-                    item += sprintf("\n\t<image>%s</image>", card.getImageURL());     
+                    item += sprintf("\n\t<image>%s</image>", card.getImageURL());
                }
                item += "\n</card>";
                text += item;
@@ -139,16 +139,16 @@ formatCards: function(self, format, cards, html){
                text += "\n\n";
           });
           text = text.substring(0, text.length-2); //cut off last \n\n
-          break;                    
+          break;
      }
-     
+
      if(html){
           //escape any tags
           text = text.escapeHTML(); //remove any currently existing tags; <br>'s should NOT be escaped
           text = text.replaceAll("\n","<br>").replaceAll("\t","&nbsp;".repeat(5));
      }
-     
+
      return text;
 }
-     
+
 });

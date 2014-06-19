@@ -2,9 +2,9 @@
  * A certain page (organizer, sync, studying, etc.) Each page has its own function, <section>, and purpose.
  */
 var Page = new Class({
-     
+
 /**
- * 
+ *
  * @param {String} slug  the id of the page's section in the HTML. Omit the hashtag. Must be unique identifier of this page.
  * @param {String} name  the fancy user-facing name.
  * @param {String} description     A user-friendly page description.
@@ -31,7 +31,7 @@ getElement: function(self){
  * Called when this page is loaded to be shown to the user.
  */
 load: function(self){
-	
+
 }
 
 });

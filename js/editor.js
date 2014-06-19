@@ -4,7 +4,7 @@
 var Editor = new Singleton({
 
 __init__: function(self){
-	
+
 	//jQuery stuff
    self.questionField = $('#create-input-question');
    self.answerField = $('#create-input-answer');
@@ -12,9 +12,9 @@ __init__: function(self){
    self.preview = $('#create-image-preview');
    self.previewHolder = $('#create-image-preview-holder');
    self.imageIfPresent = $('#create-image-if-present'); //show in image panel if there IS an image
-   self.imageIfAbsent = $('#create-image-if-none'); //show in image panel if there is NOT an image	
+   self.imageIfAbsent = $('#create-image-if-none'); //show in image panel if there is NOT an image
    self.mcContainer = $('#create-mc-template-output');
-   
+
    //actual instance vars
    self.card = null; //the card we're editing
 },
@@ -46,15 +46,15 @@ loadForEditing: function(self, card){
 	var isEditing = !!card;
 	//true if card is available, false otherwise
 	self.project = chevre.p;
-	
+
 	//FR section
 	self.questionField.val(isEditing ? card.getQuestionText() : "");
 	self.answerField.val(isEditing ? card.getAnswerText() : "");
-	
+
 	//by default hide preview stuff; assume no image
 	self.adjustImageArea(false);
 	self.imageField.val(null);
-	
+
 	//cosmetic changes
 	//tab bar
 	if(isEditing){
@@ -75,23 +75,23 @@ loadForEditing: function(self, card){
 	if(isEditing && card.hasImage()){
 		self.preview.attr('src',card.getImageURL());
 		self.adjustImageArea(true);
-		$('#create-collapsible-image').collapse('show');			
+		$('#create-collapsible-image').collapse('show');
 	}
 	else{
 		self.adjustImageArea(false);
-		$('#create-collapsible-image').collapse('hide');					
+		$('#create-collapsible-image').collapse('hide');
 	}
-	
+
 	//when image is added/changed, immediately uploaded it
 	self.imageField.oneBind('change.uploadImage', function() {
 		self.onImageChange();
 	});
-	
+
 	//remove image?
 	$('#create-image-button-remove').oneClick(function() {
 		self.adjustImageArea(false);
 	});
-	
+
 	//preload choices for MC
 	self.clearMCAnswers();
 	if(isEditing && card.isMultipleChoice()){
@@ -106,12 +106,12 @@ loadForEditing: function(self, card){
 	else{
 		self.resetMCAnswers();
 	}
-	
+
 	//handle "add choice" click
 	$('#create-mc-button-add').oneClick(function() {
 		self.addMCAnswer();
 	});
-	
+
 	//the ACTUAL card creation button
 	//add or save have same behavior; they're just used alternately for cosmetic purposes
 	$('#create-button-add').oneClick(function(e) {
@@ -119,7 +119,7 @@ loadForEditing: function(self, card){
 	});
 	$('#create-button-save').oneClick(function(e) {
 		self.createCard(e);
-	});	
+	});
 	$('.cancel-create-card-button').oneClick(function() {
 		self.cancel();
 	});
@@ -144,24 +144,24 @@ adjustImageArea: function(self, imagePresent){
      else{
      	self.previewHolder.slideUp();
      	self.preview.removeAttr('src');
-     }    	
+     }
 },
 
 /**
  * Called when the image area is changed: an image is added or deleted.
  * @param {Object} self
  */
-onImageChange: function(self){      
+onImageChange: function(self){
      //clear the old stuff
      self.adjustImageArea(false);
-     
+
      //if val == "" then it was cleared, else it was set
      if(self.imageField.val()){
            //get uploading
            self.imageField.uploadImage(function success(imageURL) {
                 self.preview.attr('src', imageURL);
 				self.adjustImageArea(true);
-                
+
                 self.imageField.val(null);
 
                 toast("Your image was successfully uploaded!")
@@ -171,7 +171,7 @@ onImageChange: function(self){
                      duration : TOAST_DURATION_LONG,
                      error : true
                 });
-           }); 
+           });
       }
 },
 
@@ -182,14 +182,14 @@ addMCAnswer: function(self, answerText, chosen){
 	 	text: answerText,
 	 	chosen: chosen
 	 }, true); //append
-	 
+
 	 addedItem.find('.btn-remove').oneClick(function(){
 	 	//there MUST be at least 2 answer choices!
 	 	var numChoices = self.mcContainer.find('.mc-item').length;
 	 	if(numChoices <= 2) return;
-	 	
+
 	 	$(this).closest('.mc-item').remove();
-	 	
+
 	 	self.updateMCAnswers();
 	 });
      self.updateMCAnswers();
@@ -203,7 +203,7 @@ addMCAnswer: function(self, answerText, chosen){
 updateMCAnswers: function(self){
      var numChoices = self.mcContainer.find('.mc-item').length;
      //if there are 2 choices, hide the delete buttons, otherwise show them
-     $('.mc-item').find('.btn-remove').parent().toggle(numChoices > 2); //shown if >2, hidden otherwise	
+     $('.mc-item').find('.btn-remove').parent().toggle(numChoices > 2); //shown if >2, hidden otherwise
 },
 
 /**
@@ -224,7 +224,7 @@ resetMCAnswers: function(self){
 	  var DEFAULT_NUM_CHOICES = 4;
 	  for(var i=0; i<DEFAULT_NUM_CHOICES; i++){
 	       self.addMCAnswer();
-	  }   
+	  }
 },
 
 /**
@@ -236,23 +236,23 @@ createCard: function(self, e){
      var question = self.questionField.val();
      var answer;
      var rightAnswer; //string of text of right answer
-     
+
      var errorMsg = null;
-     
+
      if($('#create-nav-tab-fr').is('.active')){
           //free-response is open
           answer = self.answerField.val();
      }
      else{
           //multiple-choice is open
-          
+
           //check answer choices
           var rawEntries = self.mcContainer.find('.mc-item-input-text').map(function(){ return $(this).val(); }); //jQuery; has value of every input, even empty ones
           rawEntries = rawEntries.toArray().compact(true).unique(); //convert to normal js array and get rid of empty inputs which show up as ""
           //there MUST be >=2 OK entries here
           if(rawEntries.length >= 2){
                answer = { choices: rawEntries };
-          
+
                //check what the right answer index is
                var index = null;
                $('.mc-item-input-correct').each(function(i){
@@ -261,7 +261,7 @@ createCard: function(self, e){
                if(index !== null){
                     //we got an index!
                     answer.right = index;
-               }                   
+               }
                else{
                		//didn't check anything!
                		errorMsg = "You need to select one answer choice (press one of the circular buttons to the left)."
@@ -273,14 +273,14 @@ createCard: function(self, e){
                answer = false;
           }
      }
-    
+
     //must provide question & answer
     if(question && answer){
          //clean them out NOW for the only time
          question = cleanInput(question);
          if(answer.hasOwnProperty('choices')) answer.choices = cleanInput(answer.choices); //MC
          else answer = cleanInput(answer); //free resp
-         
+
          console.log(self.card);
          if(self.card){
          	self.card.setQuestion(question);
@@ -290,16 +290,16 @@ createCard: function(self, e){
          	self.card = new Card(question, answer);
          	self.project.addCard(self.card);
          }
-         
+
          self.project.save();
-        
+
         //if they specified an image, have it be added and then re-save (async)
         //do it now anyway (if they added an image, we'll just re-save later)
         if(self.preview.attr('src')){
              //preview's already done, just grab the url they got there
              var imageURL = self.preview.attr('src');
-             self.card.setImageURL(imageURL);    
-             self.project.save();          
+             self.card.setImageURL(imageURL);
+             self.project.save();
         }
         else{
         	//nothing there
@@ -309,35 +309,35 @@ createCard: function(self, e){
         		self.project.save();
         	}
         }
-        
-        
-        
+
+
+
         //RESET!
-       
+
         //clear the fields
         self.questionField.val('');
         self.answerField.val('');
         self.imageField.val('');
         self.adjustImageArea(false);
-        
+
         if(self.card.isMultipleChoice())
            self.resetMCAnswers();
-        
+
         //give page focus to question field
-        self.questionField.focus();     
-        
-        self.loadForCreation(); //so we get to a new card   
+        self.questionField.focus();
+
+        self.loadForCreation(); //so we get to a new card
     }
     else{
         //they omitted one or both
         if(!question) self.questionField.focus();
         else if(!answer) self.answerField.focus();
-        
+
         errorMsg = "You need to specify both a question and an answer."
-        
+
         e.preventDefault();
-    }	
-    
+    }
+
     if(errorMsg){
     	toast(errorMsg, {type: ToastTypes.WARNING});
     }
@@ -346,14 +346,14 @@ createCard: function(self, e){
 cancel: function(self){
     //empty fields and get back
     $('#create-card-question').val('');
-    $('#create-card-answer').val('');  
-    $("#create-card-image").val(''); 
+    $('#create-card-answer').val('');
+    $("#create-card-image").val('');
 },
 
 deleteCard: function(self){
      if(self.card){
       self.project.cards = self.project.cards.subtract(card);
-      self.project.save();     
+      self.project.save();
      }
 }
 

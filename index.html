@@ -31,10 +31,12 @@
         <link rel="stylesheet" href="css/chevre-base.css">
         <link rel="stylesheet" href="js/libs/jqplot/jquery.jqplot.min.css">
         <link rel="stylesheet" href="css/fonts/open-sans/stylesheet.css">
+        <link rel="stylesheet" href="css/fonts/raleway/stylesheet.css">
         <!--<link rel="stylesheet" href="css/fonts/lobster/stylesheet.css">
         <link rel="stylesheet" href="css/fonts/lobster-two/stylesheet.css">-->
         <link rel="stylesheet" href="fonts/bootstrap-glyphicons.css">
-        
+
+        <link rel="stylesheet" href="fonts/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="js/libs/snapjs/snap.css">
 
         <link rel="shortcut icon" type="image/x-icon" href="img/icons/icon16.png">
@@ -47,10 +49,22 @@
 
         <link rel="apple-touch-startup-image" href="img/splash.png">
 
+        <link href='http://fonts.googleapis.com/css?family=Raleway:400,700' rel='stylesheet' type='text/css'>
+
         <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
-    </head>	
+    </head>
 
     <body>
+    	<!--<div id="top-drawer">
+    		<div class="well">
+	    		<div class="list-group">
+	    			<a class="list-group-item" href="#">Deck 1</a>
+	    			<a class="list-group-item" href="#">Deck 1</a>
+	    			<a class="list-group-item" href="#">Deck 1</a>
+	    			<a class="list-group-item" href="#">Deck 1</a>
+	    		</div>
+    		</div>
+    	</div>-->
     	<div id="main-container" class="snap-content">
         <!-- Fixed navbar -->
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -64,14 +78,19 @@
 			<div class="navbar-collapse collapse navbar-left" id="navbar-menu-button-holder">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#" id="navbar-menu-button"><span class="glyphicon glyphicon-th"></span></a>
+                        <a href="#" id="navbar-menu-button">
+                        	<!--<span class="glyphicon glyphicon-th"></span>-->
+                        	<i class="fa fa-bars"></i>
+                        </a>
                     </li>
                 </ul>
 			</div>
-            <a class="navbar-brand" href="#">Cabra</a>
+            <a class="navbar-brand" href="#" data-href="_home">
+            	Cabra
+            </a>
             <div class="navbar-collapse collapse navbar-left">
             	<ul class="nav navbar-nav">
-            		<li class="hidden-md hidden-sm hidden-xs" id="breadcrumbs"></li>
+            		<li class="hidden-lg hidden-md hidden-sm hidden-xs" id="breadcrumbs"></li>
             	</ul>
             </div>
             <div class="navbar-collapse collapse navbar-right">
@@ -86,7 +105,7 @@
                     <li id="nav-button-forward">
                         <a href="#" data-href="_forward"> <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </li>
-                    
+
                 </ul>
                 <div style="display: none;" id="triggers">
                     <a href="#home" data-toggle="tab" id="trigger-home"></a>
@@ -118,7 +137,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                     	<div id="welcome-message"></div>
-                    	
+
                         <div id="project-list">
                         	<div class="alert alert-info lead">
                         		<span class="glyphicon glyphicon-refresh"></span>
@@ -132,7 +151,7 @@
                             </a>
                             <a href="#" data-href="deck-import" class="btn btn-primary" type="button">
                                 <span class="glyphicon glyphicon-import"></span> Import deck
-                            </a>                            
+                            </a>
                             <!--<button class="btn btn-primary btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
                                 <span class="glyphicon glyphicon-plus"></span> Add deck <span class="caret"></span>
                             </button>
@@ -145,8 +164,6 @@
                                 </li>
                             </ul>-->
                         </div>
-                        
-                        <br><br>
 
                     </div>
                     <!--<div class="col-lg-3 well">
@@ -156,7 +173,7 @@
                             </li>
                             <li>
                                 <a href="#" data-href="sync" data-toggle="tab"><span class="glyphicon glyphicon-refresh"></span> Sync</a>
-                            </li>                      
+                            </li>
                             <li>
                                 <a href="#" data-href="options" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> Options</a>
                             </li>
@@ -170,21 +187,21 @@
             <section id="deck-home" class="tab-pane fade" data-name="Deck home" data-description="SAFE AT HOME" data-icon="home">
                 <div class="page-header">
                     <h2>
-                        <span id="deck-title-holder"></span>                  
+                        <span id="deck-title-holder"></span>
                      </h2>
 				</div>
 
 				<div class="row">
 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-						<div id="deck-home-card-chart"></div>     
+						<div id="deck-home-card-chart"></div>
 					</div>
 					<div class="col-lg-9 col-md-8 col-sm-8 col-xs-12">
 		                <div class="row" id="project-page-list">
-	
+
 		                </div>
 
 						<hr>
-						
+
                 		<div class="btn-group pull-right">
 						  <a href="#" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 						    <span class="glyphicon glyphicon-cog"></span> &nbsp;Tools <span class="caret"></span>
@@ -194,47 +211,63 @@
 						    <li><a href="#" id="deck-btn-reset">Reset flashcard grades</a></li>
 						    <li><a href="#" id="deck-btn-swap">Swap questions and answers</a></li>
 						  </ul>
-						</div> 
+						</div>
 
 					</div>
 				</div>
-		                
+
 
 
             </section>
             <section id="study" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check">
 	        	<h2>Studying Setup</h2>
 
-                <div class="form-group">
-                    <span class="col-lg-2 label-control">Which cards to study</span>
-                    <span class="col-lg-10">
-                    	<select class="form-control" id="study-input-mode">
-                    		<option value="normal">Cabra chooses (default)</option>
-                    		<option value="cram">All cards in deck</option>
-                    		<option value="perfection" id="study-option-wrong-cards">Cards I didn't know last time</option>
-                    	</select>
-                    </span>
-                </div>	        	        	
-                <div class="form-group">
-                    <span class="col-lg-2 label-control">Response style</span>
-                    <span class="col-lg-10">
-                    	<select class="form-control" id="study-input-style">
-                    		<option value="normal"><strong>Classic</strong> &ndash; show front of card</option>
-                    		<option value="jeopardy"><strong>Jeopardy</strong> &ndash; show back of card</option>
-                    	</select>
-                    </span>
-                </div>	        	
-	        	
-	        	<a data-href="study-main" class="btn btn-primary btn-lg" type="button">
-	        		<span class="glyphicon glyphicon-play"></span> Start</a>       	
+				<div class="form-horizontal">
+	                <div class="form-group">
+	                    <span class="col-lg-2 label-control">Which cards to study</span>
+	                    <span class="col-lg-10">
+	                    	<select class="form-control" id="study-input-mode">
+	                    		<option value="normal">Cabra chooses (default)</option>
+	                    		<option value="cram">All cards in deck</option>
+	                    		<option value="perfection" id="study-option-wrong-cards">Cards I didn't know last time</option>
+	                    		<option value="customize">Customize</option>
+	                    	</select>
+
+	                    	<div class="collapse well" id="study-input-customize-options">
+	                    		<p>Choose which grades of flashcard you will study (you are least familiar with 1 star cards and most familiar with 5 star cards.) Use the Control key to select multiple items on computers.</p>
+                                <select multiple id="study-input-customize-grades" class="form-control" size="5">
+                                	<option value="A" selected>1 star</option>
+                                	<option value="B">2 stars</option>
+                                	<option value="C">3 stars</option>
+                                	<option value="D">4 stars</option>
+                                	<option value="E">5 stars</option>
+                                </select>
+	                    	</div>
+	                    </span>
+	                </div>
+	                <div class="form-group">
+	                    <span class="col-lg-2 label-control">Response style</span>
+	                    <span class="col-lg-10">
+	                    	<select class="form-control" id="study-input-style">
+	                    		<option value="normal"><strong>Classic</strong> &ndash; show front of card</option>
+	                    		<option value="jeopardy"><strong>Jeopardy</strong> &ndash; show back of card</option>
+	                    	</select>
+	                    </span>
+	                </div>
+                </div>
+
+	        	<a data-href="study-main" class="btn btn-primary btn-lg btn-block" type="button">
+	        		<span class="glyphicon glyphicon-play"></span> Start
+	        	</a>
             </section>
+
             <section id="study-main" class="tab-pane" data-name="Study" data-description="Review your flashcards" data-icon="check" data-childof="study">
                 <div class="row">
                 	<div id="study-card-area"></div>
 		            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 well" id="study-sidebar">
 		            	<div class="row">
 		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-		            			<button class="btn btn-default btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>		
+		            			<button class="btn btn-default btn-card-prev"><span class="glyphicon glyphicon-chevron-left"></span></button>
 		            		</div>
 		            		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
 		            			<span class="btn-card-current"></span>
@@ -245,7 +278,7 @@
 									<span class="glyphicon glyphicon-star"></span>
 									<span class="glyphicon glyphicon-star"></span>
 								</div>
-								            			
+
 								<div class="btn-group">
 									<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 										<span class="glyphicon glyphicon-cog"></span>
@@ -256,14 +289,14 @@
 										</li>
 										<li>
 											<a href="#" class="btn-edit">Edit</a>
-										</li>										
+										</li>
 									</ul>
 								</div>
 		            		</div>
 		            		<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
 		            			<button class="btn btn-default btn-card-next"><span class="glyphicon glyphicon-chevron-right"></span></button>
 		            			<!--<button class="btn btn-default btn-quit-next btn-quit"><span class="glyphicon glyphicon-log-out"></span></button>-->
-		            		</div>		            				            		
+		            		</div>
 		            	</div>
 		            	<!--
 						<ul class="pagination">
@@ -271,7 +304,7 @@
 						  <li class="btn-card-current"><a href="#"></a></li>
 						  <li class="btn-card-next"><a href="#">&raquo;</a></li>
 						</ul>
-						
+
 						<div id="study-sidebar-stars">
 							<span class="glyphicon glyphicon-star"></span>
 							<span class="glyphicon glyphicon-star"></span>
@@ -281,18 +314,18 @@
 						</div>
 						-->
 		            </div>
-		    	</div> 
+		    	</div>
             </section>
             <section id="study-end" class="tab-pane" data-name="Studying Results" data-description="" data-icon="" data-childof="study">
             	<h2>Finished Studying</h2>
-            	
+
             	<div id="study-result-chart"></div>
- 
+
             	<a href="#" data-href="deck-home" class="btn btn-primary btn-lg">
-            		<span class="glyphicon glyphicon-ok"></span> Done</a>               	
+            		<span class="glyphicon glyphicon-ok"></span> Done</a>
             	<a href="#" data-href="study" class="btn btn-default btn-lg">
             		<span class="glyphicon glyphicon-refresh"></span> Study again</a>
-         		
+
             </section>
             <section class="tab-pane fade" id="create" data-name="Create" data-description="Make a new flashcard" data-icon="plus">
                 <ul id="create-tabs-type" class="nav nav-pills nav-justified" style="margin-bottom: 20px;">
@@ -330,7 +363,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
 				  <div class="panel panel-default">
 				    <div class="panel-heading">
 				      <h4 class="panel-title">
@@ -343,7 +376,7 @@
 				      <div class="panel-body">
 				      	<div id="create-image-if-none">
 				      		<p>Choose an image to upload (PNG, JPG, and GIF supported).</p>
-				      		
+
 						    <!--<label for="exampleInputFile">File input</label>-->
 						    <!-- TODO class="form-control" looks a bit weird but has that nice border... what to do?-->
 						    <input type="file" id="create-image-input-file" accept="image/jpeg,image/png,image/gif,image/bmp">
@@ -354,7 +387,7 @@
 					      		<img id="create-image-preview" src="" class="img-responsive img-preview img-thumbnail img-lightbox">
 					      		<button id="create-image-button-remove" class="btn btn-danger" type="button">
 					      			<span class="glyphicon glyphicon-remove"></span> Remove image
-					      		</button>				      			
+					      		</button>
 				      		</div>
 
 				      	</div>
@@ -377,11 +410,11 @@
                 </form>
             </section>
             <section class="tab-pane" id="batch" data-name="Batch create" data-description="Create many flashcards at once" data-icon="list">
-            	
+
            		<div class="row">
            			<div class="col-lg-9 col-md-9">
 		                <p>Use this tool to <strong>create many flashcards at once</strong>. On each line, enter a question and answer separated by some character (this is the <em>entry style</em>). Each line will be converted into a flashcard.</p>
-		                <p>	To make a <strong>multiple-choice flashcard</strong>, separate each answer choice with "|" and put a "*" in front of the right choice. You can have as many choices as you want, but only one can be right.</p>		                
+		                <p>	To make a <strong>multiple-choice flashcard</strong>, separate each answer choice with "|" and put a "*" in front of the right choice. You can have as many choices as you want, but only one can be right.</p>
 		                <div class="form-group">
 		                    <span class="col-lg-2 control-label">Entry style</span>
 		                    <span class="col-lg-10">
@@ -393,19 +426,19 @@
 		                        </select>
 		                   </span>
 		                </div>
-						
+
 						<br>
-		
-		                <textarea class="form-control" id="batch-textarea" placeholder="Enter text here"></textarea>                
-		
+
+		                <textarea class="form-control" id="batch-textarea" placeholder="Enter text here"></textarea>
+
 						<br>
-		
+
 		                <button class="btn btn-primary btn-block" id="batch-button-create" type="button">
 		                    <span class="glyphicon glyphicon-plus"></span>
 		                    Add flashcards
-		                </button>   
-		                
-		                <br>        				
+		                </button>
+
+		                <br>
            			</div>
            			<div class="col-lg-3 col-md-3 well">
            				<h4>Free-response examples</h4>
@@ -413,16 +446,16 @@
            					<li>2+2: 4</li>
            					<li>Color of the sky - Blue</li>
            				</ul>
-           				
+
            				<h4>Multiple-choice examples</h4>
 
            				<ul>
            					<li>3+3 / 4|5|*6|7</li>
            					<li>Color of the sun - *Yellow|Pink|Green</li>
            				</ul>
-           			</div>	
-           		</div> 	
-            	
+           			</div>
+           		</div>
+
 
             </section>
             <section class="tab-pane" id="manage" data-name="Manager" data-description="View, edit, and delete flashcards" data-icon="edit">
@@ -435,7 +468,7 @@
 					    <input type="radio" name="manage-radio-mode" id="manage-radio-mode-delete"> Delete mode
 					  </label>
 					</div>
-					
+
 					<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							<span class="glyphicon glyphicon-sort"></span> Sort <span class="caret"></span>
@@ -464,8 +497,8 @@
 						</ul>
 					</div>
 				</div>
-				
-	
+
+
                 <div class="input-group">
                 	<span class="input-group-addon">
                         <span class="glyphicon glyphicon-filter"></span>
@@ -480,15 +513,15 @@
 					<span class="input-group-btn">
                         <button class="btn btn-default" id="manage-button-filter-clear" type="button">
                             <span class="glyphicon glyphicon-remove"></span>
-                        </button> </span>                        
+                        </button> </span>
                 </div>
 
                 <br>
 
                 <div class="list-group" id="manage-card-list">
-                	        	
+
         			<table class="table table-striped table-hover" id="manage-card-table">
-        				
+
         			</table>
                 </div>
             </section>
@@ -502,43 +535,43 @@
                                 <label class="btn btn-default active" id="print-input-stars-1">
                                     <input type="checkbox" checked>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
                                 </label>
                                 <label class="btn btn-default active" id="print-input-stars-2">
                                     <input type="checkbox" checked>
                                     <span class="glyphicon glyphicon-star"></span>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
                                 </label>
                                 <label class="btn btn-default active" id="print-input-stars-3">
                                     <input type="checkbox" checked>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span> 
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                </label>         
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </label>
                                 <label class="btn btn-default active" id="print-input-stars-4">
                                     <input type="checkbox" checked>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span> 
                                     <span class="glyphicon glyphicon-star"></span>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star-empty"></span> 
-                                </label>        
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star-empty"></span>
+                                </label>
                                 <label class="btn btn-default active" id="print-input-stars-5">
                                     <input type="checkbox" checked>
                                     <span class="glyphicon glyphicon-star"></span>
-                                    <span class="glyphicon glyphicon-star"></span> 
                                     <span class="glyphicon glyphicon-star"></span>
                                     <span class="glyphicon glyphicon-star"></span>
                                     <span class="glyphicon glyphicon-star"></span>
-                                </label>                                                                                               
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </label>
                             </div> </span>
                     </div>
                     <div class="form-group">
@@ -547,14 +580,14 @@
 						    <label>
 						      <input type="checkbox" checked id="print-input-images"> Print images
 						    </label>
-                        </span>                    	
+                        </span>
                     </div>
                 </form>
 
                 <a data-href="print-output" class="btn btn-lg btn-block btn-primary" type="button"> <span class="glyphicon glyphicon-print"></span> Print Preview </a>
             </section>
             <section id="print-output" class="tab-pane" data-name="Print Output" data-description="" data-icon="" data-childof="print">
-            	<div class="page-header">            		
+            	<div class="page-header">
             		<h2>
             			<span class="stylized">
             				<span class="univ-deck-name stylized"></span>
@@ -569,7 +602,7 @@
             			</a>
             		</h2>
             	</div>
-            	
+
             	<div id="print-output-table-area"></div>
             </section>
             <section class="tab-pane" id="export" data-name="Export" data-description="Download your flashcards offline" data-icon="export">
@@ -582,7 +615,7 @@
                         <select class="form-control" id="export-input-format">
 				            <option value="commaSep">Comma-separated (CSV)</option>
 				            <option value="slashSep">Slash-separated</option>
-				            <option value="enterSep">Enter-separated</option>                        	
+				            <option value="enterSep">Enter-separated</option>
 				            <option value="xml">XML</option>
 				            <option value="json">JSON</option>
                         </select> </span>
@@ -598,14 +631,14 @@
                 <button class="btn btn-primary btn-block" id="export-button-run">
                     <span class="glyphicon glyphicon-download-alt"></span> Export
                 </button>
-                
+
                 <br>
 
 				<div id="export-output" class="well">
 	                <p>
 	                    Your code is below. Copy and save it into [some filename].<span id="export-output-extension"></span>.
 	                </p>
-	                <textarea class="form-control" id="export-output-text"></textarea>                                
+	                <textarea class="form-control" id="export-output-text"></textarea>
                </div>
 
 
@@ -613,7 +646,7 @@
 
             <section id="organize" class="tab-pane" data-name="Organize" data-description="" data-icon="">
             	<p class="lead">Here, you can organize your decks into groups. To move a deck to a group, drag the deck name underneath the group name. Your changes are automatically saved.</p>
-            	
+
                 <div class="row">
                 	<div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
                 		<ul id="organize-group-list"></ul>
@@ -624,15 +657,15 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="button" id="organize-button-add">
                                     <span class="glyphicon glyphicon-plus"></span> Add group
-                                </button> 
+                                </button>
                             </span>
                     	</div>
-                    	
+
                     	<br>
-                    	
+
                         <a data-href="home" class="btn btn-block btn-lg btn-success" id="organize-button-save" type="button">
                         	<span class="glyphicon glyphicon-ok"></span> Done
-                        </a>                    	
+                        </a>
                     </div>
                 </div>
             </section>
@@ -647,7 +680,7 @@
 		                        	<li>If you have flashcards on your other devices and want to get them on this device too, press Download.</li>
 		                        </ul>
 	                        </p>
-	
+
 	                        <div class="btn-group btn-group-justified">
 	                            <a href="#" class="btn btn-default btn-lg" id="sync-button-upload" data-loading-text="Uploading...">
 	                            	<span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
@@ -668,7 +701,7 @@
 		                        	<li>If you have never synced before or have no cards on your other devices, create a unique, 3- or 4-word passcode and enter it below.</li>
 		                        </ul>
 	                        </p>
-	
+
 	                        <div class="input-group">
 	                            <span class="input-group-addon">Passcode</span>
 	                            <input type="text" id="sync-input-passcode" class="form-control">
@@ -676,14 +709,14 @@
 	                                <button class="btn btn-primary" type="button" id="sync-button-start">
 	                                    <span class="glyphicon glyphicon-ok"></span> Start
 	                                </button> </span>
-	                        </div>     
-	                        
+	                        </div>
+
 	                        <br><br>
-	                        
+
 	                        <div class="panel panel-info">
 							  <div class="panel-heading">
 							    <h3 class="panel-title">Passcode hints</h3>
-							  </div>	                        
+							  </div>
 							  <div class="panel-body">
 							  	Think of a memorable, unique passcode that's about 3-4 words long. Favorite book/movie names, pet names, and crazy phrases work. Some examples (don't use these!):
 							  	<ul>
@@ -692,7 +725,7 @@
 							  		<li><em>swashbuckling penguin ghosts</em></li>
 							  	</ul>
 							  </div>
-	                       	</div>                  	
+	                       	</div>
                        </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4 well">
@@ -701,13 +734,13 @@
                             All your data is stored securely in the cloud. It's totally anonymous - the only identifying information we store is your passcode.
                         </p>
                         <p>
-                        	We'll never give your information to someone else unless you approve it.	
+                        	We'll never give your information to someone else unless you approve it.
                         </p>
                     </div>
                 </div>
             </section>
             <section class="tab-pane fade" id="share" data-name="Share">
-            	
+
             	<ul class="nav nav-pills nav-justified">
             		<li class="active"><a href="#share-tab-upload" data-toggle="tab">Upload</a></li>
             		<li><a href="#share-tab-download" data-toggle="tab">Download</a></li>
@@ -750,19 +783,19 @@
 
 			                    </span>
 			                </div>
-			                
+
 			                <button class="btn btn-lg btn-success" id="share-upload-button-send">
 			                	<span class="glyphicon glyphicon-cloud-upload"></span> Upload deck
-			                </button>		                
+			                </button>
 			        	</div>
-			        	
+
 			        	<br>
 			        	<div class="alert alert-success" id="share-upload-result">
 			        		<button type="button" class="close" data-dismiss="alert">&times;</button>
 			        		<p>Congrats - your deck was uploaded to Cabra's servers! Share this URL with your friends so that they can also get it:</p>
 			        		<p class="slight-padding"><strong id="share-upload-result-url"></strong></p>
 			        		<p class="share-if-password">Remind your friends to use the password <strong id="share-upload-result-password"></strong>!</p>
-			        	</div>           			
+			        	</div>
             		</div>
             		<div class="tab-pane" id="share-tab-download">
             			<div class="row">
@@ -777,36 +810,36 @@
 					                        	<option>Creator</option>
 					                        </select>
 					                    </span>
-					                </div> 
+					                </div>
 					                <div class="form-group">
 					                    <label for="search-download-searchfor" class="col-sm-3 col-xs-4 control-label">Search for</label>
 					                    <span class="col-sm-9 col-xs-8">
 					                        <input type="text" id="search-download-searchfor" class="form-control" placeholder="Deck name or creator name">
 					                    </span>
-					                </div> 					                           						
+					                </div>
             					</form>
-      
+
 		                		<button class="btn btn-primary btn-block" id="share-download-button-search" type="button">
 		                            <span class="glyphicon glyphicon-search"></span> Search
 		                        </button>
-				                
+
 				                <hr>-->
-				                
+
 				                <h3>Choose decks to view</h3>
 				                <p>Use these buttons to look for decks you can download. Your internet connection must be enabled.</p>
 				                <div class="btn-group">
-					                <button class="btn btn-primary" id="share-download-all"> 
+					                <button class="btn btn-primary" id="share-download-all">
 					                	<span class="glyphicon glyphicon-list"></span> All</button>
 					                <button class="btn btn-default" id="share-download-most-downloaded">
 					                	<span class="glyphicon glyphicon-heart"></span> Most downloaded
-					                </button>  		
-					                <button class="btn btn-default" id="share-download-newest">
+					                </button>
+					                <!--<button class="btn btn-default" id="share-download-newest">
 					                	<span class="glyphicon glyphicon-time"></span> Newest
-					                </button>  			
+					                </button>-->
 					                <button class="btn btn-default" id="share-download-random">
 					                	<span class="glyphicon glyphicon-random"></span> Random
-					                </button>  	
-				                </div>				                					                			
+					                </button>
+				                </div>
             				</div>
             				<div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
             					<div id="share-download-deck-output">
@@ -838,7 +871,7 @@
 		                        <option value="XXLARGE">Huge (Projector)</option>
 	                        </select>
 	                    </span>
-	                </div>  
+	                </div>
 	                <!--<div class="form-group">
 					    <div class="col-lg-offset-2 col-lg-10">
 					      <div class="checkbox">
@@ -848,9 +881,9 @@
 					      </div>
 					    </div>
 	                </div>-->
-	 
+
 	                <hr>
-	                
+
 	                <div class="form-group">
 					    <div class="col-lg-offset-2 col-lg-10">
 					      <div class="checkbox">
@@ -859,10 +892,10 @@
 					        </label>
 					      </div>
 					    </div>
-	                </div>	 
-	                
+	                </div>
+
 	                <hr>
-	                
+
 	                <div class="form-group">
 					    <div class="col-lg-offset-2 col-lg-10">
 					      <div class="checkbox">
@@ -872,25 +905,25 @@
 					      </div>
 					    </div>
 	                </div>
-	                
+
 	                <hr>
 	                <div class="form-group">
 	                	<div class="col-lg-offset-2 col-lg-10">
 		                <button class="btn btn-danger" id="option-delete-all">
 		                	<span class="glyphicon glyphicon-exclamation-sign"></span> Delete ALL my data
-		                </button>		                		
+		                </button>
 	                	</div>
 	                </div>
-                  			                
-                </div>     
-                
+
+                </div>
+
                 <br>
                 <br>
                 <div class="slight-padding">
 	                <button type="button" class="btn btn-lg btn-success" id="option-save">
 	                	<span class="glyphicon glyphicon-saved"></span>
 	                	Save
-	                </button>                	
+	                </button>
                 </div>
 
             </section>
@@ -910,7 +943,7 @@
 	        		</div>
         		</div>
             </section>
-            
+
             <section class="tab-pane" id="about" data-name="About">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
@@ -923,11 +956,11 @@
 			    				Version <span class="about-version"></span> "<span class="about-codename"></span>"<br>
 			    				Released <span class="about-released"></span><br>
 			    				Copyright &copy; <a href="http://hathix.com">Neel Mehta</a> 2011-<span class="about-copyright-year"></span>.
-			    			</p>    				
-		    			</div>            			
+			    			</p>
+		    			</div>
             		</div>
             	</div>
-            	
+
             	<div class="add-padding">
 	        		<p>Cabra is a free, open-source studying app designed to help anyone, anywhere improve their education.</p>
 	        		<p>This app is officially called Cabra Mobile and is the web/mobile/phone/tablet edition of the studying platform Cabra (that's Spanish for goat, if you're wondering). For advertising purposes, it is known as Cabra Flashcards. Internally, it is called Chevre (that's French for goat).</p>
@@ -943,20 +976,26 @@
 							<a href="http://aptana.com">Aptana Studio</a>,
 							<a href="http://firefox.com">Mozilla Firefox</a>, and
 							<a href="http://quizlet.com">Quizlet</a>.
+
+							<!--
+
+								Super awesome shoutout to my girl Anisha Reddy <3
+
+							-->
 	        		</p>
-	        		
+
 	        		<hr>
-	        		
+
 	        		<p>Changes in this version:</p>
 	        		<p class="about-changes" style="margin-left:2em;"></p>
         		</div>
-        		
+
         		<div class="btn-group btn-group-justified">
         			<a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html" class="btn btn-link">License (GPL v3)</a>
         			<a href="https://github.com/hathix/cabra-mobile" class="btn btn-link">Get involved</a>
         		</div>
             </section>
-            
+
             <section class="tab-pane" id="addons">
                 <ul class="list-group">
                     <li class="list-group-item">
@@ -979,33 +1018,53 @@
                     </li>
                 </ul>
             </section>
-            
+
             <section class="tab-pane" id="apps" data-name="Apps">
             	<p class="lead">
             		Want to study on your other devices? Get the Cabra app for all your favorite platforms, including:
             	</p>
-            	<div class="list-group">
-        			<a href="http://chevre.hathix.com" class="list-group-item" target="_blank">
-        				<span class="glyphicon"><img src="img/apps/internet.png"></span>
-        				Web <span class="text-muted">on any device</span>
-        			</a>
-        			<a href="https://play.google.com/store/apps/details?id=com.hathix.android.chevre" class="list-group-item" target="_blank">
-        				<span class="glyphicon"><img src="img/apps/android.png"></span>
-        				Android <span class="text-muted">phones and tablets</span>
-        			</a>     
-        			<a href="https://chrome.google.com/webstore/detail/hipdbdkehfdnnhhifipnpkejnijbijam" class="list-group-item" target="_blank">
-        				<span class="glyphicon"><img src="img/apps/chrome.png"></span>
-        				Chrome <span class="text-muted">on computers</span>
-        			</a>	
-        			<a href="https://marketplace.mozilla.org/app/cabra" class="list-group-item" target="_blank">
-        				<span class="glyphicon"><img src="img/apps/firefox.png"></span>
-        				Firefox <span class="text-muted">on computers and Android phones and tablets</span>
-        			</a>        				
+            	<div class="row">
+            		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+            			<h2>
+		        			<a href="http://chevre.hathix.com" class="btn btn-link btn-lg btn-block text-center" target="_blank">
+		        				<i class="fa fa-globe"></i>
+		        				Web
+		        				<br><span class="text-muted">on any device</span>
+		        			</a>
+	        			</h2>
+            		</div>
+            		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+            			<h2>
+		        			<a href="https://play.google.com/store/apps/details?id=com.hathix.android.chevre" class="btn btn-link btn-lg btn-block text-center" target="_blank">
+		        				<i class="fa fa-android"></i>
+		        				Android
+		        				<br><span class="text-muted">phones and tablets</span>
+		        			</a>
+	        			</h2>
+            		</div>
+            		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+            			<h2>
+		        			<a href="https://chrome.google.com/webstore/detail/hipdbdkehfdnnhhifipnpkejnijbijam" class="btn btn-link btn-lg btn-block text-center" target="_blank">
+		        				<i class="fa fa-google-plus"></i>
+		        				Chrome
+		        				<br><span class="text-muted">on computers</span>
+		        			</a>
+	        			</h2>
+            		</div>
+            		<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+            			<h2>
+		        			<a href="https://marketplace.mozilla.org/app/cabra" class="btn btn-link btn-lg btn-block text-center" target="_blank">
+		        				<i class="fa fa-fire"></i>
+		        				Firefox
+		        				<br><span class="text-muted">on computers and Android phones and tablets</span>
+		        			</a>
+	        			</h2>
+            		</div>
             	</div>
-            	
-            </section>            
-            
-            
+
+            </section>
+
+
             <section class="tab-pane" id="welcome" data-name="Welcome!">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
@@ -1016,15 +1075,15 @@
 		    				<h2 class="stylized about-app-name">Welcome to Cabra Flashcards!</h2>
 			    			<h3 class="about-app-tagline text-success">
 			    				Cabra is the ultimate studying app, hand-crafted to help you learn anything, anywhere &ndash; for free!
-			    			</h3>    				
-		    			</div>            			
+			    			</h3>
+		    			</div>
             		</div>
             	</div>
-            	
+
             	<br>
-            	
+
             	<p class="lead">Hi and welcome to Cabra! Start studying with Cabra now &ndash; it's always free &ndash; and:</p>
-            	
+
         		<div class="well lead">
         			<ul>
         				<li><strong>Create and study flashcards</strong> on any topic imaginable &ndash; and then some</li>
@@ -1032,13 +1091,13 @@
         				<li><strong>Sync your flashcards</strong> effortlessly between your phone, tablet, and computer</li>
         				<li>Turbocharge your education with Cabra's <strong>powerful smart-studying algorithm</strong></li>
         			</ul>
-        		</div>   
-        		
+        		</div>
+
         		<a data-href="_home" class="btn btn-lg btn-block btn-primary">
         			<span class="glyphicon glyphicon-flash"></span> Get started!
-        		</a>   	
-            </section>    
-            
+        		</a>
+            </section>
+
             <section class="tab-pane" id="updated" data-name="Updated">
             	<div class="row">
             		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
@@ -1049,22 +1108,22 @@
 		    				<h2 class="stylized about-app-name">Cabra has been updated!</h2>
 			    			<p class="lead text-center text-muted">
 			    				Version <span class="about-version"></span> "<span class="about-codename"></span>"
-			    			</p>    				
-		    			</div>            			
+			    			</p>
+		    			</div>
             		</div>
             	</div>
-            	
+
             	<br>
-            	
+
             	<p class="lead">Congrats &ndash; Cabra has automatically been updated to the latest and greatest version! Here's what's new and improved:</p>
-            	
+
         		<div class="lead" id="updated-changes">
-        		</div>   
-        		
+        		</div>
+
         		<a data-href="_home" class="btn btn-lg btn-block btn-primary">
         			<span class="glyphicon glyphicon-flash"></span> Let's go!
-        		</a>   	
-            </section>                      
+        		</a>
+            </section>
 
             <section class="tab-pane" id="deck-add" data-name="Create deck" data-description="" data-icon="plus">
                 <div class="input-group input-group-lg">
@@ -1099,7 +1158,7 @@
 		                </div>
                         <div class="tab-content">
                             <div class="tab-pane active" id="import-list-quizlet">
-                            	
+
                             </div>
                         </div>
                     </div>
@@ -1127,10 +1186,10 @@
                     </li>
                     <li>
                         <a href="#" data-href="share" data-toggle="tab"><span class="glyphicon glyphicon-send"></span> Share Flashcards</a>
-                    </li>                    
+                    </li>
                     <!--<li>
                         <a href="#" data-href="search" data-toggle="tab"><span class="glyphicon glyphicon-search"></span> Search</a>
-                    </li>-->                          
+                    </li>-->
                     <li>
                         <a href="#" data-href="options" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span> Settings</a>
                     </li>
@@ -1150,15 +1209,15 @@
                     <!--<li>
                         <a href="#" data-href="addons" data-toggle="tab"> <span class="glyphicon glyphicon-gift"></span> Addons</a>
                     </li>-->
-                </ul>      		
+                </ul>
         	</div>
         </div>
-        
+
         <!-- extra stuff that floats on top of page -->
         <div id="floaters">
-        	
+
         </div>
-        
+
         <!-- dialogs -->
 		 <div class="modal fade" id="dialog-deck-create" tabindex="-1" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
@@ -1177,8 +1236,8 @@
 		        </div>
 		      </div><!-- /.modal-content -->
 		    </div><!-- /.modal-dialog -->
-		  </div><!-- /.modal -->  
-		  
+		  </div><!-- /.modal -->
+
 		  <!-- project editor, from main list view -->
 		 <div class="modal fade" id="dialog-deck-edit" tabindex="-1" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
@@ -1192,13 +1251,13 @@
 		        	<button class="btn btn-primary btn-block btn-rename" data-dismiss="modal">
 		        		<span class="glyphicon glyphicon-edit"></span>
 		        		Rename
-		        	</button>					
+		        	</button>
 					<br>
 					<div class="panel panel-default panel-merge">
 						<button class="btn btn-default btn-block btn-merge-opener" data-toggle="collapse" data-target="#deck-edit-merge">
 							<span class="glyphicon glyphicon-log-in"></span>
 							Merge
-						</button>						
+						</button>
 						<div id="deck-edit-merge" class="panel-collapse collapse">
 							<div class="panel-body">
 								<p>This tool will merge this deck, <span class="deck-name"></span>, into another deck. <span class="deck-name"></span>'s cards will be moved to the other deck, and this deck will be deleted.</p>
@@ -1207,16 +1266,16 @@
 				                    <label for="deck-edit-merge-into" class="control-label">Deck to merge into:</label>
 			                        <select id="deck-edit-merge-into" class="form-control">
 			                        </select>
-				                </div> 
-								
+				                </div>
+
 								<button class="btn btn-primary btn-block btn-merge" data-dismiss="modal">
 									<span class="glyphicon glyphicon-log-in"></span> Merge
 								</button>
-								
+
 							</div>
 						</div>
 					</div>
-		        	
+
 		        	<button class="btn btn-warning btn-block btn-delete">
 		        		<span class="glyphicon glyphicon-remove"></span>
 		        		Delete
@@ -1224,17 +1283,17 @@
 		        </div>
 		      </div><!-- /.modal-content -->
 		    </div><!-- /.modal-dialog -->
-		  </div><!-- /.modal --> 		  
-	
+		  </div><!-- /.modal -->
+
 		<!-- importing from shared -->
 		 <div class="modal fade" id="dialog-share-download" tabindex="-1" role="dialog" aria-hidden="true">
-		  </div><!-- /.modal --> 			
-		  
-		  <!-- feedback -->   
+		  </div><!-- /.modal -->
+
+		  <!-- feedback -->
 		 <div class="modal fade" id="dialog-feedback" tabindex="-1" role="dialog" aria-hidden="true">
 			<!-- filled with #template-feedback -->
-		  </div><!-- /.modal -->     
-        
+		  </div><!-- /.modal -->
+
         <!-- image lightbox -->
 		<div id="demoLightbox" class="modal lightbox hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class='lightbox-content'>
@@ -1246,7 +1305,7 @@
 				</div>
 			</div>
 		</div>
-    
+
         <!-- shell for showing pages as modals -->
 		<div id="modal-shell" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 		    <div class="modal-dialog">
@@ -1259,8 +1318,8 @@
 		        </div>
 		      </div><!-- /.modal-content -->
 		    </div><!-- /.modal-dialog -->
-		</div>        
-        
+		</div>
+
         <!-- templates -->
         <!-- panel containing info about each project; on main page -->
         <!-- Pass: {groupName: String, decks: Deck[], groupId: String, collapsed: boolean} -->
@@ -1269,13 +1328,13 @@
                 <div class="panel-heading" data-toggle="collapse" data-target="#{{groupId}}">
                     <h3 class="panel-title stylized large-text">
                     		{{groupName}}
-                    	
+
                     	<button type="button" class="close project-list-item-edit" aria-hidden="true">
                             	<span class="glyphicon"></span>
-                        </button>    
+                        </button>
                     </h3>
-                    
-                                            
+
+
                 </div>
                 <div class="list-group collapse
                 	{{#unless collapsed}}in{{/unless}}
@@ -1286,7 +1345,7 @@
                             {{#if description}}
                                 <span class="text-muted">{{description}}</span>
                             {{/if}}
-                            
+
                             <button type="button" class="close project-list-item-edit" aria-hidden="true">
                             	<span class="glyphicon glyphicon-cog"></span>
                             </button>
@@ -1300,25 +1359,34 @@
                         My cool deck <span class="text-muted">It's beast</span>
                     </a>-->
                 </div>
-            </div>            
+            </div>
         </script>
         <!-- list of pages available to project -->
         <script id="template-project-pages" type="text/x-handlebars-template">
             {{#each pages}}
-            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
             	<div class="visible-lg visible-md visible-sm visible-xs">
+            		<a data-href="{{slug}}" class="btn-launch-{{slug}} btn-project-page btn btn-link btn-lg btn-block text-center"
+            		 data-toggle="tooltip" data-placement="auto top" title="{{description}}"
+            		>
+            			<h2><span class="glyphicon glyphicon-{{icon}}"></span></h2>
+            			<p class="lead">{{name}}</p>
+            		</a>
+            		<!--
 	                <div class="panel panel-default">
-	                        <a data-href="{{slug}}" class="btn-launch-{{slug}} btn btn-primary btn-block"> <span class="glyphicon glyphicon-{{icon}}"></span> 
+	                	<h2></h2>
+	                        <a data-href="{{slug}}" class="btn-launch-{{slug}} btn btn-primary btn-block"> <span class="glyphicon glyphicon-{{icon}}"></span>
 	                            {{name}} </a>
 	                    <p class="panel-body text-center hidden-xs">
 	                        {{description}}
 	                    </p>
-	                </div>            		
+	                </div>
+	                -->
             	</div>
             	<!-- OR -->
 				<!--<div class="visible-xs">
 					<a data-href="{{slug}}" class="btn btn-default btn-block btn-launch-{{slug}}" type="button">
-						<span class="glyphicon glyphicon-{{icon}}"></span> {{name}} 
+						<span class="glyphicon glyphicon-{{icon}}"></span> {{name}}
 					</a>
 				</div>-->
             </div>
@@ -1328,11 +1396,11 @@
         <!-- pass: Project -->
         <script id="template-deck-description" type="text/x-handlebars-template">
             {{#if isEditing}}
-            	<input type="text" class="input-name form-control input-lg stylized small-text-input" value="{{name}}">	
+            	<input type="text" class="input-name form-control input-lg stylized small-text-input" value="{{name}}">
                 <input type="text" class="input-description form-control small-text-input" value="{{description}}">
                 <button class="btn btn-default btn-description-done">
                     <span class="glyphicon glyphicon-check"></span>
-                </button>                 
+                </button>
             {{else}}
             	<span class="univ-deck-name stylized">{{name}}</span>
                 {{#if description}}
@@ -1343,11 +1411,11 @@
                 {{else}}
                     <button class="btn btn-default btn-description-add">
                         <span class="glyphicon glyphicon-plus"></span> Add description or edit name
-                    </button>                    
+                    </button>
                 {{/if}}
             {{/if}}
         </script>
-        
+
         <!-- for card creation/editing -->
         <!-- A multiple choice item -->
         <!-- Pass: {text: String, chosen: boolean} (both optional; only use for editing) -->
@@ -1361,9 +1429,9 @@
                     <button class="btn btn-default btn-remove" type="button" tabindex="-1">
                         <span class="glyphicon glyphicon-remove"></span>
                     </button> </span>
-            </div>        	
+            </div>
         </script>
-        
+
         <!-- for the studying page; shows setup page before you begin -->
         <!-- Pass the session object -->
         <script id="template-study-main" type="text/x-handlebars-template">
@@ -1372,13 +1440,13 @@
 	            	<div class="study-main-card">
 	            		{{#ifFunction "hasImage"}}
 		            		<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4" id="study-main-img-wrapper">
-	            				<img src="{{imageURL}}" id="study-main-img" class="img-thumbnail img-responsive study-image img-lightbox" alt="Internet access is required to show the image.">	
-		            		</div>	   
-		            		
+	            				<img src="{{imageURL}}" id="study-main-img" class="img-thumbnail img-responsive study-image img-lightbox" alt="Internet access is required to show the image.">
+		            		</div>
+
 		            		<!-- BEGIN WRAPPER; allot enough space for img -->
 		            		<div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
 		            	{{else}}
-		            		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">         			
+		            		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	            		{{/ifFunction}}
 	            		<div class="wrapper">
 	            			<div id="study-main-card-question"
@@ -1388,7 +1456,7 @@
 	            					class="question-fr"
 	            				{{/ifFunction}}
 	            				>
-	   
+
 				                <p class="text-center lead study-text">
 				                	{{#ifFunction "isMultipleChoice"}}
 				                		{{{question}}}
@@ -1398,9 +1466,9 @@
 					                		{{{question}}}
 					                	{{else}}
 					                		{{{answer}}}
-					                	{{/compare}}	                	
+					                	{{/compare}}
 				                	{{/ifFunction}}
-				                </p>			            				
+				                </p>
 	            			</div>
             			</div>
             			{{#unlessFunction "isMultipleChoice"}}
@@ -1412,13 +1480,13 @@
 				                		{{{answer}}}
 				                	{{else}}
 				                		{{{question}}}
-				                	{{/compare}}	  
-			                	</p> 
+				                	{{/compare}}
+			                	</p>
 	        		        </div>
 	        		       	</div>
         		        {{/unlessFunction}}
         		      </div><!-- col-12 or col-9 based on image -->
-        		    </div>	
+        		    </div>
         		    <br>
         		    <div class="space-ensurer">
 		                {{#ifFunction "isMultipleChoice"}}
@@ -1432,16 +1500,16 @@
 			                <p>
 	                		<a class="btn btn-primary btn-lg btn-study-next spaced hidden">
 	                			Next <span class="glyphicon glyphicon-arrow-right"></span></span>
-	                		</a>      
+	                		</a>
 		                {{else}}
 		                	<button class="btn btn-primary btn-lg btn-block btn-show-answer" type="button">
-		                		<span class="glyphicon glyphicon-eye-open"></span> 
-		                		Show 
+		                		<span class="glyphicon glyphicon-eye-open"></span>
+		                		Show
 			                	{{#compare ../../options.style "normal"}}
 			                		answer
 			                	{{else}}
 			                		question
-			                	{{/compare}}	  
+			                	{{/compare}}
 		                	</button>
 		                	<div class="hidden">
 			                	<div class="row">
@@ -1455,10 +1523,10 @@
 					                		</a>
 					                		<a class="btn btn-danger btn-lg btn-study-result-no">
 					                			<span class="glyphicon glyphicon-remove"></span> <span class="hidden-xs">Didn't know</span>
-					                		</a>	                			                		
-					                	</div>	                			
+					                		</a>
+					                	</div>
 			                		</div>
-			                	</div>			                		
+			                	</div>
 		                	</div>
 		                </div>
 		                <br>
@@ -1467,7 +1535,7 @@
                 {{/with}}
             </div>
         </script>
-        
+
         <!-- for card manager; renders all cards-->
         <!-- Pass {cards:[Card,Card,Card...]} - that's right, ALL CARDS you want to show! -->
         <script id="template-manage-cards" type="text/x-handlebars-template">
@@ -1477,7 +1545,7 @@
 			            	<td>
 				            	{{#ifFunction "hasImage"}}
 				            		<img class="img-responsive img-rounded media-object img-lightbox" src="{{imageURL}}">
-				            	{{/ifFunction}}			            		
+				            	{{/ifFunction}}
 			            	</td>
 							<td style="width: 35%"><p>{{#call "getQuestionText"}}{{/call}}</p></td>
 							<td style="width: 35%"><p>{{#call "getAnswerText"}}{{/call}}</p></td>
@@ -1497,8 +1565,8 @@
 		            			No cards match your criteria. :(
 		            		</td>
 		            	</tr>
-		            {{/each}}    
-   	
+		            {{/each}}
+
         </script>
 
         <!--for rendering the cards to be printed-->
@@ -1507,22 +1575,22 @@
         	<table class="table table-bordered table-striped">
          	{{#each cards}}
                 <tr>
-                	
+
                 	<td>
 	                	{{#if ../options.printImages}}
                 			{{#ifFunction "hasImage"}}
                 				<img class="media-object pull-left" src="{{imageURL}}">
                 			{{/ifFunction}}
 	                	{{/if}}
-	                	
+
                 		{{#call "getQuestionText"}}{{/call}}
                 	</td>
                 	<td>{{#call "getAnswerText"}}{{/call}}</td>
                 </tr>
-        	{{/each}}         		
-        	</table>	
+        	{{/each}}
+        	</table>
         </script>
-        
+
 		<!-- for the deck organizer; this is a container for a group of decks -->
 		<!-- Pass a group: { name: String, decks: Project[]} -->
 		<script id="template-organize-group" type="text/x-handlebars-template">
@@ -1535,16 +1603,16 @@
             	{{#compare name "!==" "Unorganized"}}
             		<span class="action-delete glyphicon glyphicon-trash pull-right"></span>
             		<!--<span class="glyphicon glyphicon-edit pull-right">&nbsp;</span>-->
-            	{{/compare}}	                    		
+            	{{/compare}}
         	</li>
         	{{#each decks}}
                 <li class="list-group-item" data-id="{{id}}">
                     {{name}}
-                </li>                    	
-        	{{/each}}	
-		</script>        
-	
-                        
+                </li>
+        	{{/each}}
+		</script>
+
+
         <!--for showing project previews when importing from quizlet -->
         <script id="template-quizlet-import-project" type="text/x-handlebars-template">
         	{{#each projects}}
@@ -1555,7 +1623,7 @@
 	                	<h4 class="panel-title">
 	                		{{title}}
 	                	</h4>
-	                	
+
 	            	</a>
 	            </div>
 	            <div class="panel-collapse collapse" id="deck-import-panel-{{id}}" data-id="{{id}}">
@@ -1583,9 +1651,9 @@
 	                    </button>
 	                </div>
 	            </div>
-	        </div>       
-	        {{/each}} 
-        </script>     
+	        </div>
+	        {{/each}}
+        </script>
         <!--for previewing sample cards-->
         <script id="template-quizlet-import-preview" type="text/x-handlebars-template">
         	{{#each cards}}
@@ -1596,9 +1664,9 @@
                     <p>{{term}}</p>
                     <p>{{definition}}</p>
                 </li>
-        	{{/each}}                	
+        	{{/each}}
         </script>
-        
+
         <!-- for importing others' projects while sharing
         	Pass: {projects: RAW PROJECT array from the PHP - don't convert into native project} -->
         <script id="template-share-import-project" type="text/x-handlebars-template">
@@ -1608,7 +1676,7 @@
 	        			<th>Deck Name</th>
 	        			<th>Description</th>
 	        			<th>Creator</th>
-	        			<th class="hidden-sm hidden-xs">Date</th>
+	        			<!--<th class="hidden-sm hidden-xs">Date</th>-->
 	        			<th>Downloads</th>
 	        			<th>Get it!</th>
 	        		</tr>
@@ -1617,7 +1685,7 @@
 	        			<td>{{name}}</td>
 	        			<td>{{description}}</td>
 	        			<td>{{creator}}</td>
-	        			<td class="hidden-sm hidden-xs">{{date}}</td>
+	        			<!--<td class="hidden-sm hidden-xs">{{date}}</td>-->
 	        			<td>{{downloads}}</td>
 	        			<td>
 	        				<button class="btn btn-primary btn-download" data-download="{{id}}" data-locked="{{locked}}" data-name="{{name}}">
@@ -1632,13 +1700,13 @@
 		        {{else}}
 		        	<tr class="warning">
 		        		<td colspan="5">No decks fit your search! :(</td>
-		        	</tr>    
+		        	</tr>
 		        {{/each}}
-		        
+
 		        </table>
 	        </div>
-        </script>        
-        
+        </script>
+
         <!-- For when you're about to download a project from the flashcard sharer
         	Pass {a raw deck from server} (just one obj) -->
         <script id="template-share-download-confirm" type="text/x-handlebars-template">
@@ -1655,7 +1723,7 @@
 		        		<li>Created on {{date}}</li>
 		        		<li>{{downloads}} downloads</li>
 		        	</ul>
-		        	
+
 		        	{{#if locked}}
 	        		  <div class="form-group password-form">
 					    <label for="share-download-confirm-password" class="control-label label-normal">This deck is password-protected! Enter the password below in order to download it:</label>
@@ -1669,19 +1737,19 @@
 		        	<button class="btn btn-primary btn-download" data-loading-text="Checking password..." data-downloading-text="Downloading your deck...">Download this deck</button>
 		        </div>
 		      </div><!-- /.modal-content -->
-		    </div><!-- /.modal-dialog -->        	
+		    </div><!-- /.modal-dialog -->
         </script>
-        
+
         <!-- updated new features -->
         <!-- Pass: {items: String[]} - each item is a change -->
         <script id="template-updated-changes" type="text/x-handlebars-template">
         	<ul>
         		{{#each items}}
-        			<li>{{this}}</li>
+        			<li>{{{this}}}</li>
         		{{/each}}
         	</ul>
         </script>
-        
+
         <!-- feedback dialog -->
         <!-- Pass { items: String[] }, with each item being a feature people can choose -->
   		<script id="template-feedback" type="text/x-handlebars-template">
@@ -1694,9 +1762,9 @@
 		        <div class="modal-body">
 		        	<p>If you have a minute, we'd love your feedback to further improve Cabra to better suit your needs. Please report bugs or ask questions by <a data-href="contact" data-dismiss="modal">contacting me</a>, not with this form.</p>
 		        	<p><strong>This is anonymous and completely optional.</strong></p>
-		        	
+
 		        	<hr>
-		        	
+
 		        	<label>1. Which of the following would you most like to see?</label>
 	  				{{#each items}}
 						<div class="radio">
@@ -1704,28 +1772,28 @@
 						    <input type="radio" name="feedback-choices" value="{{this}}">
 						    {{this}}
 						  </label>
-						</div>	  			
+						</div>
 	  				{{/each}}
-	  				
+
 	  				<hr>
-	  				
+
 		            <label for="feedback-comments">2. Do you have any other comments, suggestions, or feature requests?</label>
 		            <textarea id="feedback-comments" class="form-control" placeholder="Type here..."></textarea>
-		            
+
 		            <hr>
-		            
+
 		            <label for="feedback=email">3. (Optional) Your email (only used if I have questions about your comments.)</label>
 		            <input type="text" id="feedback-email" class="form-control" placeholder="Type here...">
-		        	
+
 		        	<hr>
-		        	
+
 					<div class="checkbox">
 					  <label>
 					    <input id="feedback-dont-show" type="checkbox">
 					    Don't ask me again for my feedback
 					  </label>
-					</div>		        	
-		        	
+					</div>
+
 		        </div>
 		        <div class="modal-footer">
 		          <button type="button" class="btn btn-default" data-dismiss="modal">No thanks</button>
@@ -1734,7 +1802,7 @@
 		      </div><!-- /.modal-content -->
 		    </div><!-- /.modal-dialog -->
   		</script>
-        
+
         <!-- pure, Handlebars-free templates -->
         <div style="display:none;">
         	<div id="template-welcome" class="alert alert-info">
@@ -1746,22 +1814,16 @@
 	        			<li>Press the "Sample Flashcards" button below to open that set of flashcards (they're called <em>decks</em> in Cabra). From there, you can study the flashcards in that set, create new ones, and more.</li>
 	        			<li><strong>Cabra is separated into pages</strong>: a home page, a studying page, and so on. Use the buttons in the top right corner to move between pages. Push the home button to come back to this page.</li>
 	        			<li>Press the button in the top left corner to <strong>open the menu</strong> and access important features like syncing your flashcards or changing settings.</li>
-	        		</ul>        			
+	        		</ul>
 	        		<p>To get started, open the sample flashcard set and explore the features inside. If you have questions or comments, contact us - you'll find that button in the menu!</p>
         		</div>
         		<div class="guide-returning">
-        			<p class="lead">Hi and welcome back to Cabra! This new version looks different than the old one, but almost everything is in the same place. Here's what's changed:</p>
-        			<ul>
-        				<li>The menu has been moved to the top left corner of the page.</li>
-        				<li><strong>The Organize, Sync, and Options (renamed Settings) pages are now in the menu in the top left, not on the home page itself.</strong></li>
-        				<li>The back and home buttons are now in the top right and have been joined by a forward button.</li>
-        				<li class="visible-lg">You can also move around using the "breadcrumb trail" in the top bar.</li>
-        				<li>Instead of ranks (A through E), flashcards now have stars (1 through 5). Everything behind the scenes is the same.</li>
-        				<li>The Mass Card Creator has been renamed the Batch Creator.</li>
-        			</ul>
+        			<p class="lead">Hi and welcome back to Cabra! The main new feature in this version is <strong>flashcard sharing</strong>. Check it out <a href="#" data-href="share">here</a> or access it in the menu (hit the button in the top left to open the menu.)</p>
         			<p>If you have questions, let us know - the contact button is in the menu!</p>
         		</div>
-        		
+
+        		<a class="btn btn-default btn-block" data-dismiss="alert" data-href="share">
+        			<span class="glyphicon glyphicon-send"></span> Try the new Sharing feature</a>
         		<button class="btn btn-primary btn-block" data-dismiss="alert">
         			<span class="glyphicon glyphicon-flash"></span> Got it!</button>
         	</div>
@@ -1770,62 +1832,62 @@
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
-				<span class="glyphicon glyphicon-star"></span>        	
-	        </div> 
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
 	        <span id="template-checkmark" class="glyphicon glyphicon-check">&nbsp;</span>
 	        <div id="template-toast" class="alert alert-danger toast fade in hidden-print">
-	        	<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>  
+	        	<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
 	        	<span class="toast-text"></span>
-	        	  	
+
 	        </div>
 	        <div id="template-import-loading">
             	<div class="alert alert-info lead">
             		<span class="glyphicon glyphicon-search"></span>
             		Finding flashcards...
-            	</div>	        	
+            	</div>
 	        </div>
 	        <div id="template-import-failure">
             	<div class="alert alert-warning lead">
             		<span class="glyphicon glyphicon-remove"></span>
             		No flashcards found! Change your search text.
-            	</div>	        	
-	        </div>	        
+            	</div>
+	        </div>
 
             <div id="template-flashcard-loading">
             	<div class="alert alert-info lead">
             		<span class="glyphicon glyphicon-refresh"></span>
             		Loading your flashcards...
             	</div>
-            </div>	        
-	        
+            </div>
+
 	        <div id="template-stars-1" class="text-danger">
-				<span class="glyphicon glyphicon-star"></span>      	
-	        </div> 	   
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
 	        <div id="template-stars-2" class="text-warning">
 				<span class="glyphicon glyphicon-star"></span>
-				<span class="glyphicon glyphicon-star"></span>      	
-	        </div> 	  
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
 	        <div id="template-stars-3" class="">
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
-				<span class="glyphicon glyphicon-star"></span>     	
-	        </div> 	  
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
 	        <div id="template-stars-4" class="text-info">
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
-				<span class="glyphicon glyphicon-star"></span>     	
-	        </div> 	  
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
 	        <div id="template-stars-5" class="text-success">
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
 				<span class="glyphicon glyphicon-star"></span>
-				<span class="glyphicon glyphicon-star"></span>        	
-	        </div> 	  	        	        	        	             
+				<span class="glyphicon glyphicon-star"></span>
+	        </div>
         </div>
 
-        
+
         <!-- scripts -->
         <!-- JavaScript at the bottom for fast page loading -->
 
@@ -1843,21 +1905,22 @@
         <script src="js/libs/jquery-ui-1.10.3.custom.min.js"></script>
         <script async src="js/libs/jquery.rm.js"></script><!--TODO put that in plugins.js-->
         <!--<script async src="js/libs/mathquill.min.js"></script>-->
-        
+
         <script src="js/libs/snapjs/snap.min.js"></script>
+        <script src="js/libs/jquery.hammer-full.min.js"></script>
 
         <!-- scripts concatenated and minified via build script -->
         <script src="js/plugins.js"></script>
         <script src="js/constants.js"></script>
         <script src="js/utils.js"></script>
 
-
         <script src="js/main.js"></script>
-        
+
 		<script src="js/page.js"></script>
 		<script src="js/pagedb.js"></script>
-		       
-        
+
+
+        <script src="js/sync.js"></script>
         <script src="js/navigation.js"></script>
         <script src="js/chevre.js"></script>
         <script src="js/view2.js"></script>
@@ -1866,16 +1929,17 @@
 
         <script src="js/card.js"></script>
         <script src="js/session.js"></script>
-        
+
         <script src="js/project.js"></script>
 
         <script src="js/feedback.js"></script>
 
         <script src="js/organizer.js"></script>
+
         <script src="js/backup.js"></script>
         <script src="js/import.js"></script>
         <script src="js/editor.js"></script>
-        
+
         <script src="js/options.js"></script>
         <script src="js/sharing.js"></script>
         <!-- end scripts -->

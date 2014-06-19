@@ -1,6 +1,30 @@
 /**
- * A collection of utilities. 
+ * A collection of utilities.
  */
+
+/**
+ * Given two versions a and b (both in format x.x.x), returns:
+ * 	1 if a is newer
+ * 	0 if same
+ * 	-1 if b is newer
+ */
+function compareVersions(a,b){
+	var diff = numericalVersion(a) - numericalVersion(b);
+	if(diff == 0) return 0;
+	if(diff > 0) return 1;
+	if(diff < 0) return -1;
+}
+
+function numericalVersion(versionString){
+	var array = versionString.split("."); //e.g. ["1","2","0"]
+	var number = 0;
+	for(var i=0; i<array.length; i++){
+		number += parseInt(array[i]) * Math.pow(1000, array.length - i - 1);
+	}
+	//so every number is multiplied to allow for version numbers like 1.12.0 (simple addition would get like 220 which is wrong)
+	//1.2.0 => 1000^2*2 + 1000^1*2 + 1000^0*0
+	return number;
+}
 
 /**
  * Loads the container with HTML from the source, with the data supplied. This uses Handlebars.
@@ -48,28 +72,28 @@ function toast(text, options){
           type:		ToastTypes.INFO
      };
      var options = Object.merge(defaults, options, true, true); //custom options override
-     
+
      //wait, first clear out old toasts
      burnToast();
-     
+
      var toast = getClonedTemplate('template-toast');
      $('#floaters').append(toast);
      toast.find('.toast-text').html(text);
-     
+
      //add style
      toast.alterClass('alert-*', 'alert-' + options.type);
-    
+
      //place it partway down the page
      //horiz centered, but farther than 1/2 down the page vertically (like Android toasts)
      var windowWidth = $(window).width();
      var ourWidth = toast.width();
      var windowHeight = $(window).height();
      var ourHeight = toast.height();
-     
+
      //x and y are top left coords; (bigger-smaller)/2
      var x = (windowWidth - ourWidth) / 2;
      var y = windowHeight * TOAST_VERTICAL_PLACEMENT - ourHeight / 2;
-     
+
      toast.css({
      	left: x,
      	top: y,
@@ -84,7 +108,7 @@ function toast(text, options){
 
 /**
  * Destroys/hides the currently visible toast.
- * If you used TOAST_DURATION_FOREVER as the duration you'll have to call this eventually. 
+ * If you used TOAST_DURATION_FOREVER as the duration you'll have to call this eventually.
  */
 function burnToast(){
      $('#floaters').find('.toast').alert('close');
@@ -125,7 +149,7 @@ function ensureNoDuplicateNames(proposedName, existingNames){
               proposedName += " (1)";
          }
      }
-     
+
      return proposedName;
 }
 
@@ -141,9 +165,9 @@ function prettify(raw){
           });
           return raw;
      }
-    
+
     //TODO: have some sort of markdown editor/replacer (markItUp)
-    
+
     return raw;
 };
 
@@ -158,19 +182,19 @@ function cleanInput(raw){
                return cleanInput(rawString);
           });
           return raw;
-     }     
-     
-     
+     }
+
+
     raw = raw.replace(/\n/g, "<br>"); //newlines turn to br's
     raw = raw.removeTags('script', 'link', 'img'); //no scripting! that could be evil! and images crash stuff
-    
-         
+
+
     return raw;
 }
 
 /**
  * Takes an HTML-friendly string from prettify and de-prettifies it, making it raw again.
- * This should be the EXACT inverse of prettify: deprettify(prettify(str)) = prettify(deprettify(str)) == str 
+ * This should be the EXACT inverse of prettify: deprettify(prettify(str)) = prettify(deprettify(str)) == str
  */
 function deprettify(pretty){
     var raw = pretty.replace(/\<br\>/g,"\n"); //br's turn to newlines
@@ -178,7 +202,7 @@ function deprettify(pretty){
 }
 
 /**
- * Escapes any regex-incompatible chars in the given string, making it safe to use in a regex. 
+ * Escapes any regex-incompatible chars in the given string, making it safe to use in a regex.
  */
 function regexEscape(string){
 	return String(string).replace(/([-()\[\]{}+?*.$\^|,:#<!\\])/g, '\\$1').replace(/\x08/g, '\\x08');
@@ -206,22 +230,22 @@ function orIfFalsy(supposed, def){
  * If the value is any of the following, this returns false:
  *  false, 0, undefined, null, NaN, "" - standard
  *  [], {} - custom
- * 
+ *
  * @param {Object} val  any value
- * @return {Boolean} true if truthy, false if falsy - if it's falsy, it's probably not well-defined so do some default. 
+ * @return {Boolean} true if truthy, false if falsy - if it's falsy, it's probably not well-defined so do some default.
  */
 function truthiness(val){
     if(!val) return false;
     if(val instanceof Array && val.isEmpty()) return false;
     if(Object.equal(val, {})) return false;
-  
+
     return true;
 }
 
 /**
  * Runs a trial. Use to simulate random events and get a result.
  * @param {float} chance    the chance something will happen. 0.5 means 50%. Higher chance means the result is more likely to be true.
- * @return {boolean} true if it will happen under the randomness, false otherwise 
+ * @return {boolean} true if it will happen under the randomness, false otherwise
  */
 function pushLuck(chance){
     return Math.random() < chance;
@@ -242,7 +266,7 @@ function hexToRGB(hex){
 /**
  * Converts an rgb array [r,g,b] to hex code rrggbb.
  * Does NOT put the hashtag # in front.
- * rgbToHex([255,0,0]) -> 'FF0000' 
+ * rgbToHex([255,0,0]) -> 'FF0000'
  */
 function rgbToHex(rgb){
      var hexArray = rgb.map(function(x){ return x.pad(2,false,16); }); //['FF','00','00']
@@ -251,7 +275,7 @@ function rgbToHex(rgb){
 }
 
 /**
- * Safely reloads the current page. 
+ * Safely reloads the current page.
  */
 function reloadPage(){
     location.href = "#";
@@ -276,11 +300,11 @@ function checkInternet(yep, nope){
 }
 
 /**
- * Conveninent wrapper for Object.has(). Returns true if the given object is defined and has the given field, false otherwise. 
+ * Conveninent wrapper for Object.has(). Returns true if the given object is defined and has the given field, false otherwise.
  */
 function objectHas(val, key){
     if(!val) return false;
-    
+
     return truthiness(val[key]);
 }
 
@@ -300,31 +324,31 @@ String.prototype.replaceAll = function(subject, replacement) {
  * Compresses an object into its bare-minimum fields. Decompress it with decompress().
  * @param {Object} obj  any object.
  * @param {String/Object[]} keysToSave  a list of keys of the object to save to a compressed object. If given a string, that field of the original object will be copied straight to the compressed - works best with ints and strings. If given an Object { name: function(obj, value)}, the function will be called with the compressed object and the value at the appropriate field in the original object. You can assign directly to obj; if so don't return anything. Return a value and it'll be saved to the [name] property of the compressed object.
- * 
+ *
  * Usage:
  * compress({a:5,b:3,c:2,d:{x:"asdf"}}, ['a','b', { d: function(compressed, val){ return val.x + " :)"; }}])
  *   => {a: 5, b: 3, d: "asdf :)"}
  */
 function compress(obj, keysToSave){
     var compressed = {};
-    
+
     keysToSave.forEach(function(key){
         //key is either string (prop from obj) or object (custom handler)
         if(Object.isString(key)){
             //get the property named key from the obj and put it into the compressed
             compressed[key] = obj[key];
-        }    
+        }
         else if(Object.isObject(key)){
             //custom handler; contains { name: function } pair
             var name = Object.keys(key)[0];
             var func = Object.values(key)[0];
-            
+
             var result = func(compressed, obj[name]);
             if(result !== undefined)
                 compressed[name] = result;
         }
     });
-    
+
     return compressed;
 }
 
@@ -334,9 +358,9 @@ function compress(obj, keysToSave){
  * @param {String} className    the name of the class, such as "String". This will be called with the args.
  * @param {String[]} keysInInit the keys of the values you want to be passed to the constructor. The values will be gotten from obj.
  * @param {String/Object[]} keysOutsideInit [optional] the values at these keys (from obj) will be tacked straight on to the proper object. Specify a string to get the value (usually int/string) from the obj. Specify { name: function(obj, value)} and it'll be called with the proper object and value at the given key. You can do custom init (such as calling a setter) or manipulation. Return a value and it'll be tacked directly onto the proper object.
- * 
+ *
  * Usage:
- * decompress({a: 3, b: 5, c: { name: "A" }}, "Object", ['a'], 
+ * decompress({a: 3, b: 5, c: { name: "A" }}, "Object", ['a'],
  * ['b', { 'c': function(obj, value){ return value.name + " :)"} }]);
  */
 function decompress(obj, className, keysInInit, keysOutsideInit){
@@ -349,40 +373,40 @@ function decompress(obj, className, keysInInit, keysOutsideInit){
             //nothing saved there, but for placement purposes it  may be important. return null so it recognizes it
             return null;
         }
-        return JSON.stringify(value); //turns raw strings into strings with quotes around them 
+        return JSON.stringify(value); //turns raw strings into strings with quotes around them
     });
     //this may have some null values in it
     //args = args.compact();
-    
+
     //make a big string and eval it
     var str = sprintf("new %s(%s)", className, args.join(","));
     var goodObj = eval(str);
-    
+
     //add on keys outside
     if(keysOutsideInit){
         keysOutsideInit.forEach(function(key){
             //if they specified a custom handler, it's an object; else just a string
             if(Object.isString(key)){
                 goodObj[key] = obj[key];
-            }   
+            }
             else if(Object.isObject(key)){
                 //custom handler: it's { name: function } where function returns what to assign it to
                 var name = Object.keys(key)[0];
                 var func = Object.values(key)[0];
-                
+
                 var result = func(goodObj, obj[name]); //pass it the value stored in the primitive object
                 //if they already did it, they returned nothing; else, they returned what to set the value to
                 if(result !== undefined)
                     goodObj[name] = result;
-            } 
+            }
         });
     }
-    
+
     return goodObj;
 }
 
 /**
- * Wraps the given object in a Cobra-like manner, so that it can easily be appended to a Cobra class. 
+ * Wraps the given object in a Cobra-like manner, so that it can easily be appended to a Cobra class.
  * You can have fields and functions.
  * @param {Object} self the object that self will be when obj is called. This should be the Cobra class object that this will merge into.
  * @param {Object} obj  contains some fields and functions.
@@ -400,7 +424,7 @@ function cobraWrap(self, obj){
             obj[key] = Cobra.Class.method(member, self);
         }
     }
-    
+
     return obj;
 }
 
@@ -412,7 +436,7 @@ function cobraWrap(self, obj){
  */
 $.fn.htmlFade = function(html, speed) {
      this.fadeChange(function(self){
-          self.html(html);     
+          self.html(html);
      }, speed);
 }
 
@@ -420,7 +444,7 @@ $.fn.htmlFade = function(html, speed) {
  * Animates a transition but has fading in between.
  * @param {function()} func   called (param = $(this)) when it's ready.
  * @param {int} speed    [optional] the length the fade transition takes. Default is FADE_SPEED.
- * 
+ *
  * Sample usage:
  * fadeChange(function(self){
  *      self.doSomething(); //normal jQuery functions
@@ -432,13 +456,13 @@ $.fn.fadeChange = function(func, speed){
      this.fadeOut(speed, function() {
           func($(this));
           $(this).fadeIn(speed);
-     });     
+     });
 }
 
 /**
  * Works much the same as .click(), except it unbinds any existing click events beforehand.
  * Use this if you want to quickly overwrite the click handler.
- * 
+ *
  * Pass just callback - bound to normal click
  * Pass scope & callback - bound like on('click', scope, callback)
  */
@@ -457,7 +481,7 @@ $.fn.oneClick = function(scope, callback){
 /**
  * Works just like bind(), except it unbinds any existing bind events so that only one is active at once.
  * @param {string} event    the type of event
- * @param {function} callback   will be called when the event is triggered 
+ * @param {function} callback   will be called when the event is triggered
  */
 $.fn.oneBind = function(event, callback){
     this.unbind(event);
@@ -465,7 +489,7 @@ $.fn.oneBind = function(event, callback){
 }
 
 /**
- * Returns the actual HTML representation of this jQuery element. 
+ * Returns the actual HTML representation of this jQuery element.
  */
 $.fn.outerHTML = function(){
     return this.clone().wrap('<p>').parent().html();
@@ -488,8 +512,8 @@ $.fn.outerHTML = function(){
 // jQuery objects) to the currently selected collection.
 /**
  * Adds each jQuery object in the given array to this jQuery object.
- * 
- * Usage: 
+ *
+ * Usage:
  * $element.appendEach([$child1, $child2, ...]);
  */
 $.fn.appendEach = function(arrayOfWrappers) {
@@ -511,18 +535,18 @@ $.fn.appendEach = function(arrayOfWrappers) {
     // Return this reference to maintain method chaining.
     return (this );
 
-}; 
+};
 
 /**
  * For <input type='file'> elements.
  * This grabs the image that's been uploaded in the input and uploads it to imgur.
  * @param [function(url)]     success  It will be called with the URL of the image once it's been uploaded. (May fail on old browsers!) For instance, the URL may be "http://imgur.com/asdf.png"
  * @param [function]          failure   It will be called (no params) if uploading fails, perhaps because the internet is down.
- * 
+ *
  * Usage: $('#input').uploadImage(function(url){
  *   //do something with the URL... (success)
  * $('#image').attr('src',url);
- * console.log(url);     
+ * console.log(url);
  * });
  */
 $.fn.uploadImage = function(success, failure){
@@ -565,17 +589,17 @@ $.fn.uploadImage = function(success, failure){
      }
      // Ok, I don't handle the errors. An exercice for the reader.
      // And now, we send the formdata
-     xhr.send(fd); 
-}  
+     xhr.send(fd);
+}
 
 /*
  * Usage:
  * sprintf('You bought %s widgets', numWidgets);
  * sprintf('That makes %d dollars and %d cents', costDollars, costCents);
- * 
+ *
  * %d - displayed as int
  * %s - displayed as string
- * 
+ *
  * More powerful sprintf (but also bigger): http://www.diveintojavascript.com/projects/javascript-sprintf
  */
 function sprintf(s) {
@@ -596,7 +620,7 @@ function sprintf(s) {
 }
 
 /**
- * Used to dynamically load a JS file. Calls callback if successful. 
+ * Used to dynamically load a JS file. Calls callback if successful.
  */
 function require(file, callback) {
    var script = document.getElementsByTagName('script')[0],
@@ -612,7 +636,7 @@ function require(file, callback) {
   // others
   newjs.onload = function () {
      callback();
-  }; 
+  };
   newjs.src = file;
   script.parentNode.insertBefore(newjs, script);
 }
@@ -621,7 +645,7 @@ function require(file, callback) {
 var Timer = {
 	started: null, //time when the timer started
 	lapText: "", //if you call lap(), results stored here
-	
+
 	/*
 	 * Begins the timer.
 	 * @param {boolean} lap	[optional, default false] only pass true if you're in the middle of using laps.
@@ -632,26 +656,26 @@ var Timer = {
 			this.lapText = "";
 		}
 	},
-	
+
 	//returns the time difference between now and when the timer started.
 	getDiff: function(){
 		var after = Date.now();
 		return after - this.started;
 	},
-	
+
 	//prints the time difference in the console.
 	logDiff: function(){
 		console.log(this.getDiff());
 	},
-	
+
 	/**
-	 * Measures how long it's been since the last lap() was called, and stores that in memory. Use getLapText() to get a full listing 
+	 * Measures how long it's been since the last lap() was called, and stores that in memory. Use getLapText() to get a full listing
 	 */
 	lap: function(){
 		this.lapText += this.getDiff() + " ";
 		this.begin(true);
 	},
-	
+
 	getLapText: function(){
 		return this.lapText;
 	}

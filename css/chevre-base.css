@@ -1,10 +1,21 @@
 body{
     padding-top: 60px;
+    padding-bottom: 70px;
 }
 
 #main-container{
 	padding-top: 60px;
-	background: #FFF; /* must have opaque bg to hide snapjs drawer */
+	background: inherit; /* must have opaque bg to hide snapjs drawer */
+}
+
+#top-drawer{
+	z-index: 2;
+	background: inherit;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 /****************** NAVBAR ***********************/
@@ -22,7 +33,8 @@ body{
 }
 
 .navbar-brand, .stylized{
-    font-family: OpenSansBold, Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-family: Raleway, OpenSansBold, Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-weight: bold;
 }
 
 .navbar .breadcrumb{
@@ -69,7 +81,7 @@ body{
 
 /***** CONTENT *****/
 *, #main, h1, h2, h3, h4, h5, h6, p, .btn {
-    font-family: "OpenSansRegular", Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-family: Raleway, "OpenSansRegular", Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 .tab-pane{
@@ -158,7 +170,7 @@ hr.divider{
 	height: 1px;
 	margin: 1em 0;
 	overflow: hidden;
-	background-color: rgb(229, 229, 229);	
+	background-color: rgb(229, 229, 229);
 }
 
 /*
@@ -222,14 +234,19 @@ hr.divider{
 	position: absolute;
 	display: none;
 	width: 65%;
-	
+
 	z-index: 10001;
-	
+
 	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-radius: 6px;	
+	border-radius: 6px;
 	box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.5);
-	
+
 	font-weight: bold;
+}
+
+/********** OTHER PAGES *****************/
+#apps .btn{
+	white-space: inherit;
 }
 
 
@@ -344,3 +361,26 @@ hr.divider{
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
+/*** EXPERIMENTAL ***/
+/*
+#top-drawer{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 300px;
+	overflow: auto;
+	z-index: 2;
+}
+
+#main-container.main-slid-down{
+	margin-top: 300px;
+}
+
+#main-container{
+	transition: margin-top 0.2s;
+	-moz-transition: margin-top 0.2s;
+	-webkit-transition: margin-top 0.2s;
+}
+*/

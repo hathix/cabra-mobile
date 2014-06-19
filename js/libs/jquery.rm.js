@@ -14,7 +14,7 @@
  * size to give you the best measure and then affect your overall design.
  * Ideally, it is a resolution independent font-scale based on the ideal font size needed
  * to render your ideal measure.
- * 
+ *
  * $('section').responsiveMeasure({
      // Variables you can pass in:
           idealLineLength: (defaults to 66),
